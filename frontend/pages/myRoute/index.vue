@@ -348,10 +348,31 @@
                                         </button>
                                     </template>
 
-                                    <button v-else-if="trip.status === 'confirmed'"
-                                        class="px-4 py-2 text-sm text-white transition duration-200 bg-blue-600 rounded-md hover:bg-blue-700">
-                                        แชทกับผู้โดยสาร
-                                    </button>
+                                    <template v-else-if="trip.status === 'confirmed'">
+                                        <!-- Report Button: 3 สถานะ -->
+                                        <button v-if="!bookingReportMap[trip.id]"
+                                            @click.stop="openReportModal(trip)"
+                                            class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white transition duration-200 bg-red-500 rounded-md hover:bg-red-600 shadow-sm">
+                                            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
+                                            รายงาน
+                                        </button>
+                                        <button v-else-if="bookingReportMap[trip.id]?.status === 'PENDING'"
+                                            @click.stop="openReportModal(trip)"
+                                            class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-yellow-700 transition duration-200 bg-yellow-100 border border-yellow-400 rounded-md hover:bg-yellow-200 shadow-sm">
+                                            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clip-rule="evenodd"/></svg>
+                                            รอดำเนินการ
+                                        </button>
+                                        <button v-else
+                                            disabled
+                                            class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-500 bg-gray-100 border border-gray-300 rounded-md shadow-sm cursor-default">
+                                            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>
+                                            ดำเนินการแล้ว
+                                        </button>
+                                        <button
+                                            class="px-4 py-2 text-sm text-white transition duration-200 bg-blue-600 rounded-md hover:bg-blue-700">
+                                            แชทกับผู้โดยสาร
+                                        </button>
+                                    </template>
 
                                     <button v-else-if="['rejected', 'cancelled'].includes(trip.status)"
                                         @click.stop="openConfirmModal(trip, 'delete')"
@@ -378,6 +399,14 @@
                 </div>
             </div>
         </div>
+
+        <!-- Report Modal -->
+        <ReportDriverReportModalButton
+            v-model="isReportModalVisible"
+            :booking-id="reportTarget.bookingId"
+            :existing-report="reportTarget.existingReport"
+            @submitted="onReportSubmitted"
+        />
 
         <ConfirmModal :show="isModalVisible" :title="modalContent.title" :message="modalContent.message"
             :confirmText="modalContent.confirmText" :variant="modalContent.variant" @confirm="handleConfirmAction"
@@ -406,6 +435,11 @@ const isLoading = ref(false)
 const mapContainer = ref(null)
 const allTrips = ref([])
 const myRoutes = ref([])
+
+// --- Report ---
+const isReportModalVisible = ref(false)
+const bookingReportMap = ref({}) // { bookingId: reportObj }
+const reportTarget = ref({ bookingId: '', existingReport: null })
 
 // ---------- Google Maps states ----------
 let gmap = null
@@ -466,6 +500,35 @@ const selectedLabel = computed(() => {
     const t = allTrips.value.find(x => x.id === selectedTripId.value)
     return t ? `${t.origin} → ${t.destination}` : null
 })
+
+// --- Report Functions ---
+async function fetchMyReports() {
+    try {
+        const res = await $api('/reports/me')
+        const reports = res.data || res || []
+        bookingReportMap.value = {}
+        for (const report of reports) {
+            if (report.bookingId) {
+                bookingReportMap.value[report.bookingId] = report
+            }
+        }
+    } catch (e) {
+        console.error('Failed to fetch reports:', e)
+    }
+}
+
+function openReportModal(trip) {
+    reportTarget.value = {
+        bookingId: trip.id,
+        existingReport: bookingReportMap.value[trip.id] || null,
+    }
+    isReportModalVisible.value = true
+}
+
+async function onReportSubmitted() {
+    await fetchMyReports()
+    await fetchMyRoutes()
+}
 
 // --- Methods ---
 async function fetchMyRoutes() {
@@ -599,6 +662,9 @@ async function fetchMyRoutes() {
 
         allTrips.value = formatted
         myRoutes.value = ownRoutes
+
+        // Fetch ข้อมูล report ของ user
+        await fetchMyReports()
 
         // รอแผนที่พร้อม แล้ว reverse เฉพาะกรณีที่ backend ไม่มี name (เฉพาะ list คำขอจอง)
         await waitMapReady()
