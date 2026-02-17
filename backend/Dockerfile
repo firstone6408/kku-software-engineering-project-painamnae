@@ -1,7 +1,14 @@
-# ---- Stage 1: Build (prisma generate) ----
+# ---- Stage 1: Build ----
 FROM node:20-alpine AS builder
 
 WORKDIR /app
+
+# Install OpenSSL และ dependencies ที่ Prisma ต้องใช้
+RUN apt-get update -y && apt-get install -y \
+    openssl \
+    libssl3 \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY package.json package-lock.json ./
 RUN npm ci
@@ -14,20 +21,21 @@ FROM node:20-alpine
 
 WORKDIR /app
 
+RUN apt-get update -y && apt-get install -y \
+    openssl \
+    libssl3 \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
-# Copy generated prisma client from builder
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
-# Copy prisma schema (for migrate deploy)
 COPY prisma ./prisma
-
-# Copy source code
 COPY . .
 
 EXPOSE 3000
 
-# Run pending migrations on Neon → start server
 CMD ["sh", "-c", "npx prisma migrate deploy && node server.js"]
