@@ -1,5 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 
+/** @type {import('@prisma/client').PrismaClient} */
 let prisma;
 
 if (process.env.NODE_ENV === 'production') {

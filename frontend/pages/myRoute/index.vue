@@ -45,9 +45,14 @@
                                             </h4>
                                             <span class="status-badge" :class="{
                                                 'status-confirmed': route.status === 'available',
-                                                'status-pending': route.status === 'full',
+                                                'status-pending': route.status === 'full' || route.status === 'in_transit',
+                                                'status-rejected': route.status === 'completed' || route.status === 'cancelled',
                                             }">
-                                                {{ route.status === 'available' ? 'เปิดรับผู้โดยสาร' : 'เต็ม' }}
+                                                {{ route.status === 'available' ? 'เปิดรับผู้โดยสาร'
+                                                    : route.status === 'full' ? 'เต็ม'
+                                                    : route.status === 'in_transit' ? 'กำลังเดินทาง'
+                                                    : route.status === 'completed' ? 'เสร็จสิ้น'
+                                                    : route.status === 'cancelled' ? 'ยกเลิก' : route.status }}
                                             </span>
                                         </div>
                                         <p class="mt-1 text-sm text-gray-600">
@@ -348,10 +353,31 @@
                                         </button>
                                     </template>
 
-                                    <button v-else-if="trip.status === 'confirmed'"
-                                        class="px-4 py-2 text-sm text-white transition duration-200 bg-blue-600 rounded-md hover:bg-blue-700">
-                                        แชทกับผู้โดยสาร
-                                    </button>
+                                    <template v-else-if="trip.status === 'confirmed'">
+                                        <!-- Report Button: 3 สถานะ -->
+                                        <button v-if="!bookingReportMap[trip.id]"
+                                            @click.stop="openReportModal(trip)"
+                                            class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white transition duration-200 bg-red-500 rounded-md hover:bg-red-600 shadow-sm">
+                                            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
+                                            รายงาน
+                                        </button>
+                                        <button v-else-if="bookingReportMap[trip.id]?.status === 'PENDING'"
+                                            @click.stop="openReportModal(trip)"
+                                            class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-yellow-700 transition duration-200 bg-yellow-100 border border-yellow-400 rounded-md hover:bg-yellow-200 shadow-sm">
+                                            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clip-rule="evenodd"/></svg>
+                                            รอดำเนินการ
+                                        </button>
+                                        <button v-else
+                                            disabled
+                                            class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-500 bg-gray-100 border border-gray-300 rounded-md shadow-sm cursor-default">
+                                            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>
+                                            ดำเนินการแล้ว
+                                        </button>
+                                        <button
+                                            class="px-4 py-2 text-sm text-white transition duration-200 bg-blue-600 rounded-md hover:bg-blue-700">
+                                            แชทกับผู้โดยสาร
+                                        </button>
+                                    </template>
 
                                     <button v-else-if="['rejected', 'cancelled'].includes(trip.status)"
                                         @click.stop="openConfirmModal(trip, 'delete')"
@@ -378,6 +404,14 @@
                 </div>
             </div>
         </div>
+
+        <!-- Report Modal -->
+        <ReportDriverReportModalButton
+            v-model="isReportModalVisible"
+            :booking-id="reportTarget.bookingId"
+            :existing-report="reportTarget.existingReport"
+            @submitted="onReportSubmitted"
+        />
 
         <ConfirmModal :show="isModalVisible" :title="modalContent.title" :message="modalContent.message"
             :confirmText="modalContent.confirmText" :variant="modalContent.variant" @confirm="handleConfirmAction"
@@ -406,6 +440,11 @@ const isLoading = ref(false)
 const mapContainer = ref(null)
 const allTrips = ref([])
 const myRoutes = ref([])
+
+// --- Report ---
+const isReportModalVisible = ref(false)
+const bookingReportMap = ref({}) // { bookingId: reportObj }
+const reportTarget = ref({ bookingId: '', existingReport: null })
 
 // ---------- Google Maps states ----------
 let gmap = null
@@ -467,13 +506,43 @@ const selectedLabel = computed(() => {
     return t ? `${t.origin} → ${t.destination}` : null
 })
 
+// --- Report Functions ---
+async function fetchMyReports() {
+    try {
+        const res = await $api('/reports/me')
+        const reports = res.data || res || []
+        bookingReportMap.value = {}
+        for (const report of reports) {
+            if (report.bookingId) {
+                bookingReportMap.value[report.bookingId] = report
+            }
+        }
+    } catch (e) {
+        console.error('Failed to fetch reports:', e)
+    }
+}
+
+function openReportModal(trip) {
+    reportTarget.value = {
+        bookingId: trip.id,
+        existingReport: bookingReportMap.value[trip.id] || null,
+    }
+    isReportModalVisible.value = true
+}
+
+async function onReportSubmitted() {
+    await fetchMyReports()
+    await fetchMyRoutes()
+}
+
 // --- Methods ---
 async function fetchMyRoutes() {
     isLoading.value = true
     try {
         const routes = await $api('/routes/me')
 
-        const allowedRouteStatuses = new Set(['AVAILABLE', 'FULL', 'IN_TRANSIT'])
+        // เฉพาะ bookings จะกรอง status — ownRoutes แสดงทุก status
+        const bookingAllowedStatuses = new Set(['AVAILABLE', 'FULL', 'IN_TRANSIT'])
 
         const formatted = []
         const ownRoutes = []
@@ -481,7 +550,6 @@ async function fetchMyRoutes() {
         for (const r of routes) {
             const carDetailsList = []
             const routeStatus = String(r.status || '').toUpperCase()
-            if (!allowedRouteStatuses.has(routeStatus)) continue
 
             if (r.vehicle) {
                 carDetailsList.push(`${r.vehicle.vehicleModel} (${r.vehicle.vehicleType})`)
@@ -520,44 +588,46 @@ async function fetchMyRoutes() {
                 )
                 .filter(Boolean)
 
-            // แปลงเป็น "คำขอจอง" ต่อ booking
-            for (const b of (r.bookings || [])) {
-                formatted.push({
-                    id: b.id,
-                    status: (b.status || '').toLowerCase(),
-                    origin: start?.name || `(${Number(start.lat).toFixed(2)}, ${Number(start.lng).toFixed(2)})`,
-                    destination: end?.name || `(${Number(end.lat).toFixed(2)}, ${Number(end.lng).toFixed(2)})`,
-                    originHasName: !!start?.name,
-                    destinationHasName: !!end?.name,
-                    pickupPoint: b.pickupLocation?.name || '-',
-                    date: dayjs(r.departureTime).format('D MMMM BBBB'),
-                    time: dayjs(r.departureTime).format('HH:mm น.'),
-                    price: (r.pricePerSeat || 0) * (b.numberOfSeats || 0),
-                    seats: b.numberOfSeats || 0,
-                    passenger: {
-                        name: `${b.passenger?.firstName || ''} ${b.passenger?.lastName || ''}`.trim() || 'ผู้โดยสาร',
-                        image: b.passenger?.profilePicture || `https://ui-avatars.com/api/?name=${encodeURIComponent(b.passenger?.firstName || 'P')}&background=random&size=64`,
-                        email: b.passenger?.email || '',
-                        isVerified: !!b.passenger?.isVerified,
-                        rating: 4.5,
-                        reviews: Math.floor(Math.random() * 50) + 5,
-                    },
-                    coords,
-                    polyline: r.routePolyline || null,
-                    stops,
-                    stopsCoords,
-                    cancelReason: b.cancelReason || null,
-                    carDetails: carDetailsList,
-                    conditions: r.conditions,
-                    photos: r.vehicle?.photos || [],
-                    originAddress: start?.address ? cleanAddr(start.address) : null,
-                    destinationAddress: end?.address ? cleanAddr(end.address) : null,
-                    durationText: (typeof r.duration === 'string' ? formatDuration(r.duration) : r.duration) || (r.durationSeconds ? `${Math.round(r.durationSeconds / 60)} นาที` : '-'),
-                    distanceText: (typeof r.distance === 'string' ? formatDistance(r.distance) : r.distance) || (r.distanceMeters ? `${(r.distanceMeters / 1000).toFixed(1)} กม.` : '-'),
-                })
+            // แปลงเป็น "คำขอจอง" ต่อ booking (เฉพาะ route ที่ยัง active)
+            if (bookingAllowedStatuses.has(routeStatus)) {
+                for (const b of (r.bookings || [])) {
+                    formatted.push({
+                        id: b.id,
+                        status: (b.status || '').toLowerCase(),
+                        origin: start?.name || `(${Number(start.lat).toFixed(2)}, ${Number(start.lng).toFixed(2)})`,
+                        destination: end?.name || `(${Number(end.lat).toFixed(2)}, ${Number(end.lng).toFixed(2)})`,
+                        originHasName: !!start?.name,
+                        destinationHasName: !!end?.name,
+                        pickupPoint: b.pickupLocation?.name || '-',
+                        date: dayjs(r.departureTime).format('D MMMM BBBB'),
+                        time: dayjs(r.departureTime).format('HH:mm น.'),
+                        price: (r.pricePerSeat || 0) * (b.numberOfSeats || 0),
+                        seats: b.numberOfSeats || 0,
+                        passenger: {
+                            name: `${b.passenger?.firstName || ''} ${b.passenger?.lastName || ''}`.trim() || 'ผู้โดยสาร',
+                            image: b.passenger?.profilePicture || `https://ui-avatars.com/api/?name=${encodeURIComponent(b.passenger?.firstName || 'P')}&background=random&size=64`,
+                            email: b.passenger?.email || '',
+                            isVerified: !!b.passenger?.isVerified,
+                            rating: 4.5,
+                            reviews: Math.floor(Math.random() * 50) + 5,
+                        },
+                        coords,
+                        polyline: r.routePolyline || null,
+                        stops,
+                        stopsCoords,
+                        cancelReason: b.cancelReason || null,
+                        carDetails: carDetailsList,
+                        conditions: r.conditions,
+                        photos: r.vehicle?.photos || [],
+                        originAddress: start?.address ? cleanAddr(start.address) : null,
+                        destinationAddress: end?.address ? cleanAddr(end.address) : null,
+                        durationText: (typeof r.duration === 'string' ? formatDuration(r.duration) : r.duration) || (r.durationSeconds ? `${Math.round(r.durationSeconds / 60)} นาที` : '-'),
+                        distanceText: (typeof r.distance === 'string' ? formatDistance(r.distance) : r.distance) || (r.distanceMeters ? `${(r.distanceMeters / 1000).toFixed(1)} กม.` : '-'),
+                    })
+                }
             }
 
-            // เก็บ “เส้นทางของฉัน”
+            // เก็บ "เส้นทางของฉัน" — แสดงทุก status (AVAILABLE, FULL, COMPLETED, CANCELLED, IN_TRANSIT)
             const confirmedBookings = (r.bookings || []).filter(
                 b => (b.status || '').toUpperCase() === 'CONFIRMED'
             )
@@ -599,6 +669,9 @@ async function fetchMyRoutes() {
 
         allTrips.value = formatted
         myRoutes.value = ownRoutes
+
+        // Fetch ข้อมูล report ของ user
+        await fetchMyReports()
 
         // รอแผนที่พร้อม แล้ว reverse เฉพาะกรณีที่ backend ไม่มี name (เฉพาะ list คำขอจอง)
         await waitMapReady()

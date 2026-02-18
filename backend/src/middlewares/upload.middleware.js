@@ -17,4 +17,18 @@ const upload = multer({
     },
 });
 
+// สำหรับ Report — รองรับทั้งรูปภาพและวิดีโอ (สูงสุด 50 MB, สูงสุด 10 ไฟล์)
+const reportUpload = multer({
+    storage: storage,
+    limits: { fileSize: 50 * 1024 * 1024 },
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith('image/') || file.mimetype.startsWith('video/')) {
+            cb(null, true);
+        } else {
+            cb(new ApiError(400, 'Only image and video files are allowed!'), false);
+        }
+    },
+});
+
 module.exports = upload;
+module.exports.reportUpload = reportUpload;
