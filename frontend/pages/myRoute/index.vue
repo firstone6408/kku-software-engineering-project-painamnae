@@ -45,9 +45,14 @@
                                             </h4>
                                             <span class="status-badge" :class="{
                                                 'status-confirmed': route.status === 'available',
-                                                'status-pending': route.status === 'full',
+                                                'status-pending': route.status === 'full' || route.status === 'in_transit',
+                                                'status-rejected': route.status === 'completed' || route.status === 'cancelled',
                                             }">
-                                                {{ route.status === 'available' ? 'เปิดรับผู้โดยสาร' : 'เต็ม' }}
+                                                {{ route.status === 'available' ? 'เปิดรับผู้โดยสาร'
+                                                    : route.status === 'full' ? 'เต็ม'
+                                                    : route.status === 'in_transit' ? 'กำลังเดินทาง'
+                                                    : route.status === 'completed' ? 'เสร็จสิ้น'
+                                                    : route.status === 'cancelled' ? 'ยกเลิก' : route.status }}
                                             </span>
                                         </div>
                                         <p class="mt-1 text-sm text-gray-600">
@@ -536,7 +541,8 @@ async function fetchMyRoutes() {
     try {
         const routes = await $api('/routes/me')
 
-        const allowedRouteStatuses = new Set(['AVAILABLE', 'FULL', 'IN_TRANSIT'])
+        // เฉพาะ bookings จะกรอง status — ownRoutes แสดงทุก status
+        const bookingAllowedStatuses = new Set(['AVAILABLE', 'FULL', 'IN_TRANSIT'])
 
         const formatted = []
         const ownRoutes = []
@@ -544,7 +550,6 @@ async function fetchMyRoutes() {
         for (const r of routes) {
             const carDetailsList = []
             const routeStatus = String(r.status || '').toUpperCase()
-            if (!allowedRouteStatuses.has(routeStatus)) continue
 
             if (r.vehicle) {
                 carDetailsList.push(`${r.vehicle.vehicleModel} (${r.vehicle.vehicleType})`)
@@ -583,44 +588,46 @@ async function fetchMyRoutes() {
                 )
                 .filter(Boolean)
 
-            // แปลงเป็น "คำขอจอง" ต่อ booking
-            for (const b of (r.bookings || [])) {
-                formatted.push({
-                    id: b.id,
-                    status: (b.status || '').toLowerCase(),
-                    origin: start?.name || `(${Number(start.lat).toFixed(2)}, ${Number(start.lng).toFixed(2)})`,
-                    destination: end?.name || `(${Number(end.lat).toFixed(2)}, ${Number(end.lng).toFixed(2)})`,
-                    originHasName: !!start?.name,
-                    destinationHasName: !!end?.name,
-                    pickupPoint: b.pickupLocation?.name || '-',
-                    date: dayjs(r.departureTime).format('D MMMM BBBB'),
-                    time: dayjs(r.departureTime).format('HH:mm น.'),
-                    price: (r.pricePerSeat || 0) * (b.numberOfSeats || 0),
-                    seats: b.numberOfSeats || 0,
-                    passenger: {
-                        name: `${b.passenger?.firstName || ''} ${b.passenger?.lastName || ''}`.trim() || 'ผู้โดยสาร',
-                        image: b.passenger?.profilePicture || `https://ui-avatars.com/api/?name=${encodeURIComponent(b.passenger?.firstName || 'P')}&background=random&size=64`,
-                        email: b.passenger?.email || '',
-                        isVerified: !!b.passenger?.isVerified,
-                        rating: 4.5,
-                        reviews: Math.floor(Math.random() * 50) + 5,
-                    },
-                    coords,
-                    polyline: r.routePolyline || null,
-                    stops,
-                    stopsCoords,
-                    cancelReason: b.cancelReason || null,
-                    carDetails: carDetailsList,
-                    conditions: r.conditions,
-                    photos: r.vehicle?.photos || [],
-                    originAddress: start?.address ? cleanAddr(start.address) : null,
-                    destinationAddress: end?.address ? cleanAddr(end.address) : null,
-                    durationText: (typeof r.duration === 'string' ? formatDuration(r.duration) : r.duration) || (r.durationSeconds ? `${Math.round(r.durationSeconds / 60)} นาที` : '-'),
-                    distanceText: (typeof r.distance === 'string' ? formatDistance(r.distance) : r.distance) || (r.distanceMeters ? `${(r.distanceMeters / 1000).toFixed(1)} กม.` : '-'),
-                })
+            // แปลงเป็น "คำขอจอง" ต่อ booking (เฉพาะ route ที่ยัง active)
+            if (bookingAllowedStatuses.has(routeStatus)) {
+                for (const b of (r.bookings || [])) {
+                    formatted.push({
+                        id: b.id,
+                        status: (b.status || '').toLowerCase(),
+                        origin: start?.name || `(${Number(start.lat).toFixed(2)}, ${Number(start.lng).toFixed(2)})`,
+                        destination: end?.name || `(${Number(end.lat).toFixed(2)}, ${Number(end.lng).toFixed(2)})`,
+                        originHasName: !!start?.name,
+                        destinationHasName: !!end?.name,
+                        pickupPoint: b.pickupLocation?.name || '-',
+                        date: dayjs(r.departureTime).format('D MMMM BBBB'),
+                        time: dayjs(r.departureTime).format('HH:mm น.'),
+                        price: (r.pricePerSeat || 0) * (b.numberOfSeats || 0),
+                        seats: b.numberOfSeats || 0,
+                        passenger: {
+                            name: `${b.passenger?.firstName || ''} ${b.passenger?.lastName || ''}`.trim() || 'ผู้โดยสาร',
+                            image: b.passenger?.profilePicture || `https://ui-avatars.com/api/?name=${encodeURIComponent(b.passenger?.firstName || 'P')}&background=random&size=64`,
+                            email: b.passenger?.email || '',
+                            isVerified: !!b.passenger?.isVerified,
+                            rating: 4.5,
+                            reviews: Math.floor(Math.random() * 50) + 5,
+                        },
+                        coords,
+                        polyline: r.routePolyline || null,
+                        stops,
+                        stopsCoords,
+                        cancelReason: b.cancelReason || null,
+                        carDetails: carDetailsList,
+                        conditions: r.conditions,
+                        photos: r.vehicle?.photos || [],
+                        originAddress: start?.address ? cleanAddr(start.address) : null,
+                        destinationAddress: end?.address ? cleanAddr(end.address) : null,
+                        durationText: (typeof r.duration === 'string' ? formatDuration(r.duration) : r.duration) || (r.durationSeconds ? `${Math.round(r.durationSeconds / 60)} นาที` : '-'),
+                        distanceText: (typeof r.distance === 'string' ? formatDistance(r.distance) : r.distance) || (r.distanceMeters ? `${(r.distanceMeters / 1000).toFixed(1)} กม.` : '-'),
+                    })
+                }
             }
 
-            // เก็บ “เส้นทางของฉัน”
+            // เก็บ "เส้นทางของฉัน" — แสดงทุก status (AVAILABLE, FULL, COMPLETED, CANCELLED, IN_TRANSIT)
             const confirmedBookings = (r.bookings || []).filter(
                 b => (b.status || '').toUpperCase() === 'CONFIRMED'
             )
