@@ -1,0 +1,107 @@
+#  คู่มือการใช้งานระบบ (User Manual)
+
+## Story
+As a driver, I want to report incidents to the admin and get the update on the filed case.
+
+---
+
+# 1 ระบบรายงานเหตุการณ์และติดตามสถานะเคส (PBL11)
+
+ผู้ขับขี่สามารถรายงานเหตุการณ์หรือพฤติกรรมที่ไม่เหมาะสมที่เกิดขึ้นระหว่างการให้บริการไปยังผู้ดูแลระบบ เพื่อให้ตรวจสอบและดำเนินการแก้ไขปัญหาได้อย่างรวดเร็ว โดยระบบจะบันทึกรายงานแต่ละรายการในรูปแบบเคส (Case) พร้อมหมายเลขอ้างอิง รายละเอียดเหตุการณ์ หลักฐานประกอบ และสถานะการดำเนินงาน เพื่อให้สามารถติดตามความคืบหน้าและตรวจสอบย้อนหลังได้อย่างเป็นระบบ
+
+## ภาพรวมระบบ
+ระบบ Painamnae Backend เป็น API Server พัฒนาด้วย  
+- :contentReference[oaicite:0]{index=0} (Node.js + Express)  
+- :contentReference[oaicite:1]{index=1} (PostgreSQL)
+
+ทำหน้าที่จัดการข้อมูลผู้ใช้ การเดินทาง และระบบ Incident Report
+
+## ฟีเจอร์หลัก
+- สร้างรายงานเหตุการณ์
+- แนบหลักฐาน (รูปภาพ/ไฟล์)
+- ติดตามสถานะเคส
+
+---
+
+## ขั้นตอนการเข้าใช้งาน (Driver)
+
+### 1. เข้าสู่ระบบ
+กรอกชื่อผู้ใช้หรืออีเมล และรหัสผ่าน จากนั้นกด **เข้าสู่ระบบ**
+
+### 2. ไปหน้า Dashboard
+
+### 3. กดปุ่ม **การเดินทางทั้งหมด**
+<img width="1681" height="775" src="https://github.com/user-attachments/assets/d17140c1-ac0b-499f-b7c1-6095bb476d3e" />
+
+### 4. กด **ยืนยันแล้ว**
+<img width="1679" height="792" src="https://github.com/user-attachments/assets/21d775f4-6c0a-474e-a64e-4b9f2bbcf076" />
+
+### 5. กด **จัดการเส้นทาง**
+<img width="800" height="289" src="https://github.com/user-attachments/assets/e05cb292-2097-4d49-8dc9-fc2c675752ae" />
+
+### 6. กด **ยืนยันแล้ว**
+<img width="1544" height="654" src="https://github.com/user-attachments/assets/a0b585c0-039c-4e0b-a50e-12e12281469a" />
+
+### 7. กด **รายงาน ผู้โดยสารที่ต้องการ**
+<img width="805" height="262" src="https://github.com/user-attachments/assets/b3fc7892-15ce-42bd-93e5-3fd871d2063d" />
+
+### 8. เลือกปัญหาที่พบ
+- เกิดอุบัติเหตุ
+- ผู้โดยสารก่อกวน
+- พูดจาไม่สุภาพ
+- ทรัพย์สินเสียหาย
+<img width="593" height="688" src="https://github.com/user-attachments/assets/21bb8c2c-7500-4df9-a157-c9940cae6b1e" />
+
+### 9. กด **ส่ง Report**
+<img width="235" height="80" src="https://github.com/user-attachments/assets/3611aa5d-6387-47e2-8995-69198ae3bf6f" />
+
+### 10. ระบบแสดงข้อความสำเร็จ
+**ส่ง Report สำเร็จ เราจะดำเนินการตรวจสอบให้เร็วที่สุด**
+<img width="1627" height="795" src="https://github.com/user-attachments/assets/0db93ae8-f4de-4815-a888-c797b90f4830" />
+
+---
+
+---
+
+# 2 ระบบรายงานพฤติกรรมคนขับและติดตามสถานะเคส (PBL13)
+
+ผู้โดยสารสามารถรายงานพฤติกรรมของคนขับที่ไม่เหมาะสมหรือเหตุการณ์ที่เกิดขึ้นระหว่างการเดินทางไปยังผู้ดูแลระบบ เพื่อให้ตรวจสอบและดำเนินการแก้ไขปัญหาได้อย่างรวดเร็ว โดยระบบจะบันทึกรายงานแต่ละรายการเป็นเคส (Case) พร้อมหมายเลขอ้างอิง รายละเอียดเหตุการณ์ หลักฐาน และสถานะ เพื่อให้ติดตามความคืบหน้าได้
+
+## ฟีเจอร์หลัก
+- สร้างรายงานเหตุการณ์
+- แนบหลักฐาน
+- ติดตามสถานะเคส
+
+---
+
+## ขั้นตอนการเข้าใช้งาน (Passenger)
+
+### 1. เข้าสู่ระบบ
+กรอกชื่อผู้ใช้หรืออีเมล และรหัสผ่าน แล้วกด **เข้าสู่ระบบ**
+
+### 2. ไปหน้า Dashboard
+
+### 3. กด **การเดินทางของฉัน**
+<img width="1523" height="723" src="https://github.com/user-attachments/assets/ae983bc9-4128-4785-9fcf-2ba794d49caf" />
+
+### 4. กด **ยืนยันแล้ว**
+<img width="1565" height="694" src="https://github.com/user-attachments/assets/a9101c3b-52a4-46d2-aa8b-c555b79ccff2" />
+
+### 5. กด **รายงาน คนขับที่ต้องการ**
+<img width="842" height="247" src="https://github.com/user-attachments/assets/47aae004-f518-45ec-a44d-52146675dc22" />
+
+### 6. เลือกปัญหาที่พบ
+- ขับรถเร็ว
+- ขับรถประมาท
+- ขับรถไม่ปลอดภัย
+- พฤติกรรมไม่เหมาะสม
+<img width="1462" height="856" src="https://github.com/user-attachments/assets/b4e780fc-fe4e-4e1b-9890-b72659d376eb" />
+
+### 7. กด **ส่ง Report**
+<img width="235" height="74" src="https://github.com/user-attachments/assets/5d424c68-fc44-4905-8559-50f4988d4fcf" />
+
+### 8. ระบบแสดงข้อความสำเร็จ
+**ส่ง Report สำเร็จ เราจะดำเนินการตรวจสอบให้เร็วที่สุด**
+<img width="1476" height="754" src="https://github.com/user-attachments/assets/172c5de0-9053-4edc-adec-96a03295e29e" />
+
+---
