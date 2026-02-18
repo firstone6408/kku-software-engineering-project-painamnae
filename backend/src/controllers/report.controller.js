@@ -26,11 +26,6 @@ async function uploadReportMedia(files) {
 
 const createDriverReport = asyncHandler(async (req, res) => {
   const userId = req.user.sub;
-  const userRole = req.user.role;
-
-  if (userRole !== Role.DRIVER) {
-    throw new ApiError(403, "Forbidden");
-  }
 
   const mediaItems = await uploadReportMedia(req.files);
 
@@ -48,11 +43,6 @@ const createDriverReport = asyncHandler(async (req, res) => {
 
 const createPassengerReport = asyncHandler(async (req, res) => {
   const userId = req.user.sub;
-  const userRole = req.user.role;
-
-  if (userRole !== Role.PASSENGER) {
-    throw new ApiError(403, "Forbidden");
-  }
 
   const mediaItems = await uploadReportMedia(req.files);
 

@@ -134,16 +134,23 @@ describe('POST /api/reports/passenger', () => {
     expect(res.body.data).toBeDefined();
   });
 
-  it('403 — driver ไม่สามารถใช้ endpoint นี้', async () => {
+  it('201 — driver ก็สามารถสร้าง passenger report ได้ (เช่น driver จองเดินทางเป็นผู้โดยสาร)', async () => {
     mockCurrentUser = DRIVER_USER;
+    mockPrisma.report.findFirst.mockResolvedValue(null);
+    mockPrisma.report.create.mockResolvedValue(FAKE_REPORT);
+    mockPrisma.report.findUnique.mockResolvedValue(FAKE_REPORT);
+    mockPrisma.reportReason.createMany.mockResolvedValue({ count: 1 });
+    mockPrisma.notification.create.mockResolvedValue({});
 
     const res = await request(app)
       .post('/api/reports/passenger')
       .set('Authorization', VALID_TOKEN)
+      .field('reportedUserId', 'cly0000000000000000000001')
       .field('bookingId', 'cly0000000000000000000002')
       .field('passengerReasons', JSON.stringify(['RUDE_BEHAVIOR']));
 
-    expect(res.statusCode).toBe(403);
+    expect(res.statusCode).toBe(201);
+    expect(res.body.success).toBe(true);
   });
 });
 
@@ -176,8 +183,19 @@ describe('POST /api/reports/driver', () => {
     expect(res.body.success).toBe(true);
   });
 
-  it('403 — passenger ไม่สามารถใช้ endpoint นี้', async () => {
+  it('201 — passenger ก็สามารถสร้าง driver report ได้', async () => {
     mockCurrentUser = PASSENGER_USER;
+    const driverReport = {
+      ...FAKE_REPORT,
+      id: 'report-003',
+      type: 'DRIVER_REPORT_INCIDENT',
+      reasons: [{ id: 'r3', driverReason: 'PASSENGER_RUDE' }],
+    };
+    mockPrisma.report.findFirst.mockResolvedValue(null);
+    mockPrisma.report.create.mockResolvedValue(driverReport);
+    mockPrisma.report.findUnique.mockResolvedValue(driverReport);
+    mockPrisma.reportReason.createMany.mockResolvedValue({ count: 1 });
+    mockPrisma.notification.create.mockResolvedValue({});
 
     const res = await request(app)
       .post('/api/reports/driver')
@@ -185,7 +203,8 @@ describe('POST /api/reports/driver', () => {
       .field('bookingId', 'cly0000000000000000000002')
       .field('driverReasons', JSON.stringify(['PASSENGER_RUDE']));
 
-    expect(res.statusCode).toBe(403);
+    expect(res.statusCode).toBe(201);
+    expect(res.body.success).toBe(true);
   });
 
   it('400 — ส่ง report ซ้ำบน booking เดียวกัน', async () => {
