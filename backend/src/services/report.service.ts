@@ -176,3 +176,98 @@ export async function getReportsByUserId(userId: string) {
     orderBy: { createdAt: 'desc' },
   });
 }
+
+// ─── Admin: list all reports ───
+interface AdminReportFilterOpts {
+  q?: string;
+  status?: string;
+  type?: string;
+  page?: number;
+  limit?: number;
+}
+
+export async function getAllReports(opts: AdminReportFilterOpts = {}) {
+  const { q, status, type, page = 1, limit = 20 } = opts;
+
+  const where: Prisma.ReportWhereInput = {
+    ...(status ? { status: status as never } : {}),
+    ...(type ? { type: type as never } : {}),
+    ...(q
+      ? {
+          OR: [
+            { reporter: { firstName: { contains: q, mode: 'insensitive' as const } } },
+            { reporter: { lastName: { contains: q, mode: 'insensitive' as const } } },
+            { reporter: { username: { contains: q, mode: 'insensitive' as const } } },
+            { reportedUser: { firstName: { contains: q, mode: 'insensitive' as const } } },
+            { reportedUser: { lastName: { contains: q, mode: 'insensitive' as const } } },
+            { reportedUser: { username: { contains: q, mode: 'insensitive' as const } } },
+            { otherReasonText: { contains: q, mode: 'insensitive' as const } },
+          ],
+        }
+      : {}),
+  };
+
+  const skip = (page - 1) * limit;
+
+  const [total, data] = await prisma.$transaction([
+    prisma.report.count({ where }),
+    prisma.report.findMany({
+      where,
+      include: {
+        reporter: { select: { id: true, username: true, firstName: true, lastName: true, email: true, role: true, profilePicture: true, phoneNumber: true } },
+        reportedUser: { select: { id: true, username: true, firstName: true, lastName: true, email: true, role: true, profilePicture: true, phoneNumber: true } },
+        reasons: true,
+        media: true,
+        booking: {
+          select: {
+            id: true,
+            route: {
+              select: {
+                id: true,
+                startLocation: true,
+                endLocation: true,
+                departureTime: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+      skip,
+      take: limit,
+    }),
+  ]);
+
+  return { data, pagination: { page, limit, total, totalPages: Math.ceil(total / limit) } };
+}
+
+// ─── Admin: get single report by id ───
+export async function getReportById(reportId: string) {
+  const report = await prisma.report.findUnique({
+    where: { id: reportId },
+    include: {
+      reporter: { select: { id: true, username: true, firstName: true, lastName: true, email: true, role: true, profilePicture: true, phoneNumber: true } },
+      reportedUser: { select: { id: true, username: true, firstName: true, lastName: true, email: true, role: true, profilePicture: true, phoneNumber: true } },
+      reasons: true,
+      media: true,
+      booking: {
+        select: {
+          id: true,
+          route: {
+            select: {
+              id: true,
+              startLocation: true,
+              endLocation: true,
+              departureTime: true,
+              driver: { select: { id: true, username: true, firstName: true, lastName: true } },
+              vehicle: { select: { id: true, vehicleModel: true, vehicleType: true, licensePlate: true } },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!report) throw new ApiError(404, 'Report not found');
+  return report;
+}

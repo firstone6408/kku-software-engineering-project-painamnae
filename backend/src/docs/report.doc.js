@@ -396,6 +396,131 @@
  */
 
 // ==========================================
+// GET /api/reports/admin (Admin only)
+// ==========================================
+/**
+ * @swagger
+ * /api/reports/admin:
+ *   get:
+ *     summary: Admin ดึง Report ทั้งหมดในระบบ
+ *     description: |
+ *       Admin ดึงรายการ Report ทั้งหมด พร้อมข้อมูลผู้แจ้ง, ผู้ถูกแจ้ง, เหตุผล, สื่อ, และ Booking
+ *       รองรับ filter ตาม status, type, ค้นหาข้อความ และ pagination
+ *     tags: [Reports]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: string
+ *         description: ค้นหาจากชื่อ/username ของผู้แจ้งหรือผู้ถูกแจ้ง หรือ otherReasonText
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [PENDING, RESOLVED]
+ *         description: กรองตามสถานะ
+ *       - in: query
+ *         name: type
+ *         schema:
+ *           type: string
+ *           enum: [PASSENGER_REPORT_DRIVER, DRIVER_REPORT_INCIDENT]
+ *         description: กรองตามประเภท
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: หน้าที่ต้องการ
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 20
+ *         description: จำนวน report ต่อหน้า
+ *     responses:
+ *       200:
+ *         description: Reports retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Reports retrieved successfully"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Report'
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     page:
+ *                       type: integer
+ *                       example: 1
+ *                     limit:
+ *                       type: integer
+ *                       example: 20
+ *                     total:
+ *                       type: integer
+ *                       example: 5
+ *                     totalPages:
+ *                       type: integer
+ *                       example: 1
+ *       403:
+ *         description: Forbidden — เฉพาะ ADMIN เท่านั้น
+ */
+
+// ==========================================
+// GET /api/reports/admin/:id (Admin only)
+// ==========================================
+/**
+ * @swagger
+ * /api/reports/admin/{id}:
+ *   get:
+ *     summary: Admin ดึง Report ตาม ID
+ *     description: |
+ *       Admin ดึง Report เดียวพร้อมข้อมูลทั้งหมด รวมถึง reporter, reportedUser,
+ *       reasons, media, booking และ route (driver + vehicle)
+ *     tags: [Reports]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: "cmrpt001"
+ *         description: ID ของ Report
+ *     responses:
+ *       200:
+ *         description: Report retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Report retrieved successfully"
+ *                 data:
+ *                   $ref: '#/components/schemas/Report'
+ *       403:
+ *         description: Forbidden — เฉพาะ ADMIN เท่านั้น
+ *       404:
+ *         description: Report not found
+ */
+
+// ==========================================
 // Enum References
 // ==========================================
 /**

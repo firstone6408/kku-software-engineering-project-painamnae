@@ -55,3 +55,20 @@ export const resolveReport = asyncHandler(async (req: Request, res: Response) =>
   const resolved = await reportService.resolveReport(req.params.id);
   res.status(200).json({ success: true, message: 'Report resolved successfully', data: resolved });
 });
+
+export const getAllReportsAdmin = asyncHandler(async (req: Request, res: Response) => {
+  const { q, status, type, page, limit } = req.query;
+  const result = await reportService.getAllReports({
+    q: q as string,
+    status: status as string,
+    type: type as string,
+    page: page ? Number(page) : undefined,
+    limit: limit ? Number(limit) : undefined,
+  });
+  res.status(200).json({ success: true, message: 'Reports retrieved successfully', ...result });
+});
+
+export const getReportByIdAdmin = asyncHandler(async (req: Request, res: Response) => {
+  const report = await reportService.getReportById(req.params.id);
+  res.status(200).json({ success: true, message: 'Report retrieved successfully', data: report });
+});
