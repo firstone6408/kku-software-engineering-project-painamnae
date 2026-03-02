@@ -156,6 +156,7 @@ export async function resolveReport(reportId: string) {
   const report = await prisma.report.findUnique({ where: { id: reportId } });
   if (!report) throw new ApiError(404, 'Report not found');
   if (report.status === 'RESOLVED') throw new ApiError(400, 'Report นี้ได้รับการดำเนินการแล้ว');
+  if (report.status === 'REJECTED') throw new ApiError(400, 'Report นี้ถูกปฏิเสธแล้ว');
 
   return prisma.$transaction(async (tx) => {
     const updated = await tx.report.update({
@@ -165,6 +166,45 @@ export async function resolveReport(reportId: string) {
     });
 
     await notifyReportResolved(tx, report.reporterId, report.type);
+    return updated;
+  });
+}
+
+// ─── Reject a report (admin) ───
+async function notifyReportRejected(tx: TransactionClient, reporterId: string, reportType: ReportType, reason?: string): Promise<void> {
+  const typeLabel = reportType === ReportType.PASSENGER_REPORT_DRIVER
+    ? 'รายงานปัญหาคนขับ'
+    : 'รายงานเหตุการณ์';
+
+  const reasonText = reason ? `\nเหตุผล: ${reason}` : '';
+
+  await tx.notification.create({
+    data: {
+      userId: reporterId,
+      type: 'SYSTEM',
+      title: '❌ Report ของคุณถูกปฏิเสธ',
+      body: `${typeLabel}ของคุณถูกปฏิเสธโดยผู้ดูแลระบบ${reasonText}`,
+    },
+  });
+}
+
+export async function rejectReport(reportId: string, rejectionReason?: string) {
+  const report = await prisma.report.findUnique({ where: { id: reportId } });
+  if (!report) throw new ApiError(404, 'Report not found');
+  if (report.status === 'RESOLVED') throw new ApiError(400, 'Report นี้ได้รับการดำเนินการแล้ว ไม่สามารถปฏิเสธได้');
+  if (report.status === 'REJECTED') throw new ApiError(400, 'Report นี้ถูกปฏิเสธแล้ว');
+
+  return prisma.$transaction(async (tx) => {
+    const updated = await tx.report.update({
+      where: { id: reportId },
+      data: {
+        status: 'REJECTED',
+        rejectionReason: rejectionReason || null,
+      },
+      include: { reasons: true, media: true },
+    });
+
+    await notifyReportRejected(tx, report.reporterId, report.type, rejectionReason);
     return updated;
   });
 }

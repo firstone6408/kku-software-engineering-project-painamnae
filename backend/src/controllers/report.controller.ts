@@ -72,3 +72,9 @@ export const getReportByIdAdmin = asyncHandler(async (req: Request, res: Respons
   const report = await reportService.getReportById(req.params.id);
   res.status(200).json({ success: true, message: 'Report retrieved successfully', data: report });
 });
+
+export const rejectReportAdmin = asyncHandler(async (req: Request, res: Response) => {
+  const { rejectionReason } = req.body || {};
+  const rejected = await reportService.rejectReport(req.params.id, rejectionReason);
+  res.status(200).json({ success: true, message: 'Report rejected successfully', data: rejected });
+});

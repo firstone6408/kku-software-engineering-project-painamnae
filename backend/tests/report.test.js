@@ -375,6 +375,63 @@ describe('PATCH /api/reports/:id/resolve', () => {
 });
 
 // ══════════════════════════════════════════════════════
+//  6b) PATCH /api/reports/:id/reject  (Admin only)
+// ══════════════════════════════════════════════════════
+describe('PATCH /api/reports/:id/reject', () => {
+  it('200 — Admin reject report สำเร็จ', async () => {
+    mockCurrentUser = ADMIN_USER;
+    const pendingReport = { ...FAKE_REPORT, status: 'PENDING' };
+    mockPrisma.report.findUnique.mockResolvedValue(pendingReport);
+    mockPrisma.report.update.mockResolvedValue({ ...pendingReport, status: 'REJECTED' });
+    mockPrisma.notification.create.mockResolvedValue({});
+
+    const res = await request(app)
+      .patch('/api/reports/report-001/reject')
+      .set('Authorization', VALID_TOKEN);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.success).toBe(true);
+  });
+
+  it('200 — Admin reject พร้อมเหตุผล', async () => {
+    mockCurrentUser = ADMIN_USER;
+    const pendingReport = { ...FAKE_REPORT, status: 'PENDING' };
+    mockPrisma.report.findUnique.mockResolvedValue(pendingReport);
+    mockPrisma.report.update.mockResolvedValue({ ...pendingReport, status: 'REJECTED', rejectionReason: 'หลักฐานไม่เพียงพอ' });
+    mockPrisma.notification.create.mockResolvedValue({});
+
+    const res = await request(app)
+      .patch('/api/reports/report-001/reject')
+      .set('Authorization', VALID_TOKEN)
+      .send({ rejectionReason: 'หลักฐานไม่เพียงพอ' });
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.success).toBe(true);
+  });
+
+  it('400 — report ที่ RESOLVED แล้ว reject ไม่ได้', async () => {
+    mockCurrentUser = ADMIN_USER;
+    mockPrisma.report.findUnique.mockResolvedValue({ ...FAKE_REPORT, status: 'RESOLVED' });
+
+    const res = await request(app)
+      .patch('/api/reports/report-001/reject')
+      .set('Authorization', VALID_TOKEN);
+
+    expect(res.statusCode).toBe(400);
+  });
+
+  it('403 — non-admin ไม่สามารถ reject', async () => {
+    mockCurrentUser = PASSENGER_USER;
+
+    const res = await request(app)
+      .patch('/api/reports/report-001/reject')
+      .set('Authorization', VALID_TOKEN);
+
+    expect(res.statusCode).toBe(403);
+  });
+});
+
+// ══════════════════════════════════════════════════════
 //  7) GET /api/reports/admin  (Admin only)
 // ══════════════════════════════════════════════════════
 describe('GET /api/reports/admin', () => {

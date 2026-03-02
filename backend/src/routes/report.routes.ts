@@ -12,5 +12,6 @@ router.get('/admin', protect, requireAdmin, reportController.getAllReportsAdmin)
 router.get('/admin/:id', protect, requireAdmin, reportController.getReportByIdAdmin);
 router.put('/:id', protect, reportUpload.array('media', 10), reportController.updateReport);
 router.patch('/:id/resolve', protect, requireAdmin, reportController.resolveReport);
+router.patch('/:id/reject', protect, requireAdmin, reportController.rejectReportAdmin);
 
 export default router;
