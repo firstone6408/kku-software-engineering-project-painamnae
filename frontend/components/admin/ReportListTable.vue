@@ -58,16 +58,19 @@ function reasonLabel(reason) {
 
 function statusBadge(s) {
     if (s === 'RESOLVED') return 'bg-green-100 text-green-700'
+    if (s === 'REJECTED') return 'bg-red-100 text-red-700'
     return 'bg-amber-100 text-amber-700'
 }
 
 function statusDot(s) {
     if (s === 'RESOLVED') return 'bg-green-500'
+    if (s === 'REJECTED') return 'bg-red-500'
     return 'bg-amber-500'
 }
 
 function statusLabel(s) {
-    if (s === 'RESOLVED') return 'เสร็จสิ้น'
+    if (s === 'RESOLVED') return 'แก้ไขแล้ว'
+    if (s === 'REJECTED') return 'ปฏิเสธ'
     return 'รอตรวจสอบ'
 }
 

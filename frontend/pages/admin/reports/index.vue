@@ -210,7 +210,8 @@ onUnmounted(() => { cleanupGlobalScripts() })
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500">
                                 <option value="">ทั้งหมด</option>
                                 <option value="PENDING">รอตรวจสอบ</option>
-                                <option value="RESOLVED">เสร็จสิ้น</option>
+                                <option value="RESOLVED">แก้ไขแล้ว</option>
+                                <option value="REJECTED">ปฏิเสธ</option>
                             </select>
                         </div>
 

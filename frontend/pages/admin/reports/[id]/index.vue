@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import dayjs from 'dayjs'
 import 'dayjs/locale/th'
 import buddhistEra from 'dayjs/plugin/buddhistEra'
@@ -21,8 +21,24 @@ const config = useRuntimeConfig()
 const isLoading = ref(false)
 const loadError = ref('')
 const report = ref(null)
-const showResolveModal = ref(false)
-const isResolving = ref(false)
+const isSubmitting = ref(false)
+
+// Status update form
+const selectedStatus = ref('')
+const rejectionReason = ref('')
+const showConfirmModal = ref(false)
+
+// Whether the report is finalized (resolved/rejected) — cannot edit
+const isFinalized = computed(() => {
+    return report.value && (report.value.status === 'RESOLVED' || report.value.status === 'REJECTED')
+})
+
+// Whether the submit button should be enabled
+const canSubmit = computed(() => {
+    if (!report.value || isFinalized.value || isSubmitting.value) return false
+    // Must pick a different status than current
+    return selectedStatus.value && selectedStatus.value !== report.value.status
+})
 
 function getToken() {
     const cookie = useCookie('token')
@@ -44,6 +60,11 @@ async function fetchReport() {
         const body = await res.json()
         if (!res.ok) throw new Error(body?.message || `Request failed: ${res.status}`)
         report.value = body?.data || null
+        // Initialize selected status to current status
+        if (report.value) {
+            selectedStatus.value = report.value.status
+            rejectionReason.value = report.value.rejectionReason || ''
+        }
     } catch (err) {
         console.error(err)
         loadError.value = err?.message || 'ไม่สามารถโหลดข้อมูลได้'
@@ -53,12 +74,32 @@ async function fetchReport() {
     }
 }
 
-async function resolveReport() {
-    showResolveModal.value = false
-    isResolving.value = true
+function confirmStatusChange() {
+    if (!canSubmit.value) return
+    showConfirmModal.value = true
+}
+
+async function submitStatusChange() {
+    showConfirmModal.value = false
+    isSubmitting.value = true
+    const action = selectedStatus.value // save before fetchReport resets it
     try {
         const token = getToken()
-        const res = await fetch(`${config.public.apiBase}reports/${route.params.id}/resolve`, {
+        let endpoint = ''
+        let bodyPayload = {}
+
+        if (action === 'RESOLVED') {
+            endpoint = `${config.public.apiBase}reports/${route.params.id}/resolve`
+        } else if (action === 'REJECTED') {
+            endpoint = `${config.public.apiBase}reports/${route.params.id}/reject`
+            if (rejectionReason.value.trim()) {
+                bodyPayload = { rejectionReason: rejectionReason.value.trim() }
+            }
+        } else {
+            return
+        }
+
+        const res = await fetch(endpoint, {
             method: 'PATCH',
             headers: {
                 Accept: 'application/json',
@@ -66,35 +107,57 @@ async function resolveReport() {
                 ...(token ? { Authorization: `Bearer ${token}` } : {}),
             },
             credentials: 'include',
+            body: JSON.stringify(bodyPayload),
         })
         const body = await res.json()
         if (!res.ok) throw new Error(body?.message || `Request failed: ${res.status}`)
-        // Re-fetch full report data with all includes (resolve returns partial data)
         await fetchReport()
-        toast.success('สำเร็จ', 'เปลี่ยนสถานะเป็นแก้ไขแล้ว และส่งแจ้งเตือนผู้แจ้งเรียบร้อย')
+
+        if (action === 'RESOLVED') {
+            toast.success('สำเร็จ', 'เปลี่ยนสถานะเป็นแก้ไขแล้ว และส่งแจ้งเตือนผู้แจ้งเรียบร้อย')
+        } else {
+            toast.success('สำเร็จ', 'ปฏิเสธ Report แล้ว และส่งแจ้งเตือนผู้แจ้งเรียบร้อย')
+        }
     } catch (err) {
         console.error(err)
         toast.error('เกิดข้อผิดพลาด', err?.message || 'ไม่สามารถเปลี่ยนสถานะได้')
     } finally {
-        isResolving.value = false
+        isSubmitting.value = false
     }
 }
 
+// Confirm modal props
+const confirmTitle = computed(() => {
+    if (selectedStatus.value === 'RESOLVED') return 'ยืนยันเปลี่ยนสถานะเป็น "แก้ไขแล้ว"'
+    if (selectedStatus.value === 'REJECTED') return 'ยืนยันเปลี่ยนสถานะเป็น "ปฏิเสธ"'
+    return 'ยืนยันการเปลี่ยนสถานะ'
+})
+const confirmMessage = computed(() => {
+    const base = 'ระบบจะส่งแจ้งเตือนไปยังผู้แจ้งอัตโนมัติ เมื่อยืนยันแล้วจะไม่สามารถเปลี่ยนแปลงได้'
+    if (selectedStatus.value === 'REJECTED' && rejectionReason.value.trim()) {
+        return `${base}\n\nเหตุผลการปฏิเสธ: "${rejectionReason.value.trim()}"`
+    }
+    return base
+})
+const confirmVariant = computed(() => {
+    return selectedStatus.value === 'REJECTED' ? 'danger' : 'primary'
+})
+
 function statusBadge(s) {
     if (s === 'RESOLVED') return 'bg-green-100 text-green-700'
+    if (s === 'REJECTED') return 'bg-red-100 text-red-700'
     return 'bg-amber-100 text-amber-700'
 }
-
 function statusDot(s) {
     if (s === 'RESOLVED') return 'bg-green-500'
+    if (s === 'REJECTED') return 'bg-red-500'
     return 'bg-amber-500'
 }
-
 function statusLabel(s) {
-    if (s === 'RESOLVED') return 'เสร็จสิ้น'
+    if (s === 'RESOLVED') return 'แก้ไขแล้ว'
+    if (s === 'REJECTED') return 'ปฏิเสธ'
     return 'รอตรวจสอบ'
 }
-
 function formatDate(iso) {
     if (!iso) return '-'
     return dayjs(iso).format('D MMMM BBBB HH:mm')
@@ -185,17 +248,22 @@ onUnmounted(() => { cleanupGlobalScripts() })
                     <i class="fas fa-arrow-left"></i> ย้อนกลับ
                 </button>
 
-                <!-- Page Title -->
+                <!-- Page Title + Prominent Date -->
                 <div class="flex flex-col gap-3 mb-6 sm:flex-row sm:items-center sm:justify-between">
                     <h1 class="text-2xl font-semibold text-gray-800">
                         รายละเอียดการรายงาน
-                        <span v-if="report" class="text-base font-mono text-gray-400 ml-2">#{{ report?.id?.slice(-8) }}</span>
+                        <span v-if="report" class="text-base font-mono text-gray-400 ml-2">#{{ report?.id?.slice(-8)
+                            }}</span>
                     </h1>
-                    <div class="flex items-center gap-3">
-                        <!-- Status + Created At -->
-                        <span v-if="report" class="text-xs text-gray-500">
-                            แจ้งเมื่อ {{ formatDate(report?.createdAt) }}
-                        </span>
+                    <!-- Prominent date badge -->
+                    <div v-if="report" class="flex items-center gap-2">
+                        <div
+                            class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 rounded-lg">
+                            <i class="fas fa-calendar-alt text-blue-500"></i>
+                            <span class="text-sm font-medium text-blue-700">
+                                แจ้งเมื่อ {{ formatDate(report?.createdAt) }}
+                            </span>
+                        </div>
                     </div>
                 </div>
 
@@ -206,7 +274,7 @@ onUnmounted(() => { cleanupGlobalScripts() })
                 <div v-else-if="loadError" class="p-12 text-center text-red-600">{{ loadError }}</div>
 
                 <!-- Main Layout: Detail + Sidebar -->
-                <div v-else-if="report" class="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
+                <div v-else-if="report" class="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6">
                     <!-- Left: Report Detail Component -->
                     <ReportDetail :report="report" />
 
@@ -216,44 +284,84 @@ onUnmounted(() => { cleanupGlobalScripts() })
                             <div class="px-5 py-4 border-b border-gray-200">
                                 <h3 class="text-base font-semibold text-gray-800">
                                     <i class="mr-2 text-blue-500 fas fa-clipboard-check"></i>
-                                    อัปเดตสถานะ
+                                    อัปเดตสถานะและแจ้งผู้ใช้
                                 </h3>
                             </div>
-                            <div class="px-5 py-5 space-y-4">
-                                <!-- Current Status -->
+                            <div class="px-5 py-5 space-y-5">
+                                <!-- Current Status Display -->
                                 <div>
                                     <span class="text-xs font-medium text-gray-500 uppercase">สถานะปัจจุบัน</span>
                                     <div class="mt-2">
-                                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-full"
+                                        <span
+                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-full"
                                             :class="statusBadge(report.status)">
-                                            <span class="w-2 h-2 rounded-full" :class="statusDot(report.status)"></span>
+                                            <span class="w-2 h-2 rounded-full"
+                                                :class="statusDot(report.status)"></span>
                                             {{ statusLabel(report.status) }}
                                         </span>
                                     </div>
                                 </div>
 
-                                <!-- Resolve Button -->
-                                <button @click="showResolveModal = true"
-                                    :disabled="report.status === 'RESOLVED' || isResolving"
+                                <!-- Show rejection reason if already rejected -->
+                                <div v-if="report.status === 'REJECTED' && report.rejectionReason"
+                                    class="p-3 bg-red-50 border border-red-200 rounded-lg">
+                                    <div class="text-xs font-medium text-red-600 mb-1">
+                                        <i class="fas fa-comment-dots mr-1"></i> เหตุผลการปฏิเสธ
+                                    </div>
+                                    <p class="text-sm text-red-700">{{ report.rejectionReason }}</p>
+                                </div>
+
+                                <!-- Status Dropdown (only if PENDING) -->
+                                <div v-if="!isFinalized">
+                                    <label class="block text-xs font-medium text-gray-600 mb-1.5">
+                                        เปลี่ยนสถานะ <span class="text-red-500">*</span>
+                                    </label>
+                                    <select v-model="selectedStatus"
+                                        class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                                        <option value="PENDING">รอตรวจสอบ</option>
+                                        <option value="RESOLVED">แก้ไขแล้ว</option>
+                                        <option value="REJECTED">ปฏิเสธ</option>
+                                    </select>
+                                </div>
+
+                                <!-- Rejection Reason Textarea (show only when REJECTED selected) -->
+                                <div v-if="!isFinalized && selectedStatus === 'REJECTED'">
+                                    <label class="block text-xs font-medium text-gray-600 mb-1.5">
+                                        เหตุผลการปฏิเสธ <span class="text-gray-400">(ไม่บังคับ)</span>
+                                    </label>
+                                    <textarea v-model="rejectionReason" rows="3"
+                                        placeholder="พิมพ์เหตุผลเพื่อแจ้งให้ผู้ใช้ทราบ..."
+                                        class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition resize-none"></textarea>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <button v-if="!isFinalized" @click="confirmStatusChange" :disabled="!canSubmit"
                                     class="w-full py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-200"
-                                    :class="report.status === 'RESOLVED'
-                                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200'
-                                        : 'bg-green-600 text-white hover:bg-green-700 cursor-pointer shadow-sm hover:shadow-md'">
-                                    <template v-if="isResolving">
+                                    :class="canSubmit
+                                        ? (selectedStatus === 'REJECTED'
+                                            ? 'bg-red-600 text-white hover:bg-red-700 cursor-pointer shadow-sm hover:shadow-md'
+                                            : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer shadow-sm hover:shadow-md')
+                                        : 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200'">
+                                    <template v-if="isSubmitting">
                                         <i class="fas fa-spinner fa-spin mr-1"></i> กำลังดำเนินการ...
                                     </template>
-                                    <template v-else-if="report.status === 'RESOLVED'">
-                                        <i class="fas fa-check-circle mr-1"></i> ดำเนินการเสร็จสิ้นแล้ว
-                                    </template>
                                     <template v-else>
-                                        <i class="fas fa-check mr-1"></i> เปลี่ยนสถานะเป็นแก้ไข
+                                        <i class="fas fa-paper-plane mr-1"></i> บันทึกและส่งแจ้งเตือน
                                     </template>
                                 </button>
 
+                                <!-- Finalized notice -->
+                                <div v-if="isFinalized"
+                                    class="flex items-center gap-2 p-3 rounded-lg text-sm"
+                                    :class="report.status === 'RESOLVED' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'">
+                                    <i class="fas" :class="report.status === 'RESOLVED' ? 'fa-check-circle' : 'fa-times-circle'"></i>
+                                    <span>{{ report.status === 'RESOLVED' ? 'ดำเนินการเสร็จสิ้นแล้ว' : 'Report นี้ถูกปฏิเสธแล้ว' }}</span>
+                                </div>
+
                                 <!-- Info note -->
-                                <p v-if="report.status !== 'RESOLVED'" class="text-xs text-gray-400 leading-relaxed">
+                                <p v-if="!isFinalized" class="text-xs text-gray-400 leading-relaxed">
                                     <i class="fas fa-info-circle mr-1"></i>
-                                    เมื่อกดปุ่มจะส่งแจ้งเตือนไปยังผู้แจ้งอัตโนมัติ
+                                    เมื่อกดปุ่มจะส่งแจ้งเตือนไปยังผู้แจ้งอัตโนมัติ เมื่อดำเนินการแล้วจะไม่สามารถเปลี่ยนแปลงได้
                                 </p>
                             </div>
                         </div>
@@ -262,11 +370,11 @@ onUnmounted(() => { cleanupGlobalScripts() })
             </div>
         </main>
 
-        <!-- Confirm Resolve Modal -->
-        <ConfirmModal :show="showResolveModal" title="ยืนยันการเปลี่ยนสถานะ"
-            message="ต้องการเปลี่ยนสถานะเป็น 'แก้ไขแล้ว' หรือไม่? ระบบจะส่งแจ้งเตือนไปยังผู้แจ้งอัตโนมัติ"
-            confirmText="ยืนยัน" cancelText="ยกเลิก" variant="primary" @confirm="resolveReport"
-            @cancel="showResolveModal = false" />
+        <!-- Confirm Status Change Modal -->
+        <ConfirmModal :show="showConfirmModal" :title="confirmTitle"
+            :message="confirmMessage"
+            confirmText="ยืนยัน" cancelText="ยกเลิก" :variant="confirmVariant" @confirm="submitStatusChange"
+            @cancel="showConfirmModal = false" />
 
         <!-- Mobile Overlay -->
         <div id="overlay" class="fixed inset-0 z-40 hidden bg-black bg-opacity-50 lg:hidden"
