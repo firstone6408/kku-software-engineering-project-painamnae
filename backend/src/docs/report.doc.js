@@ -78,12 +78,17 @@
  *           example: "cmbooking001"
  *         status:
  *           type: string
- *           enum: [PENDING, RESOLVED]
+ *           enum: [PENDING, RESOLVED, REJECTED]
  *           example: "PENDING"
  *         otherReasonText:
  *           type: string
  *           nullable: true
  *           example: "คนขับพูดจาไม่สุภาพมาก"
+ *         rejectionReason:
+ *           type: string
+ *           nullable: true
+ *           description: เหตุผลการปฏิเสธจาก Admin (มีค่าเฉพาะเมื่อ status = REJECTED)
+ *           example: null
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -388,7 +393,70 @@
  *                 data:
  *                   $ref: '#/components/schemas/Report'
  *       400:
- *         description: Report นี้ได้รับการดำเนินการแล้ว (status === RESOLVED)
+ *         description: |
+ *           - Report นี้ได้รับการดำเนินการแล้ว (status === RESOLVED)
+ *           - Report นี้ถูกปฏิเสธแล้ว (status === REJECTED)
+ *       403:
+ *         description: Forbidden — เฉพาะ ADMIN เท่านั้น
+ *       404:
+ *         description: Report not found
+ */
+
+// ==========================================
+// PATCH /api/reports/:id/reject (Admin only)
+// ==========================================
+/**
+ * @swagger
+ * /api/reports/{id}/reject:
+ *   patch:
+ *     summary: Admin ปฏิเสธ Report (Reject)
+ *     description: |
+ *       Admin เปลี่ยนสถานะ Report จาก PENDING เป็น REJECTED พร้อมเหตุผลการปฏิเสธ (ไม่บังคับ)
+ *       - ไม่สามารถปฏิเสธ Report ที่ RESOLVED หรือ REJECTED แล้วได้
+ *       - ระบบจะส่ง Notification แจ้งผู้ส่ง Report ว่าเคสถูกปฏิเสธ (พร้อมเหตุผลถ้ามี)
+ *       - เมื่อปฏิเสธแล้วจะไม่สามารถเปลี่ยนแปลงสถานะได้อีก
+ *     tags: [Reports]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: "cmrpt001"
+ *         description: ID ของ Report ที่ต้องการปฏิเสธ
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               rejectionReason:
+ *                 type: string
+ *                 description: เหตุผลการปฏิเสธ (ไม่บังคับ)
+ *                 example: "หลักฐานไม่เพียงพอ"
+ *     responses:
+ *       200:
+ *         description: Report rejected successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Report rejected successfully"
+ *                 data:
+ *                   $ref: '#/components/schemas/Report'
+ *       400:
+ *         description: |
+ *           - Report นี้ได้รับการดำเนินการแล้ว (status === RESOLVED)
+ *           - Report นี้ถูกปฏิเสธแล้ว (status === REJECTED)
  *       403:
  *         description: Forbidden — เฉพาะ ADMIN เท่านั้น
  *       404:
@@ -419,7 +487,7 @@
  *         name: status
  *         schema:
  *           type: string
- *           enum: [PENDING, RESOLVED]
+ *           enum: [PENDING, RESOLVED, REJECTED]
  *         description: กรองตามสถานะ
  *       - in: query
  *         name: type
@@ -555,6 +623,7 @@
  *       enum:
  *         - PENDING
  *         - RESOLVED
+ *         - REJECTED
  *
  *     ReportTypeEnum:
  *       type: string
