@@ -37,19 +37,41 @@
                                 <div class="flex items-start justify-between mb-4">
                                     <div class="flex-1">
                                         <div class="flex items-center justify-between">
-                                            <h4 class="text-lg font-semibold text-gray-900">
-                                                {{ trip.origin }} → {{ trip.destination }}
-                                            </h4>
-                                            <span v-if="trip.status === 'pending'"
-                                                class="status-badge status-pending">รอดำเนินการ</span>
-                                            <span v-else-if="trip.status === 'confirmed'"
-                                                class="status-badge status-confirmed">ยืนยันแล้ว</span>
-                                            <span v-else-if="trip.status === 'rejected'"
-                                                class="status-badge status-rejected">ปฏิเสธ</span>
-                                            <span v-else-if="trip.status === 'cancelled'"
-                                                class="status-badge status-cancelled">ยกเลิก</span>
+                                            <div class="flex items-center gap-2">
+                                                <h4 class="text-lg font-semibold text-gray-900">
+                                                    {{ trip.origin }} → {{ trip.destination }}
+                                                </h4>
+                                                <span v-if="trip.isDriverTrip"
+                                                    class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium text-blue-700 bg-blue-100 rounded-full">
+                                                    🚗 คนขับ
+                                                </span>
+                                            </div>
+                                            <!-- Status badges สำหรับ passenger trips -->
+                                            <template v-if="!trip.isDriverTrip">
+                                                <span v-if="trip.status === 'pending'"
+                                                    class="status-badge status-pending">รอดำเนินการ</span>
+                                                <span v-else-if="trip.status === 'confirmed'"
+                                                    class="status-badge status-confirmed">ยืนยันแล้ว</span>
+                                                <span v-else-if="trip.status === 'rejected'"
+                                                    class="status-badge status-rejected">ปฏิเสธ</span>
+                                                <span v-else-if="trip.status === 'cancelled'"
+                                                    class="status-badge status-cancelled">ยกเลิก</span>
+                                            </template>
+                                            <!-- Status badges สำหรับ driver trips -->
+                                            <template v-else>
+                                                <span v-if="trip.routeStatus === 'available'"
+                                                    class="status-badge status-confirmed">เปิดรับผู้โดยสาร</span>
+                                                <span v-else-if="trip.routeStatus === 'full'"
+                                                    class="status-badge status-pending">เต็ม</span>
+                                                <span v-else-if="trip.routeStatus === 'in_transit'"
+                                                    class="status-badge status-confirmed">กำลังเดินทาง</span>
+                                                <span v-else-if="trip.routeStatus === 'completed'"
+                                                    class="status-badge status-rejected">เสร็จสิ้น</span>
+                                                <span v-else-if="trip.routeStatus === 'cancelled'"
+                                                    class="status-badge status-cancelled">ยกเลิก</span>
+                                            </template>
                                         </div>
-                                        <p class="mt-1 text-sm text-gray-600">จุดนัดพบ: {{ trip.pickupPoint }}</p>
+                                        <p v-if="!trip.isDriverTrip" class="mt-1 text-sm text-gray-600">จุดนัดพบ: {{ trip.pickupPoint }}</p>
                                         <p class="text-sm text-gray-600">
                                             วันที่: {{ trip.date }}
                                             <span class="mx-2 text-gray-300">|</span>
@@ -62,7 +84,8 @@
                                     </div>
                                 </div>
 
-                                <div class="flex items-center mb-4 space-x-4">
+                                <!-- Passenger trip: แสดงข้อมูลคนขับ -->
+                                <div v-if="!trip.isDriverTrip" class="flex items-center mb-4 space-x-4">
                                     <img :src="trip.driver.image" :alt="trip.driver.name"
                                         class="object-cover w-12 h-12 rounded-full" />
                                     <div class="flex-1">
@@ -81,6 +104,21 @@
                                     <div class="text-right">
                                         <div class="text-lg font-bold text-blue-600">{{ trip.price }} บาท</div>
                                         <div class="text-sm text-gray-600">จำนวน {{ trip.seats }} ที่นั่ง</div>
+                                    </div>
+                                </div>
+
+                                <!-- Driver trip: แสดงข้อมูลเส้นทางของคนขับ -->
+                                <div v-else class="flex items-center mb-4 space-x-4">
+                                    <div class="flex items-center justify-center w-12 h-12 text-xl bg-blue-100 rounded-full">🚗</div>
+                                    <div class="flex-1">
+                                        <h5 class="font-medium text-gray-900">เส้นทางที่คุณสร้าง</h5>
+                                        <p class="text-sm text-gray-600">
+                                            ผู้โดยสารที่ยืนยัน: {{ trip.totalPassengers }} คน
+                                        </p>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-lg font-bold text-blue-600">{{ trip.price }} บาท/ที่นั่ง</div>
+                                        <div class="text-sm text-gray-600">ที่นั่งว่าง {{ trip.seats }} ที่</div>
                                     </div>
                                 </div>
 
@@ -142,30 +180,59 @@
                                 </div>
 
                                 <div class="flex justify-end space-x-3" :class="{ 'mt-4': selectedTripId !== trip.id }">
-                                    <!-- PENDING: ยกเลิกได้ -->
-                                    <button v-if="trip.status === 'pending'" @click.stop="openCancelModal(trip)"
-                                        class="px-4 py-2 text-sm text-red-600 transition duration-200 border border-red-300 rounded-md hover:bg-red-50">
-                                        ยกเลิกการจอง
-                                    </button>
-
-                                    <!-- CONFIRMED: เพิ่มปุ่มยกเลิก + คงปุ่มแชท -->
-                                    <template v-else-if="trip.status === 'confirmed'">
-                                        <button @click.stop="openCancelModal(trip)"
+                                    <template v-if="!trip.isDriverTrip">
+                                        <!-- PENDING: ยกเลิกได้ -->
+                                        <button v-if="trip.status === 'pending'" @click.stop="openCancelModal(trip)"
                                             class="px-4 py-2 text-sm text-red-600 transition duration-200 border border-red-300 rounded-md hover:bg-red-50">
                                             ยกเลิกการจอง
                                         </button>
-                                        <button
-                                            class="px-4 py-2 text-sm text-white transition duration-200 bg-blue-600 rounded-md hover:bg-blue-700">
-                                            แชทกับผู้ขับ
+
+                                        <!-- CONFIRMED: เพิ่มปุ่มยกเลิก + คงปุ่มแชท + ปุ่มรายงาน -->
+                                        <template v-else-if="trip.status === 'confirmed'">
+                                            <button @click.stop="openCancelModal(trip)"
+                                                class="px-4 py-2 text-sm text-red-600 transition duration-200 border border-red-300 rounded-md hover:bg-red-50">
+                                                ยกเลิกการจอง
+                                            </button>
+                                            <!-- Report Button: 3 สถานะ -->
+                                            <button v-if="!tripReportMap[trip.id]"
+                                                @click.stop="openReportModal(trip)"
+                                                class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white transition duration-200 bg-red-500 rounded-md hover:bg-red-600 shadow-sm">
+                                                <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
+                                                รายงาน
+                                            </button>
+                                            <button v-else-if="tripReportMap[trip.id]?.status === 'PENDING'"
+                                                @click.stop="openReportModal(trip)"
+                                                class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-yellow-700 transition duration-200 bg-yellow-100 border border-yellow-400 rounded-md hover:bg-yellow-200 shadow-sm">
+                                                <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clip-rule="evenodd"/></svg>
+                                                รอดำเนินการ
+                                            </button>
+                                            <button v-else
+                                                disabled
+                                                class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-500 bg-gray-100 border border-gray-300 rounded-md shadow-sm cursor-default">
+                                                <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>
+                                                ดำเนินการแล้ว
+                                            </button>
+                                            <button
+                                                class="px-4 py-2 text-sm text-white transition duration-200 bg-blue-600 rounded-md hover:bg-blue-700">
+                                                แชทกับผู้ขับ
+                                            </button>
+                                        </template>
+
+                                        <!-- REJECTED / CANCELLED: ลบได้ -->
+                                        <button v-else-if="['rejected', 'cancelled'].includes(trip.status)"
+                                            @click.stop="openConfirmModal(trip, 'delete')"
+                                            class="px-4 py-2 text-sm text-gray-600 transition duration-200 border border-gray-300 rounded-md hover:bg-gray-50">
+                                            ลบรายการ
                                         </button>
                                     </template>
 
-                                    <!-- REJECTED / CANCELLED: ลบได้ -->
-                                    <button v-else-if="['rejected', 'cancelled'].includes(trip.status)"
-                                        @click.stop="openConfirmModal(trip, 'delete')"
-                                        class="px-4 py-2 text-sm text-gray-600 transition duration-200 border border-gray-300 rounded-md hover:bg-gray-50">
-                                        ลบรายการ
-                                    </button>
+                                    <!-- Driver trip: ปุ่มจัดการ -->
+                                    <template v-else>
+                                        <NuxtLink to="/myRoute"
+                                            class="px-4 py-2 text-sm text-white transition duration-200 bg-blue-600 rounded-md hover:bg-blue-700">
+                                            จัดการเส้นทาง
+                                        </NuxtLink>
+                                    </template>
                                 </div>
                             </div>
                         </div>
@@ -182,6 +249,15 @@
                 </div>
             </div>
         </div>
+
+        <!-- Report Modal -->
+        <ReportPassengerReportModalButton
+            v-model="isReportModalVisible"
+            :booking-id="reportTarget.bookingId"
+            :driver-id="reportTarget.driverId"
+            :existing-report="reportTarget.existingReport"
+            @submitted="onReportSubmitted"
+        />
 
         <!-- Modal: เลือกเหตุผลการยกเลิก -->
         <div v-if="isCancelModalVisible" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
@@ -247,6 +323,11 @@ let currentPolyline = null
 let currentMarkers = []
 const allTrips = ref([])
 
+// --- Report ---
+const isReportModalVisible = ref(false)
+const tripReportMap = ref({}) // { bookingId: reportObj }
+const reportTarget = ref({ bookingId: '', driverId: '', existingReport: null })
+
 let gmap = null // Google Map instance
 let activePolyline = null
 let startMarker = null
@@ -307,9 +388,13 @@ function cleanAddr(a) {
 async function fetchMyTrips() {
     isLoading.value = true
     try {
-        const bookings = await $api('/bookings/me')
+        // ดึงทั้ง bookings (ผู้โดยสาร) และ routes (คนขับ) พร้อมกัน
+        const [bookings, driverRoutes] = await Promise.all([
+            $api('/bookings/me'),
+            $api('/routes/me').catch(() => [])  // ถ้า driver ไม่มี route จะได้ []
+        ])
 
-        // map ข้อมูลพื้นฐานก่อน (ตั้งชื่อชั่วคราวเป็นพิกัด แล้วไป reverse geocode ภายหลัง)
+        // --- 1) แปลง bookings (ผู้โดยสาร) ---
         const formatted = bookings.map((b) => {
             const driverData = {
                 name: `${b.route.driver.firstName} ${b.route.driver.lastName}`.trim(),
@@ -362,6 +447,7 @@ async function fetchMyTrips() {
 
             return {
                 id: b.id,
+                isDriverTrip: false,
                 status: String(b.status || '').toLowerCase(),
                 origin: start?.name || `(${Number(start.lat).toFixed(2)}, ${Number(start.lng).toFixed(2)})`,
                 destination: end?.name || `(${Number(end.lat).toFixed(2)}, ${Number(end.lng).toFixed(2)})`,
@@ -374,12 +460,13 @@ async function fetchMyTrips() {
                 time: dayjs(b.route.departureTime).format('HH:mm น.'),
                 price: (b.route.pricePerSeat || 0) * (b.numberOfSeats || 1),
                 seats: b.numberOfSeats || 1,
+                driverId: b.route.driver.id,
                 driver: driverData,
                 coords: [
                     [start.lat, start.lng],
                     [end.lat, end.lng]
                 ],
-                polyline: b.route.routePolyline || null, // ใช้เมื่อมี
+                polyline: b.route.routePolyline || null,
                 stops,
                 stopsCoords,
                 carDetails,
@@ -394,7 +481,106 @@ async function fetchMyTrips() {
             }
         })
 
-        allTrips.value = formatted
+        // --- 2) แปลง driver routes เป็น trip objects ---
+        const routeStatusMap = { available: 'confirmed', full: 'confirmed', in_transit: 'confirmed', completed: 'confirmed', cancelled: 'cancelled' }
+        const driverTrips = driverRoutes.map((r) => {
+            const carDetails = []
+            if (r.vehicle) {
+                carDetails.push(`${r.vehicle.vehicleModel} (${r.vehicle.vehicleType})`)
+                if (Array.isArray(r.vehicle.amenities) && r.vehicle.amenities.length) {
+                    carDetails.push(...r.vehicle.amenities)
+                }
+            } else {
+                carDetails.push('ไม่มีข้อมูลรถ')
+            }
+
+            const start = r.startLocation
+            const end = r.endLocation
+
+            const wp = r.waypoints || {}
+            const baseList =
+                (Array.isArray(wp.used) && wp.used.length ? wp.used : Array.isArray(wp.requested) ? wp.requested : []) || []
+            const orderedList =
+                Array.isArray(wp.optimizedOrder) && wp.optimizedOrder.length === baseList.length
+                    ? wp.optimizedOrder.map((i) => baseList[i])
+                    : baseList
+
+            const stops = orderedList
+                .map((p) => {
+                    const name = p?.name || ''
+                    const address = cleanAddr(p?.address || '')
+                    const fallback =
+                        p?.lat != null && p?.lng != null ? `(${Number(p.lat).toFixed(6)}, ${Number(p.lng).toFixed(6)})` : ''
+                    const title = name || fallback
+                    return address ? `${title} — ${address}` : title
+                })
+                .filter(Boolean)
+
+            const stopsCoords = orderedList
+                .map((p) =>
+                    p && typeof p.lat === 'number' && typeof p.lng === 'number'
+                        ? { lat: Number(p.lat), lng: Number(p.lng), name: p.name || '', address: p.address || '' }
+                        : null
+                )
+                .filter(Boolean)
+
+            const routeStatus = String(r.status || '').toLowerCase()
+            const confirmedBookings = (r.bookings || []).filter(b => (b.status || '').toUpperCase() === 'CONFIRMED')
+            const totalPassengers = confirmedBookings.reduce((sum, b) => sum + (b.numberOfSeats || 1), 0)
+
+            const driverData = {
+                name: `${r.driver?.firstName || ''} ${r.driver?.lastName || ''}`.trim() || 'คุณ (คนขับ)',
+                image:
+                    r.driver?.profilePicture ||
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(r.driver?.firstName || 'D')}&background=random&size=64`,
+                rating: 4.5,
+                reviews: Math.floor(Math.random() * 50) + 5
+            }
+
+            return {
+                id: `route-${r.id}`,
+                routeId: r.id,
+                isDriverTrip: true,
+                status: routeStatusMap[routeStatus] || 'confirmed',
+                routeStatus,
+                origin: start?.name || `(${Number(start.lat).toFixed(2)}, ${Number(start.lng).toFixed(2)})`,
+                destination: end?.name || `(${Number(end.lat).toFixed(2)}, ${Number(end.lng).toFixed(2)})`,
+                originAddress: start?.address ? cleanAddr(start.address) : null,
+                destinationAddress: end?.address ? cleanAddr(end.address) : null,
+                originHasName: !!start?.name,
+                destinationHasName: !!end?.name,
+                pickupPoint: '-',
+                date: dayjs(r.departureTime).format('D MMMM BBBB'),
+                time: dayjs(r.departureTime).format('HH:mm น.'),
+                price: r.pricePerSeat || 0,
+                seats: r.availableSeats ?? 0,
+                totalPassengers,
+                confirmedBookings,
+                driver: driverData,
+                driverId: r.driverId,
+                coords: [
+                    [start.lat, start.lng],
+                    [end.lat, end.lng]
+                ],
+                polyline: r.routePolyline || null,
+                stops,
+                stopsCoords,
+                carDetails,
+                conditions: r.conditions,
+                photos: r.vehicle?.photos || [],
+                durationText:
+                    (typeof r.duration === 'string' ? formatDuration(r.duration) : r.duration) ||
+                    (typeof r.durationSeconds === 'number' ? `${Math.round(r.durationSeconds / 60)} นาที` : '-'),
+                distanceText:
+                    (typeof r.distance === 'string' ? formatDistance(r.distance) : r.distance) ||
+                    (typeof r.distanceMeters === 'number' ? `${(r.distanceMeters / 1000).toFixed(1)} กม.` : '-')
+            }
+        })
+
+        allTrips.value = [...formatted, ...driverTrips]
+
+        // Fetch ข้อมูล report ของ user
+        await fetchMyReports()
 
         // รอให้แผนที่พร้อมก่อน แล้วค่อย reverse geocode เพื่อได้ "ชื่อสถานที่" สวยๆ
         await waitMapReady()
@@ -636,6 +822,36 @@ const handleConfirmAction = async () => {
         toast.error('เกิดข้อผิดพลาด', error.data?.message || 'ไม่สามารถดำเนินการได้')
         closeConfirmModal()
     }
+}
+
+// --- Report Functions ---
+async function fetchMyReports() {
+    try {
+        const res = await $api('/reports/me')
+        const reports = res.data || res || []
+        tripReportMap.value = {}
+        for (const report of reports) {
+            if (report.bookingId) {
+                tripReportMap.value[report.bookingId] = report
+            }
+        }
+    } catch (e) {
+        console.error('Failed to fetch reports:', e)
+    }
+}
+
+function openReportModal(trip) {
+    reportTarget.value = {
+        bookingId: trip.id,
+        driverId: trip.driverId,
+        existingReport: tripReportMap.value[trip.id] || null,
+    }
+    isReportModalVisible.value = true
+}
+
+async function onReportSubmitted() {
+    await fetchMyReports()
+    await fetchMyTrips()
 }
 
 function openCancelModal(trip) {

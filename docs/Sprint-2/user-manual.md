@@ -90,3 +90,4 @@ As an admin, I want to keep the users updated on their reported incidents.
 ผู้ใช้จะได้รับการแจ้งเตือนและสามารถติดตามสถานะเคสได้ทันที
 
 <img width="720" height="737" alt="image" src="https://github.com/user-attachments/assets/221410a5-0ecb-4113-a2e3-d1d5d1571d9f" />
+=======
