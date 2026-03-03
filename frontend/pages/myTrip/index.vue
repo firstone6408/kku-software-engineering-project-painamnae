@@ -193,25 +193,58 @@
                                                 class="px-4 py-2 text-sm text-red-600 transition duration-200 border border-red-300 rounded-md hover:bg-red-50">
                                                 ยกเลิกการจอง
                                             </button>
-                                            <!-- Report Button: 3 สถานะ -->
+                                            <!-- Report Button: แสดงตามสถานะ -->
+                                            <!-- ยังไม่ได้รายงาน -->
                                             <button v-if="!tripReportMap[trip.id]"
                                                 @click.stop="openReportModal(trip)"
                                                 class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white transition duration-200 bg-red-500 rounded-md hover:bg-red-600 shadow-sm">
                                                 <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
                                                 รายงาน
                                             </button>
-                                            <button v-else-if="tripReportMap[trip.id]?.status === 'PENDING'"
-                                                @click.stop="openReportModal(trip)"
-                                                class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-yellow-700 transition duration-200 bg-yellow-100 border border-yellow-400 rounded-md hover:bg-yellow-200 shadow-sm">
-                                                <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clip-rule="evenodd"/></svg>
-                                                รอดำเนินการ
-                                            </button>
-                                            <button v-else
-                                                disabled
-                                                class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-500 bg-gray-100 border border-gray-300 rounded-md shadow-sm cursor-default">
-                                                <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>
-                                                ดำเนินการแล้ว
-                                            </button>
+                                            <!-- PENDING: รอดำเนินการ (สีเหลืองทึบ, disabled) -->
+                                            <div v-else-if="tripReportMap[trip.id]?.status === 'PENDING'" class="relative group">
+                                                <button disabled
+                                                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-yellow-500 rounded-md shadow-sm cursor-default">
+                                                    <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clip-rule="evenodd"/></svg>
+                                                    รอดำเนินการ
+                                                </button>
+                                                <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 text-xs text-white bg-gray-800 rounded-lg shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                                                    ผู้ดูแลกำลังตรวจสอบ
+                                                </span>
+                                            </div>
+                                            <!-- CONFIRMED: เสร็จสิ้น (สีเขียวทึบ, disabled) -->
+                                            <div v-else-if="tripReportMap[trip.id]?.status === 'CONFIRMED'" class="relative group">
+                                                <button disabled
+                                                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md shadow-sm cursor-default">
+                                                    <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>
+                                                    เสร็จสิ้น
+                                                </button>
+                                                <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 text-xs text-white bg-gray-800 rounded-lg shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                                                    ผู้ดูแลตรวจสอบดำเนินการเสร็จสิ้น
+                                                </span>
+                                            </div>
+                                            <!-- REJECTED: ปฏิเสธ (สีแดงทึบ, disabled) -->
+                                            <div v-else-if="tripReportMap[trip.id]?.status === 'REJECTED'" class="relative group">
+                                                <button disabled
+                                                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md shadow-sm cursor-default">
+                                                    <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-3.97-3.03a.75.75 0 010-1.06L8.94 10 6.03 7.09a.75.75 0 011.06-1.06L10 8.94l2.91-2.91a.75.75 0 111.06 1.06L11.06 10l2.91 2.91a.75.75 0 11-1.06 1.06L10 11.06l-2.91 2.91a.75.75 0 01-1.06 0z" clip-rule="evenodd"/></svg>
+                                                    ปฏิเสธ
+                                                </button>
+                                                <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 text-xs text-white bg-gray-800 rounded-lg shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                                                    ผู้ดูแลปฏิเสธการรายงาน
+                                                </span>
+                                            </div>
+                                            <!-- อื่นๆ (fallback) -->
+                                            <div v-else class="relative group">
+                                                <button disabled
+                                                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-500 bg-gray-100 border border-gray-300 rounded-md shadow-sm cursor-default">
+                                                    <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>
+                                                    ดำเนินการแล้ว
+                                                </button>
+                                                <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 text-xs text-white bg-gray-800 rounded-lg shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                                                    ผู้ดูแลดำเนินการเสร็จสิ้น
+                                                </span>
+                                            </div>
                                             <button
                                                 class="px-4 py-2 text-sm text-white transition duration-200 bg-blue-600 rounded-md hover:bg-blue-700">
                                                 แชทกับผู้ขับ
@@ -582,23 +615,28 @@ async function fetchMyTrips() {
         // Fetch ข้อมูล report ของ user
         await fetchMyReports()
 
+        // แสดงรายการทันทีก่อน reverse geocode
+        isLoading.value = false
+
         // รอให้แผนที่พร้อมก่อน แล้วค่อย reverse geocode เพื่อได้ "ชื่อสถานที่" สวยๆ
-        await waitMapReady()
+        const mapOk = await waitMapReady()
 
-        const jobs = allTrips.value.map(async (t, idx) => {
-            const [o, d] = await Promise.all([reverseGeocode(t.coords[0][0], t.coords[0][1]), reverseGeocode(t.coords[1][0], t.coords[1][1])])
-            const oParts = await extractNameParts(o)
-            const dParts = await extractNameParts(d)
+        if (mapOk) {
+            const jobs = allTrips.value.map(async (t, idx) => {
+                const [o, d] = await Promise.all([reverseGeocode(t.coords[0][0], t.coords[0][1]), reverseGeocode(t.coords[1][0], t.coords[1][1])])
+                const oParts = await extractNameParts(o)
+                const dParts = await extractNameParts(d)
 
-            if (!allTrips.value[idx].originHasName && oParts.name) {
-                allTrips.value[idx].origin = oParts.name
-            }
-            if (!allTrips.value[idx].destinationHasName && dParts.name) {
-                allTrips.value[idx].destination = dParts.name
-            }
-        })
+                if (!allTrips.value[idx].originHasName && oParts.name) {
+                    allTrips.value[idx].origin = oParts.name
+                }
+                if (!allTrips.value[idx].destinationHasName && dParts.name) {
+                    allTrips.value[idx].destination = dParts.name
+                }
+            })
 
-        await Promise.allSettled(jobs)
+            await Promise.allSettled(jobs)
+        }
     } catch (error) {
         console.error('Failed to fetch my trips:', error)
         allTrips.value = []
@@ -607,13 +645,18 @@ async function fetchMyTrips() {
     }
 }
 
-function waitMapReady() {
+function waitMapReady(timeout = 5000) {
     return new Promise((resolve) => {
         if (mapReady.value) return resolve(true)
+        const start = Date.now()
         const t = setInterval(() => {
             if (mapReady.value) {
                 clearInterval(t)
                 resolve(true)
+            } else if (Date.now() - start > timeout) {
+                clearInterval(t)
+                console.warn('Google Maps did not load in time — skipping reverse geocode')
+                resolve(false)
             }
         }, 50)
     })

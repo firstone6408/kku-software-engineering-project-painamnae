@@ -696,18 +696,23 @@ async function handleSearch() {
             }
         })
 
-        await waitMapReady()
-        const jobs = routes.value.map(async (r, i) => {
-            const [o, d] = await Promise.all([
-                reverseGeocode(r.start.lat, r.start.lng),
-                reverseGeocode(r.end.lat, r.end.lng)
-            ])
-            const oParts = await extractNameParts(o)
-            const dParts = await extractNameParts(d)
-            if (!r.start?.name && oParts.name) routes.value[i].originName = oParts.name
-            if (!r.end?.name && dParts.name) routes.value[i].destinationName = dParts.name
-        })
-        await Promise.allSettled(jobs)
+        // แสดงผลลัพธ์ทันทีก่อน reverse geocode
+        isLoading.value = false
+
+        const mapOk = await waitMapReady()
+        if (mapOk) {
+            const jobs = routes.value.map(async (r, i) => {
+                const [o, d] = await Promise.all([
+                    reverseGeocode(r.start.lat, r.start.lng),
+                    reverseGeocode(r.end.lat, r.end.lng)
+                ])
+                const oParts = await extractNameParts(o)
+                const dParts = await extractNameParts(d)
+                if (!r.start?.name && oParts.name) routes.value[i].originName = oParts.name
+                if (!r.end?.name && dParts.name) routes.value[i].destinationName = dParts.name
+            })
+            await Promise.allSettled(jobs)
+        }
 
     } catch (e) {
         console.error('Failed to fetch routes:', e)
@@ -780,13 +785,18 @@ const toggleDetails = (route) => {
     }
 }
 
-function waitMapReady() {
+function waitMapReady(timeout = 5000) {
     return new Promise((resolve) => {
         if (mapReady.value) return resolve(true)
+        const start = Date.now()
         const t = setInterval(() => {
             if (mapReady.value) {
                 clearInterval(t)
                 resolve(true)
+            } else if (Date.now() - start > timeout) {
+                clearInterval(t)
+                console.warn('Google Maps did not load in time — skipping reverse geocode')
+                resolve(false)
             }
         }, 50)
     })
@@ -1385,6 +1395,14 @@ onMounted(() => {
         initAutocomplete()
         handleSearch()
     }
+
+    // Fallback: ถ้า Google Maps โหลดไม่ได้ (key ไม่ถูกต้อง) ก็ fetch ข้อมูลอยู่ดี
+    setTimeout(() => {
+        if (!mapReady.value) {
+            console.warn('Google Maps failed to load — fetching routes without map')
+            handleSearch()
+        }
+    }, 5000)
 })
 </script>
 

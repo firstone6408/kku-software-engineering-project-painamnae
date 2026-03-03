@@ -20,6 +20,7 @@ const newFiles = ref([])
 const filePreviews = ref([])
 const keepMediaIds = ref([])
 const existingMedia = ref([])
+const fileErrorMessage = ref('')
 
 const reasonOptions = [
     { value: 'ACCIDENT', label: 'เกิดอุบัติเหตุ' },
@@ -32,7 +33,11 @@ const reasonOptions = [
 
 const isEditMode = computed(() => !!props.existingReport)
 const showOtherText = computed(() => selectedReasons.value.includes('OTHER'))
-const canSubmit = computed(() => selectedReasons.value.length > 0 && !isSubmitting.value)
+const canSubmit = computed(() => {
+    if (selectedReasons.value.length === 0 || isSubmitting.value) return false
+    if (showOtherText.value && !otherReasonText.value.trim()) return false
+    return true
+})
 
 watch(() => props.modelValue, (val) => {
     if (val) {
@@ -65,7 +70,13 @@ function close() {
 
 function onFileChange(e) {
     const files = Array.from(e.target.files || [])
+    const allowedTypes = ['image/', 'video/']
     for (const f of files) {
+        const isAllowed = allowedTypes.some(type => f.type.startsWith(type))
+        if (!isAllowed) {
+            fileErrorMessage.value = `"${f.name}" ไม่ใช่ไฟล์รูปภาพหรือวิดีโอ กรุณาเลือกเฉพาะไฟล์รูปภาพหรือวิดีโอเท่านั้น`
+            continue
+        }
         newFiles.value.push(f)
         if (f.type.startsWith('image/')) {
             filePreviews.value.push({ url: URL.createObjectURL(f), type: 'IMAGE', name: f.name })
@@ -163,9 +174,10 @@ async function submit() {
 
                     <!-- Other reason text -->
                     <div v-if="showOtherText" class="report-other-text">
-                        <label class="report-label">ระบุรายละเอียดเพิ่มเติม</label>
+                        <label class="report-label">ระบุรายละเอียดเพิ่มเติม <span class="required-star">*</span></label>
                         <textarea v-model="otherReasonText" placeholder="กรุณาระบุเหตุการณ์ที่เกิดขึ้น..."
-                            class="report-textarea" rows="3"></textarea>
+                            class="report-textarea" :class="{ 'textarea-error': showOtherText && !otherReasonText.trim() }" rows="3" required></textarea>
+                        <span v-if="showOtherText && !otherReasonText.trim()" class="field-error-msg">กรุณาระบุรายละเอียดเพิ่มเติม</span>
                     </div>
 
                     <!-- Existing media (edit mode) -->
@@ -216,9 +228,12 @@ async function submit() {
             </div>
         </Transition>
     </Teleport>
+
+    <FileErrorDialog v-model="fileErrorMessage" />
 </template>
 
 <style scoped>
+
 .report-overlay {
     position: fixed;
     inset: 0;
@@ -350,6 +365,27 @@ async function submit() {
     outline: none;
     border-color: #3b82f6;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.textarea-error {
+    border-color: #ef4444;
+}
+
+.textarea-error:focus {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.required-star {
+    color: #ef4444;
+    font-weight: 700;
+}
+
+.field-error-msg {
+    display: block;
+    color: #ef4444;
+    font-size: 0.75rem;
+    margin-top: 4px;
 }
 
 .report-media-section {
