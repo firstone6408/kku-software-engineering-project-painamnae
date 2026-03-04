@@ -197,14 +197,14 @@
                                             <!-- ยังไม่ได้รายงาน -->
                                             <button v-if="!tripReportMap[trip.id]"
                                                 @click.stop="openReportModal(trip)"
-                                                class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white transition duration-200 bg-red-500 rounded-md hover:bg-red-600 shadow-sm">
+                                                class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-500 transition duration-200 border border-gray-300 rounded-md hover:bg-gray-50 hover:text-gray-700">
                                                 <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
                                                 รายงาน
                                             </button>
                                             <!-- PENDING: รอดำเนินการ (สีเหลืองทึบ) — กดได้เพื่อแก้ไข -->
                                             <div v-else-if="tripReportMap[trip.id]?.status === 'PENDING'" class="relative group">
                                                 <button @click.stop="openReportModal(trip)"
-                                                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-yellow-500 rounded-md shadow-sm hover:bg-yellow-600 transition duration-200">
+                                                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-amber-600 transition duration-200 border border-amber-300 rounded-md hover:bg-amber-50">
                                                     <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
                                                     รอดำเนินการ
                                                 </button>
@@ -212,10 +212,10 @@
                                                     ผู้ดูแลกำลังตรวจสอบ (กดเพื่อดู/แก้ไข)
                                                 </span>
                                             </div>
-                                            <!-- CONFIRMED: เสร็จสิ้น (สีเขียวทึบ) — กดได้เพื่อดู -->
-                                            <div v-else-if="tripReportMap[trip.id]?.status === 'CONFIRMED'" class="relative group">
+                                            <!-- RESOLVED: เสร็จสิ้น (สีเขียวทึบ) — กดได้เพื่อดู -->
+                                            <div v-else-if="tripReportMap[trip.id]?.status === 'RESOLVED'" class="relative group">
                                                 <button @click.stop="openReportModal(trip)"
-                                                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md shadow-sm hover:bg-green-600 transition duration-200">
+                                                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-green-600 transition duration-200 border border-green-300 rounded-md hover:bg-green-50">
                                                     <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
                                                     เสร็จสิ้น
                                                 </button>
@@ -226,7 +226,7 @@
                                             <!-- REJECTED: ปฏิเสธ (สีเทาทึบ) — กดได้เพื่อดู -->
                                             <div v-else-if="tripReportMap[trip.id]?.status === 'REJECTED'" class="relative group">
                                                 <button @click.stop="openReportModal(trip)"
-                                                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-gray-500 rounded-md shadow-sm hover:bg-gray-600 transition duration-200">
+                                                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-400 transition duration-200 border border-gray-200 rounded-md hover:bg-gray-50 hover:text-gray-500">
                                                     <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
                                                     ปฏิเสธ
                                                 </button>
@@ -237,7 +237,7 @@
                                             <!-- อื่นๆ (fallback) — กดได้เพื่อดู -->
                                             <div v-else class="relative group">
                                                 <button @click.stop="openReportModal(trip)"
-                                                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-500 bg-gray-100 border border-gray-300 rounded-md shadow-sm hover:bg-gray-200 transition duration-200">
+                                                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-400 transition duration-200 border border-gray-200 rounded-md hover:bg-gray-50 hover:text-gray-500">
                                                     <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
                                                     ดำเนินการแล้ว
                                                 </button>

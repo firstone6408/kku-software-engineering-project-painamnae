@@ -159,7 +159,7 @@ async function submit() {
                     <button class="report-close" @click="close">✕</button>
 
                     <h2 class="report-title">
-                        <!-- ไม่มี report / PENDING = 🚩, CONFIRMED = 📋, REJECTED = ❌ -->
+                        <!-- ไม่มี report / PENDING = 🚩, RESOLVED = 📋, REJECTED = ❌ -->
                         <span v-if="!isEditMode || reportStatus === 'PENDING'" class="report-icon">🚩</span>
                         <span v-else-if="reportStatus === 'REJECTED'" class="report-icon">❌</span>
                         <span v-else class="report-icon">📋</span>
@@ -181,7 +181,7 @@ async function submit() {
                         <div v-if="reportStatus === 'PENDING'" class="report-status-badge badge-pending">
                             🟡 รอดำเนินการ — ผู้ดูแลกำลังตรวจสอบ คุณสามารถแก้ไข Report ได้
                         </div>
-                        <div v-else-if="reportStatus === 'RESOLVED' || reportStatus === 'CONFIRMED'" class="report-status-badge badge-resolved">
+                        <div v-else-if="reportStatus === 'RESOLVED'" class="report-status-badge badge-resolved">
                             🟢 ดำเนินการเสร็จสิ้น — ผู้ดูแลตรวจสอบเรียบร้อยแล้ว
                         </div>
                         <div v-else-if="reportStatus === 'REJECTED'" class="report-status-badge badge-rejected">
@@ -192,24 +192,45 @@ async function submit() {
                         </div>
                     </div>
 
-                    <!-- Checkboxes -->
-                    <div class="report-reasons">
-                        <label v-for="opt in reasonOptions" :key="opt.value" class="report-checkbox-label"
-                            :class="{ 'checked': selectedReasons.includes(opt.value), 'label-disabled': isReadOnly }">
-                            <input type="checkbox" :value="opt.value" v-model="selectedReasons"
-                                class="report-checkbox" :disabled="isReadOnly" />
-                            <span class="checkmark"></span>
-                            <span>{{ opt.label }}</span>
-                        </label>
-                    </div>
+                    <!-- Read-only: แสดงเฉพาะรายการที่เลือก -->
+                    <template v-if="isReadOnly">
+                        <label class="report-label">รายการที่รายงาน</label>
+                        <div class="report-readonly-card">
+                            <div v-for="(opt, idx) in reasonOptions.filter(o => selectedReasons.includes(o.value))" :key="opt.value"
+                                class="report-readonly-item" :class="{ 'has-border': idx > 0 }">
+                                <span class="readonly-dot"></span>
+                                <span>{{ opt.label }}</span>
+                            </div>
+                            <div v-if="selectedReasons.length === 0" class="report-readonly-empty">
+                                ไม่มีรายการที่เลือก
+                            </div>
+                        </div>
+                        <!-- Other reason text (read-only) -->
+                        <div v-if="showOtherText && otherReasonText" class="report-other-text">
+                            <label class="report-label">รายละเอียดเพิ่มเติม</label>
+                            <div class="report-readonly-textarea">{{ otherReasonText }}</div>
+                        </div>
+                    </template>
 
-                    <!-- Other reason text -->
-                    <div v-if="showOtherText" class="report-other-text">
-                        <label class="report-label">ระบุรายละเอียดเพิ่มเติม <span v-if="!isReadOnly" class="required-star">*</span></label>
-                        <textarea v-model="otherReasonText" placeholder="กรุณาระบุปัญหาที่พบ..."
-                            class="report-textarea" :class="{ 'textarea-error': !isReadOnly && showOtherText && !otherReasonText.trim() }" rows="3" :required="!isReadOnly" :disabled="isReadOnly"></textarea>
-                        <span v-if="!isReadOnly && showOtherText && !otherReasonText.trim()" class="field-error-msg">กรุณาระบุรายละเอียดเพิ่มเติม</span>
-                    </div>
+                    <!-- Editable: Checkboxes -->
+                    <template v-else>
+                        <div class="report-reasons">
+                            <label v-for="opt in reasonOptions" :key="opt.value" class="report-checkbox-label"
+                                :class="{ 'checked': selectedReasons.includes(opt.value) }">
+                                <input type="checkbox" :value="opt.value" v-model="selectedReasons"
+                                    class="report-checkbox" />
+                                <span class="checkmark"></span>
+                                <span>{{ opt.label }}</span>
+                            </label>
+                        </div>
+                        <!-- Other reason text -->
+                        <div v-if="showOtherText" class="report-other-text">
+                            <label class="report-label">ระบุรายละเอียดเพิ่มเติม <span class="required-star">*</span></label>
+                            <textarea v-model="otherReasonText" placeholder="กรุณาระบุปัญหาที่พบ..."
+                                class="report-textarea" :class="{ 'textarea-error': showOtherText && !otherReasonText.trim() }" rows="3" required></textarea>
+                            <span v-if="showOtherText && !otherReasonText.trim()" class="field-error-msg">กรุณาระบุรายละเอียดเพิ่มเติม</span>
+                        </div>
+                    </template>
 
                     <!-- Existing media (edit mode) -->
                     <div v-if="isEditMode && existingMedia.length > 0" class="report-media-section">
@@ -302,15 +323,51 @@ async function submit() {
     opacity: 0.85;
 }
 
-.label-disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
+/* Read-only list */
+.report-readonly-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 16px;
 }
 
-.report-textarea:disabled {
-    background-color: #f3f4f6;
-    cursor: not-allowed;
-    color: #4b5563;
+.report-readonly-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    font-size: 0.9rem;
+    color: #1e293b;
+}
+
+.report-readonly-item.has-border {
+    border-top: 1px solid #f1f5f9;
+}
+
+.readonly-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #3b82f6;
+    flex-shrink: 0;
+}
+
+.report-readonly-empty {
+    padding: 14px 16px;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.875rem;
+}
+
+.report-readonly-textarea {
+    padding: 10px 14px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 0.875rem;
+    color: #334155;
+    line-height: 1.5;
+    white-space: pre-wrap;
 }
 
 .report-overlay {
