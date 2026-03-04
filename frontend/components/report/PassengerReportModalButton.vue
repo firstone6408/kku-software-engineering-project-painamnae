@@ -159,11 +159,21 @@ async function submit() {
                     <button class="report-close" @click="close">✕</button>
 
                     <h2 class="report-title">
-                        <span class="report-icon">🚩</span>
-                        {{ isEditMode ? 'แก้ไข Report คนขับ' : 'รายงานปัญหาคนขับ' }}
+                        <!-- ไม่มี report / PENDING = 🚩, CONFIRMED = 📋, REJECTED = ❌ -->
+                        <span v-if="!isEditMode || reportStatus === 'PENDING'" class="report-icon">🚩</span>
+                        <span v-else-if="reportStatus === 'REJECTED'" class="report-icon">❌</span>
+                        <span v-else class="report-icon">📋</span>
+
+                        <template v-if="!isEditMode">รายงานปัญหาคนขับ</template>
+                        <template v-else-if="reportStatus === 'PENDING'">แก้ไข Report คนขับ</template>
+                        <template v-else-if="reportStatus === 'REJECTED'">Report ถูกปฏิเสธ</template>
+                        <template v-else>รายละเอียด Report คนขับ</template>
                     </h2>
                     <p class="report-subtitle">
-                        {{ isEditMode ? 'แก้ไขข้อมูลการรายงานที่ส่งไปแล้ว' : 'เลือกรายการปัญหาที่พบ (เลือกได้หลายข้อ)' }}
+                        <template v-if="!isEditMode">เลือกรายการปัญหาที่พบ (เลือกได้หลายข้อ)</template>
+                        <template v-else-if="reportStatus === 'PENDING'">แก้ไขข้อมูลการรายงานที่ส่งไปแล้ว</template>
+                        <template v-else-if="reportStatus === 'REJECTED'">ผู้ดูแลไม่อนุมัติการรายงานนี้ — ดูรายละเอียดด้านล่าง</template>
+                        <template v-else>ข้อมูลการรายงานของคุณ — ดูได้อย่างเดียว</template>
                     </p>
 
                     <!-- Status Badge -->
