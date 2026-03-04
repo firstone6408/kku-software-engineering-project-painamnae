@@ -108,7 +108,7 @@
                 <div class="bg-white border border-gray-300 rounded-lg shadow-sm">
                     <div class="flex items-center justify-between px-4 py-4 border-b border-gray-200 sm:px-6">
                         <div class="text-sm text-gray-600">
-                            หน้าที่ {{ pagination.page }} / {{ totalPages }} • ทั้งหมด {{ pagination.total }} การจอง
+                            หน้าที่ {{ pagination.page }} / {{ totalPages }} • ทั้งหมด {{ filteredSorted.length }} การจอง
                         </div>
                     </div>
 
@@ -210,7 +210,7 @@
                                     <!-- Created -->
                                     <td class="px-4 py-3 text-gray-700">
                                         <div class="text-sm">{{ formatDate(b.createdAt) }}</div>
-                                        <div class="text-xs text-gray-500">อัปเดต {{ formatDate(b.route?.updatedAt) }}
+                                        <div class="text-xs text-gray-500">อัปเดต {{ formatDate(b.updatedAt) }}
                                         </div>
                                     </td>
 
@@ -463,19 +463,18 @@ const pageButtons = computed(() => {
 const pagedBookings = computed(() => {
     const start = (pagination.page - 1) * pagination.limit
     const end = start + pagination.limit
-    const slice = filteredSorted.value.slice(start, end)
-    pagination.total = filteredSorted.value.length
-    pagination.totalPages = totalPages.value
-    return slice
+    return filteredSorted.value.slice(start, end)
 })
 
 /* ---------- fetch API (token) ---------- */
+const config = useRuntimeConfig()
+
 async function fetchBookings() {
     isLoading.value = true
     loadError.value = ''
     try {
         const token = useCookie('token').value || (process.client ? localStorage.getItem('token') : '')
-        const res = await fetch('http://localhost:3000/api/bookings/admin', {
+        const res = await fetch(`${config.public.apiBase}bookings/admin`, {
             headers: {
                 Accept: 'application/json',
                 ...(token ? { Authorization: `Bearer ${token}` } : {})
@@ -485,9 +484,7 @@ async function fetchBookings() {
         const body = await res.json()
         if (!res.ok) throw new Error(body?.message || `Request failed: ${res.status}`)
         bookingsAll.value = Array.isArray(body?.data) ? body.data : []
-        // reset pagination when new data arrives
         pagination.page = 1
-        applyFilters()
     } catch (err) {
         console.error(err)
         loadError.value = err?.message || 'ไม่สามารถโหลดข้อมูลได้'
@@ -528,9 +525,9 @@ function onEditBooking(b) {
         toast.info('ยังไม่รองรับ', `ดูรายละเอียด Booking: ${b.id}`)
     })
 }
-function onCreateBooking(b) {
+function onCreateBooking() {
     navigateTo('/admin/bookings/create').catch(() => {
-        toast.info('ยังไม่รองรับ', `ดูรายละเอียด Booking: ${b.id}`)
+        toast.info('ยังไม่รองรับ', 'หน้าสร้างการจองยังไม่พร้อมใช้งาน')
     })
 }
 
@@ -571,7 +568,7 @@ async function confirmDelete() {
 async function deleteBooking(id) {
     const config = useRuntimeConfig()
     const token = useCookie('token').value || (process.client ? localStorage.getItem('token') : '')
-    const res = await fetch(`${config.public.apiBase}/bookings/admin/${id}`, {
+    const res = await fetch(`${config.public.apiBase}bookings/admin/${id}`, {
         method: 'DELETE',
         headers: { Accept: 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
         credentials: 'include',

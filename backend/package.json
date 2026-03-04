@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "test": "jest --runInBand --forceExit --detectOpenHandles",
+    "test": "jest --verbose --runInBand --forceExit --detectOpenHandles",
     "start": "node dist/server.js",
     "build": "tsc",
     "dev": "nodemon --exec ts-node server.ts"

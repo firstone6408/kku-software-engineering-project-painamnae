@@ -78,12 +78,17 @@
  *           example: "cmbooking001"
  *         status:
  *           type: string
- *           enum: [PENDING, RESOLVED]
+ *           enum: [PENDING, RESOLVED, REJECTED]
  *           example: "PENDING"
  *         otherReasonText:
  *           type: string
  *           nullable: true
  *           example: "คนขับพูดจาไม่สุภาพมาก"
+ *         rejectionReason:
+ *           type: string
+ *           nullable: true
+ *           description: เหตุผลการปฏิเสธจาก Admin (มีค่าเฉพาะเมื่อ status = REJECTED)
+ *           example: null
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -388,7 +393,195 @@
  *                 data:
  *                   $ref: '#/components/schemas/Report'
  *       400:
- *         description: Report นี้ได้รับการดำเนินการแล้ว (status === RESOLVED)
+ *         description: |
+ *           - Report นี้ได้รับการดำเนินการแล้ว (status === RESOLVED)
+ *           - Report นี้ถูกปฏิเสธแล้ว (status === REJECTED)
+ *       403:
+ *         description: Forbidden — เฉพาะ ADMIN เท่านั้น
+ *       404:
+ *         description: Report not found
+ */
+
+// ==========================================
+// PATCH /api/reports/:id/reject (Admin only)
+// ==========================================
+/**
+ * @swagger
+ * /api/reports/{id}/reject:
+ *   patch:
+ *     summary: Admin ปฏิเสธ Report (Reject)
+ *     description: |
+ *       Admin เปลี่ยนสถานะ Report จาก PENDING เป็น REJECTED พร้อมเหตุผลการปฏิเสธ (ไม่บังคับ)
+ *       - ไม่สามารถปฏิเสธ Report ที่ RESOLVED หรือ REJECTED แล้วได้
+ *       - ระบบจะส่ง Notification แจ้งผู้ส่ง Report ว่าเคสถูกปฏิเสธ (พร้อมเหตุผลถ้ามี)
+ *       - เมื่อปฏิเสธแล้วจะไม่สามารถเปลี่ยนแปลงสถานะได้อีก
+ *     tags: [Reports]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: "cmrpt001"
+ *         description: ID ของ Report ที่ต้องการปฏิเสธ
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               rejectionReason:
+ *                 type: string
+ *                 description: เหตุผลการปฏิเสธ (ไม่บังคับ)
+ *                 example: "หลักฐานไม่เพียงพอ"
+ *     responses:
+ *       200:
+ *         description: Report rejected successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Report rejected successfully"
+ *                 data:
+ *                   $ref: '#/components/schemas/Report'
+ *       400:
+ *         description: |
+ *           - Report นี้ได้รับการดำเนินการแล้ว (status === RESOLVED)
+ *           - Report นี้ถูกปฏิเสธแล้ว (status === REJECTED)
+ *       403:
+ *         description: Forbidden — เฉพาะ ADMIN เท่านั้น
+ *       404:
+ *         description: Report not found
+ */
+
+// ==========================================
+// GET /api/reports/admin (Admin only)
+// ==========================================
+/**
+ * @swagger
+ * /api/reports/admin:
+ *   get:
+ *     summary: Admin ดึง Report ทั้งหมดในระบบ
+ *     description: |
+ *       Admin ดึงรายการ Report ทั้งหมด พร้อมข้อมูลผู้แจ้ง, ผู้ถูกแจ้ง, เหตุผล, สื่อ, และ Booking
+ *       รองรับ filter ตาม status, type, ค้นหาข้อความ และ pagination
+ *     tags: [Reports]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: string
+ *         description: ค้นหาจากชื่อ/username ของผู้แจ้งหรือผู้ถูกแจ้ง หรือ otherReasonText
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [PENDING, RESOLVED, REJECTED]
+ *         description: กรองตามสถานะ
+ *       - in: query
+ *         name: type
+ *         schema:
+ *           type: string
+ *           enum: [PASSENGER_REPORT_DRIVER, DRIVER_REPORT_INCIDENT]
+ *         description: กรองตามประเภท
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: หน้าที่ต้องการ
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 20
+ *         description: จำนวน report ต่อหน้า
+ *     responses:
+ *       200:
+ *         description: Reports retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Reports retrieved successfully"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Report'
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     page:
+ *                       type: integer
+ *                       example: 1
+ *                     limit:
+ *                       type: integer
+ *                       example: 20
+ *                     total:
+ *                       type: integer
+ *                       example: 5
+ *                     totalPages:
+ *                       type: integer
+ *                       example: 1
+ *       403:
+ *         description: Forbidden — เฉพาะ ADMIN เท่านั้น
+ */
+
+// ==========================================
+// GET /api/reports/admin/:id (Admin only)
+// ==========================================
+/**
+ * @swagger
+ * /api/reports/admin/{id}:
+ *   get:
+ *     summary: Admin ดึง Report ตาม ID
+ *     description: |
+ *       Admin ดึง Report เดียวพร้อมข้อมูลทั้งหมด รวมถึง reporter, reportedUser,
+ *       reasons, media, booking และ route (driver + vehicle)
+ *     tags: [Reports]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: "cmrpt001"
+ *         description: ID ของ Report
+ *     responses:
+ *       200:
+ *         description: Report retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Report retrieved successfully"
+ *                 data:
+ *                   $ref: '#/components/schemas/Report'
  *       403:
  *         description: Forbidden — เฉพาะ ADMIN เท่านั้น
  *       404:
@@ -430,6 +623,7 @@
  *       enum:
  *         - PENDING
  *         - RESOLVED
+ *         - REJECTED
  *
  *     ReportTypeEnum:
  *       type: string
