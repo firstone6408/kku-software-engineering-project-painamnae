@@ -1,14 +1,15 @@
 *** Settings ***
 Library    SeleniumLibrary
 Library    OperatingSystem
+Test Setup        Go To    ${BASE_URL}
 Test Teardown    Capture Page Screenshot
 Suite Setup       Open Browser    ${BASE_URL}    chrome    options=add_argument("--start-maximized")
 Suite Teardown    Close Browser
 
 *** Variables ***
-${BASE_URL}       https://cs-se42-68.cpkku.com/
-${USERNAME}       somsuk@gmail.com
-${PASSWORD}       somsuk123456789
+${BASE_URL}       https://csse4269.cpkku.com/
+${USERNAME}       somchard@email.com
+${PASSWORD}       somchard123456789
 ${TEST_DIR}       C:\\kku-software-engineering-project-painamnae\\tests
 
 *** Keywords ***
@@ -22,16 +23,15 @@ Login
 
 Navigate To MyTrip Confirmed Tab
     [Documentation]    ไปหน้าการเดินทางของฉัน แล้วคลิกแท็บ "ยืนยันแล้ว"
-    Wait Until Page Contains    การเดินทางของฉัน    10s
-    Click Element    xpath=//a[contains(text(),'การเดินทางของฉัน')] | //button[contains(text(),'การเดินทางของฉัน')]
-    Wait Until Element Is Visible    xpath=//*[contains(text(),'ยืนยันแล้ว')]    10s
+    Go To    ${BASE_URL}/myTrip
+    Wait Until Element Is Visible    xpath=//*[contains(text(),'ยืนยันแล้ว')]    15s
     Click Element    xpath=//*[contains(text(),'ยืนยันแล้ว')]
     Sleep    2s
 
 Open Report Modal From First Trip
-    [Documentation]    คลิกปุ่ม "รายงาน" ของทริปแรกที่ยังไม่ได้รายงาน
-    Wait Until Element Is Visible    xpath=(//button[contains(text(),'รายงาน')])[1]    10s
-    Click Element    xpath=(//button[contains(text(),'รายงาน')])[1]
+    [Documentation]    คลิกปุ่ม "รายงาน" ของทริปแรกที่ยังไม่ได้รายงาน (ปุ่ม gray ที่ไม่ใช่สถานะ pending/confirmed)
+    Wait Until Element Is Visible    xpath=(//button[contains(text(),'รายงาน') and contains(@class,'border-gray-300')])[1]    10s
+    Click Element    xpath=(//button[contains(text(),'รายงาน') and contains(@class,'border-gray-300')])[1]
     Wait Until Element Is Visible    xpath=//*[contains(text(),'รายงานปัญหาคนขับ')]    10s
 
 Navigate To Report Page
@@ -183,15 +183,15 @@ TC-010 เลือก "อื่นๆ" แล้วกรอกรายละ
 # --- CHANGELOG #3: ปุ่มรายงานแสดงตามสถานะ ---
 
 TC-011 ปุ่มรายงานเปลี่ยนเป็น "รอดำเนินการ" หลังส่งรายงานสำเร็จ
-    [Documentation]    หลังส่ง Report สำเร็จ ปุ่มต้องเปลี่ยนจาก "รายงาน" เป็น "รอดำเนินการ" (สีเหลือง)
+    [Documentation]    หลังส่ง Report สำเร็จ ปุ่มต้องเปลี่ยนจาก "รายงาน" เป็น "รอดำเนินการ" (สีอำพัน)
     Login
     Navigate To Report Page
     Select Report Topic    ขับรถเร็ว
     Submit Report
     Wait Until Page Contains    ส่ง Report สำเร็จ    10s
     Sleep    2s
-    # ปุ่มต้องเปลี่ยนเป็น "รอดำเนินการ" (สีเหลือง)
-    Wait Until Element Is Visible    xpath=//button[contains(@class,'bg-yellow') and contains(text(),'รอดำเนินการ')]    10s
+    # ปุ่มต้องเปลี่ยนเป็น "รอดำเนินการ" (สีอำพัน amber)
+    Wait Until Element Is Visible    xpath=//button[contains(@class,'text-amber-600') and contains(text(),'รอดำเนินการ')] | //button[contains(@class,'border-amber-300') and contains(text(),'รอดำเนินการ')]    10s
     Page Should Contain    รอดำเนินการ
 
 # --- CHANGELOG #6: Status Badge & Readonly Mode ---
@@ -200,9 +200,9 @@ TC-012 กดปุ่ม "รอดำเนินการ" เปิดฟอ
     [Documentation]    กดปุ่ม "รอดำเนินการ" → เปิด modal พร้อมแสดง status badge + form ยังแก้ไขได้
     Login
     Navigate To MyTrip Confirmed Tab
-    # คลิกที่ทริปที่มีปุ่ม "รอดำเนินการ"
-    Wait Until Element Is Visible    xpath=//button[contains(@class,'bg-yellow') and contains(text(),'รอดำเนินการ')]    10s
-    Click Element    xpath=(//button[contains(@class,'bg-yellow') and contains(text(),'รอดำเนินการ')])[1]
+    # คลิกที่ทริปที่มีปุ่ม "รอดำเนินการ" (สีอำพัน amber)
+    Wait Until Element Is Visible    xpath=//button[contains(@class,'text-amber-600') and contains(text(),'รอดำเนินการ')] | //button[contains(@class,'border-amber-300') and contains(text(),'รอดำเนินการ')]    10s
+    Click Element    xpath=(//button[contains(@class,'text-amber-600') and contains(text(),'รอดำเนินการ')])[1]
     Sleep    1s
     # ตรวจ Status Badge แสดง
     Wait Until Page Contains    ผู้ดูแลกำลังตรวจสอบ    10s
@@ -218,9 +218,9 @@ TC-013 ฟอร์ม Readonly เมื่อสถานะเป็น CONFI
     Login
     Navigate To MyTrip Confirmed Tab
     # คลิกปุ่ม "เสร็จสิ้น" (สีเขียว) ถ้ามี
-    ${has_confirmed}=    Run Keyword And Return Status    Wait Until Element Is Visible    xpath=//button[contains(@class,'bg-green') and contains(text(),'เสร็จสิ้น')]    5s
+    ${has_confirmed}=    Run Keyword And Return Status    Wait Until Element Is Visible    xpath=//button[contains(@class,'text-green-600') and contains(text(),'เสร็จสิ้น')] | //button[contains(@class,'border-green-300') and contains(text(),'เสร็จสิ้น')]    5s
     Run Keyword If    not ${has_confirmed}    Skip    ไม่มี Report ที่อยู่ในสถานะ CONFIRMED
-    Click Element    xpath=(//button[contains(@class,'bg-green') and contains(text(),'เสร็จสิ้น')])[1]
+    Click Element    xpath=(//button[contains(@class,'text-green-600') and contains(text(),'เสร็จสิ้น')])[1]
     Sleep    1s
     # ตรวจ status badge
     Wait Until Page Contains    ดำเนินการเสร็จสิ้น    10s
@@ -241,9 +241,9 @@ TC-014 ฟอร์ม Readonly เมื่อสถานะเป็น REJEC
     Login
     Navigate To MyTrip Confirmed Tab
     # คลิกปุ่ม "ปฏิเสธ" (สีเทา) ถ้ามี
-    ${has_rejected}=    Run Keyword And Return Status    Wait Until Element Is Visible    xpath=//button[contains(@class,'bg-gray-500') and contains(text(),'ปฏิเสธ')]    5s
+    ${has_rejected}=    Run Keyword And Return Status    Wait Until Element Is Visible    xpath=//button[contains(@class,'text-gray-400') and contains(text(),'ปฏิเสธ')] | //button[contains(@class,'border-gray-200') and contains(text(),'ปฏิเสธ')] | //button[contains(@class,'bg-gray-500') and contains(text(),'ปฏิเสธ')]    5s
     Run Keyword If    not ${has_rejected}    Skip    ไม่มี Report ที่อยู่ในสถานะ REJECTED
-    Click Element    xpath=(//button[contains(@class,'bg-gray-500') and contains(text(),'ปฏิเสธ')])[1]
+    Click Element    xpath=(//button[contains(@class,'text-gray-400') and contains(text(),'ปฏิเสธ')])[1]
     Sleep    1s
     # ตรวจ status badge
     Wait Until Page Contains    ปฏิเสธ    10s
