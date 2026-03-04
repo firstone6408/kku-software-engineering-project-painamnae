@@ -354,36 +354,65 @@
                                     </template>
 
                                     <template v-else-if="trip.status === 'confirmed'">
-                                        <!-- Report Button: 3 สถานะ -->
+                                        <!-- Report Button: แสดงตามสถานะ -->
+                                        <!-- ยังไม่รายงาน -->
                                         <button v-if="!bookingReportMap[trip.id]"
                                             @click.stop="openReportModal(trip)"
-                                            class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white transition duration-200 bg-red-500 rounded-md hover:bg-red-600 shadow-sm">
+                                            class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-500 transition duration-200 border border-gray-300 rounded-md hover:bg-gray-50 hover:text-gray-700">
                                             <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
                                             รายงาน
                                         </button>
-                                        <button v-else-if="bookingReportMap[trip.id]?.status === 'PENDING'"
-                                            @click.stop="openReportModal(trip)"
-                                            class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-yellow-700 transition duration-200 bg-yellow-100 border border-yellow-400 rounded-md hover:bg-yellow-200 shadow-sm">
-                                            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clip-rule="evenodd"/></svg>
-                                            รอดำเนินการ
-                                        </button>
-                                        <button v-else
-                                            disabled
-                                            class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-500 bg-gray-100 border border-gray-300 rounded-md shadow-sm cursor-default">
-                                            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>
-                                            ดำเนินการแล้ว
-                                        </button>
+                                        <!-- PENDING: รอดำเนินการ — กดได้เพื่อแก้ไข -->
+                                        <div v-else-if="bookingReportMap[trip.id]?.status === 'PENDING'" class="relative group">
+                                            <button @click.stop="openReportModal(trip)"
+                                                class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-amber-600 transition duration-200 border border-amber-300 rounded-md hover:bg-amber-50">
+                                                <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
+                                                รอดำเนินการ
+                                            </button>
+                                            <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 text-xs text-white bg-gray-800 rounded-lg shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                                                ผู้ดูแลกำลังตรวจสอบ (กดเพื่อดู/แก้ไข)
+                                            </span>
+                                        </div>
+                                        <!-- RESOLVED: เสร็จสิ้น — กดได้เพื่อดู -->
+                                        <div v-else-if="bookingReportMap[trip.id]?.status === 'RESOLVED'" class="relative group">
+                                            <button @click.stop="openReportModal(trip)"
+                                                class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-green-600 transition duration-200 border border-green-300 rounded-md hover:bg-green-50">
+                                                <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
+                                                เสร็จสิ้น
+                                            </button>
+                                            <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 text-xs text-white bg-gray-800 rounded-lg shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                                                ผู้ดูแลตรวจสอบดำเนินการเสร็จสิ้น (กดเพื่อดู)
+                                            </span>
+                                        </div>
+                                        <!-- REJECTED: ปฏิเสธ (สีเทาทึบ) — กดได้เพื่อดู -->
+                                        <div v-else-if="bookingReportMap[trip.id]?.status === 'REJECTED'" class="relative group">
+                                            <button @click.stop="openReportModal(trip)"
+                                                class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-400 transition duration-200 border border-gray-200 rounded-md hover:bg-gray-50 hover:text-gray-500">
+                                                <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
+                                                ปฏิเสธ
+                                            </button>
+                                            <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 text-xs text-white bg-gray-800 rounded-lg shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                                                ผู้ดูแลปฏิเสธการรายงาน (กดเพื่อดู)
+                                            </span>
+                                        </div>
+                                        <!-- อื่นๆ (fallback) — กดได้เพื่อดู -->
+                                        <div v-else class="relative group">
+                                            <button @click.stop="openReportModal(trip)"
+                                                class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-400 transition duration-200 border border-gray-200 rounded-md hover:bg-gray-50 hover:text-gray-500">
+                                                <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
+                                                ดำเนินการแล้ว
+                                            </button>
+                                            <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 text-xs text-white bg-gray-800 rounded-lg shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                                                ผู้ดูแลดำเนินการเสร็จสิ้น (กดเพื่อดู)
+                                            </span>
+                                        </div>
                                         <button
                                             class="px-4 py-2 text-sm text-white transition duration-200 bg-blue-600 rounded-md hover:bg-blue-700">
                                             แชทกับผู้โดยสาร
                                         </button>
                                     </template>
 
-                                    <button v-else-if="['rejected', 'cancelled'].includes(trip.status)"
-                                        @click.stop="openConfirmModal(trip, 'delete')"
-                                        class="px-4 py-2 text-sm text-gray-600 transition duration-200 border border-gray-300 rounded-md hover:bg-gray-50">
-                                        ลบรายการ
-                                    </button>
+
                                 </div>
                             </div>
                         </div>

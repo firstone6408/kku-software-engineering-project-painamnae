@@ -16,6 +16,12 @@ RUN npm ci
 COPY prisma ./prisma
 RUN npx prisma generate
 
+# Copy source code and compile TypeScript
+COPY tsconfig.json ./
+COPY src ./src
+COPY app.ts server.ts ./
+RUN npx tsc
+
 # ---- Stage 2: Production ----
 FROM node:20-slim
 
@@ -34,8 +40,8 @@ COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
 COPY prisma ./prisma
-COPY . .
+COPY --from=builder /app/dist ./dist
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "npx prisma migrate deploy && node server.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/server.js"]

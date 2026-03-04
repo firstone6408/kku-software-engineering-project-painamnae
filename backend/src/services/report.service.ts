@@ -16,31 +16,35 @@ interface MediaItem {
 
 type TransactionClient = Prisma.TransactionClient;
 
-async function notifyReportFiled(tx: TransactionClient, reporterId: string, reportType: ReportType): Promise<void> {
+async function notifyReportFiled(tx: TransactionClient, reporterId: string, reportType: ReportType, routeInfo?: { routeLabel: string; travelDate: string }): Promise<void> {
   const typeLabel = reportType === ReportType.PASSENGER_REPORT_DRIVER
     ? 'รายงานปัญหาคนขับ'
-    : 'รายงานเหตุการณ์';
+    : 'Report เหตุการณ์';
+
+  const routeSuffix = routeInfo ? ` (${routeInfo.routeLabel}, ${routeInfo.travelDate})` : '';
 
   await tx.notification.create({
     data: {
       userId: reporterId,
       type: 'SYSTEM',
-      title: '✅ ส่ง Report สำเร็จ',
+      title: `✅ ส่ง Report สำเร็จ${routeSuffix}`,
       body: `${typeLabel}ของคุณได้ถูกส่งไปยังผู้ดูแลระบบแล้ว เราจะแจ้งผลให้ทราบเมื่อดำเนินการเสร็จสิ้น`,
     },
   });
 }
 
-async function notifyReportResolved(tx: TransactionClient, reporterId: string, reportType: ReportType): Promise<void> {
+async function notifyReportResolved(tx: TransactionClient, reporterId: string, reportType: ReportType, routeInfo?: { routeLabel: string; travelDate: string }): Promise<void> {
   const typeLabel = reportType === ReportType.PASSENGER_REPORT_DRIVER
     ? 'รายงานปัญหาคนขับ'
-    : 'รายงานเหตุการณ์';
+    : 'Report เหตุการณ์';
+
+  const routeSuffix = routeInfo ? ` (${routeInfo.routeLabel}, ${routeInfo.travelDate})` : '';
 
   await tx.notification.create({
     data: {
       userId: reporterId,
       type: 'SYSTEM',
-      title: '📋 Report ของคุณได้รับการดำเนินการแล้ว',
+      title: `📋 Report ของคุณได้รับการดำเนินการแล้ว${routeSuffix}`,
       body: `${typeLabel}ของคุณได้รับการตรวจสอบและดำเนินการโดยผู้ดูแลระบบเรียบร้อยแล้ว`,
     },
   });
@@ -152,10 +156,42 @@ export async function updateReport(reportId: string, userId: string, data: unkno
   });
 }
 
+// ─── Helper: get route info from report's booking ───
+async function getRouteInfoFromReport(reportId: string): Promise<{ routeLabel: string; travelDate: string } | undefined> {
+  const report = await prisma.report.findUnique({
+    where: { id: reportId },
+    include: {
+      booking: {
+        include: {
+          route: { select: { startLocation: true, endLocation: true, departureTime: true } },
+        },
+      },
+    },
+  });
+
+  if (!report?.booking?.route) return undefined;
+
+  const route = report.booking.route;
+  const startName = (route.startLocation as any)?.name || (route.startLocation as any)?.label || 'ต้นทาง';
+  const endName = (route.endLocation as any)?.name || (route.endLocation as any)?.label || 'ปลายทาง';
+  const routeLabel = `${startName} → ${endName}`;
+
+  const dep = new Date(route.departureTime);
+  const day = dep.getDate().toString().padStart(2, '0');
+  const month = (dep.getMonth() + 1).toString().padStart(2, '0');
+  const buddhistYear = dep.getFullYear() + 543;
+  const travelDate = `${day}/${month}/${buddhistYear}`;
+
+  return { routeLabel, travelDate };
+}
+
 export async function resolveReport(reportId: string) {
   const report = await prisma.report.findUnique({ where: { id: reportId } });
   if (!report) throw new ApiError(404, 'Report not found');
   if (report.status === 'RESOLVED') throw new ApiError(400, 'Report นี้ได้รับการดำเนินการแล้ว');
+  if (report.status === 'REJECTED') throw new ApiError(400, 'Report นี้ถูกปฏิเสธแล้ว');
+
+  const routeInfo = await getRouteInfoFromReport(reportId);
 
   return prisma.$transaction(async (tx) => {
     const updated = await tx.report.update({
@@ -164,7 +200,49 @@ export async function resolveReport(reportId: string) {
       include: { reasons: true, media: true },
     });
 
-    await notifyReportResolved(tx, report.reporterId, report.type);
+    await notifyReportResolved(tx, report.reporterId, report.type, routeInfo);
+    return updated;
+  });
+}
+
+// ─── Reject a report (admin) ───
+async function notifyReportRejected(tx: TransactionClient, reporterId: string, reportType: ReportType, reason?: string, routeInfo?: { routeLabel: string; travelDate: string }): Promise<void> {
+  const typeLabel = reportType === ReportType.PASSENGER_REPORT_DRIVER
+    ? 'รายงานปัญหาคนขับ'
+    : 'Report เหตุการณ์';
+
+  const reasonText = reason ? ` เหตุผล: ${reason}` : '';
+  const routeSuffix = routeInfo ? ` (${routeInfo.routeLabel}, ${routeInfo.travelDate})` : '';
+
+  await tx.notification.create({
+    data: {
+      userId: reporterId,
+      type: 'SYSTEM',
+      title: `❌ Report ของคุณถูกปฏิเสธ${routeSuffix}`,
+      body: `${typeLabel}ของคุณถูกปฏิเสธโดยผู้ดูแลระบบ${reasonText}`,
+    },
+  });
+}
+
+export async function rejectReport(reportId: string, rejectionReason?: string) {
+  const report = await prisma.report.findUnique({ where: { id: reportId } });
+  if (!report) throw new ApiError(404, 'Report not found');
+  if (report.status === 'RESOLVED') throw new ApiError(400, 'Report นี้ได้รับการดำเนินการแล้ว ไม่สามารถปฏิเสธได้');
+  if (report.status === 'REJECTED') throw new ApiError(400, 'Report นี้ถูกปฏิเสธแล้ว');
+
+  const routeInfo = await getRouteInfoFromReport(reportId);
+
+  return prisma.$transaction(async (tx) => {
+    const updated = await tx.report.update({
+      where: { id: reportId },
+      data: {
+        status: 'REJECTED',
+        rejectionReason: rejectionReason || null,
+      },
+      include: { reasons: true, media: true },
+    });
+
+    await notifyReportRejected(tx, report.reporterId, report.type, rejectionReason, routeInfo);
     return updated;
   });
 }
@@ -175,4 +253,99 @@ export async function getReportsByUserId(userId: string) {
     include: { reasons: true, media: true },
     orderBy: { createdAt: 'desc' },
   });
+}
+
+// ─── Admin: list all reports ───
+interface AdminReportFilterOpts {
+  q?: string;
+  status?: string;
+  type?: string;
+  page?: number;
+  limit?: number;
+}
+
+export async function getAllReports(opts: AdminReportFilterOpts = {}) {
+  const { q, status, type, page = 1, limit = 20 } = opts;
+
+  const where: Prisma.ReportWhereInput = {
+    ...(status ? { status: status as never } : {}),
+    ...(type ? { type: type as never } : {}),
+    ...(q
+      ? {
+          OR: [
+            { reporter: { firstName: { contains: q, mode: 'insensitive' as const } } },
+            { reporter: { lastName: { contains: q, mode: 'insensitive' as const } } },
+            { reporter: { username: { contains: q, mode: 'insensitive' as const } } },
+            { reportedUser: { firstName: { contains: q, mode: 'insensitive' as const } } },
+            { reportedUser: { lastName: { contains: q, mode: 'insensitive' as const } } },
+            { reportedUser: { username: { contains: q, mode: 'insensitive' as const } } },
+            { otherReasonText: { contains: q, mode: 'insensitive' as const } },
+          ],
+        }
+      : {}),
+  };
+
+  const skip = (page - 1) * limit;
+
+  const [total, data] = await prisma.$transaction([
+    prisma.report.count({ where }),
+    prisma.report.findMany({
+      where,
+      include: {
+        reporter: { select: { id: true, username: true, firstName: true, lastName: true, email: true, role: true, profilePicture: true, phoneNumber: true } },
+        reportedUser: { select: { id: true, username: true, firstName: true, lastName: true, email: true, role: true, profilePicture: true, phoneNumber: true } },
+        reasons: true,
+        media: true,
+        booking: {
+          select: {
+            id: true,
+            route: {
+              select: {
+                id: true,
+                startLocation: true,
+                endLocation: true,
+                departureTime: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+      skip,
+      take: limit,
+    }),
+  ]);
+
+  return { data, pagination: { page, limit, total, totalPages: Math.ceil(total / limit) } };
+}
+
+// ─── Admin: get single report by id ───
+export async function getReportById(reportId: string) {
+  const report = await prisma.report.findUnique({
+    where: { id: reportId },
+    include: {
+      reporter: { select: { id: true, username: true, firstName: true, lastName: true, email: true, role: true, profilePicture: true, phoneNumber: true } },
+      reportedUser: { select: { id: true, username: true, firstName: true, lastName: true, email: true, role: true, profilePicture: true, phoneNumber: true } },
+      reasons: true,
+      media: true,
+      booking: {
+        select: {
+          id: true,
+          route: {
+            select: {
+              id: true,
+              startLocation: true,
+              endLocation: true,
+              departureTime: true,
+              driver: { select: { id: true, username: true, firstName: true, lastName: true } },
+              vehicle: { select: { id: true, vehicleModel: true, vehicleType: true, licensePlate: true } },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!report) throw new ApiError(404, 'Report not found');
+  return report;
 }

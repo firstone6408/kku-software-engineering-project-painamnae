@@ -1,4 +1,5 @@
 import swaggerJsdoc from 'swagger-jsdoc';
+import path from 'path';
 import packageJson from '../../package.json';
 
 const options: swaggerJsdoc.Options = {
@@ -20,7 +21,10 @@ const options: swaggerJsdoc.Options = {
     },
     security: [{ bearerAuth: [] }],
   },
-  apis: ['./src/routes/*.ts', './src/docs/*.js', './src/docs/*.ts'],
+  apis: [
+    path.resolve(__dirname, '../routes/*.{ts,js}'),
+    path.resolve(__dirname, '../docs/*.{ts,js}'),
+  ],
 };
 
 const swaggerSpec = swaggerJsdoc(options);

@@ -1,12 +1,15 @@
 /**
  * Report API — Automated Tests
  *
- * เทสทั้ง 5 endpoint:
+ * เทสทั้ง 8 endpoint:
  *   POST   /api/reports/driver       — คนขับรายงานเหตุการณ์
  *   POST   /api/reports/passenger    — ผู้โดยสารรายงานคนขับ
  *   GET    /api/reports/me           — ดึง report ของตัวเอง
  *   PUT    /api/reports/:id          — แก้ไข report (owner เท่านั้น, PENDING only)
  *   PATCH  /api/reports/:id/resolve  — Admin resolve report
+ *   PATCH  /api/reports/:id/reject   — Admin reject report
+ *   GET    /api/reports/admin        — Admin ดึง report ทั้งหมด
+ *   GET    /api/reports/admin/:id    — Admin ดึง report ตาม ID
  *
  * Strategy:
  *   - Mock JWT verifyToken → bypass auth ด้วย fake user
@@ -45,6 +48,7 @@ const mockPrisma = {
     findUnique: jest.fn(),
     create: jest.fn(),
     update: jest.fn(),
+    count: jest.fn(),
   },
   reportReason: {
     createMany: jest.fn(),
@@ -57,13 +61,17 @@ const mockPrisma = {
   notification: {
     create: jest.fn(),
   },
-  $transaction: jest.fn((fn) => fn(mockPrisma)),
+  $transaction: jest.fn((fn) => {
+    if (typeof fn === 'function') return fn(mockPrisma);
+    return Promise.all(fn);
+  }),
   $queryRaw: jest.fn(),
 };
 jest.mock('../src/utils/prisma', () => mockPrisma);
 
 // ─── Load app AFTER mocks are set up ───
-const app = require('../app');
+const appModule = require('../app');
+const app = appModule.default || appModule;
 
 // ─────────── Helpers ───────────
 const VALID_TOKEN = 'Bearer fake-test-token';
@@ -366,5 +374,171 @@ describe('PATCH /api/reports/:id/resolve', () => {
       .set('Authorization', VALID_TOKEN);
 
     expect(res.statusCode).toBe(400);
+  });
+});
+
+// ══════════════════════════════════════════════════════
+//  6b) PATCH /api/reports/:id/reject  (Admin only)
+// ══════════════════════════════════════════════════════
+describe('PATCH /api/reports/:id/reject', () => {
+  it('200 — Admin reject report สำเร็จ', async () => {
+    mockCurrentUser = ADMIN_USER;
+    const pendingReport = { ...FAKE_REPORT, status: 'PENDING' };
+    mockPrisma.report.findUnique.mockResolvedValue(pendingReport);
+    mockPrisma.report.update.mockResolvedValue({ ...pendingReport, status: 'REJECTED' });
+    mockPrisma.notification.create.mockResolvedValue({});
+
+    const res = await request(app)
+      .patch('/api/reports/report-001/reject')
+      .set('Authorization', VALID_TOKEN);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.success).toBe(true);
+  });
+
+  it('200 — Admin reject พร้อมเหตุผล', async () => {
+    mockCurrentUser = ADMIN_USER;
+    const pendingReport = { ...FAKE_REPORT, status: 'PENDING' };
+    mockPrisma.report.findUnique.mockResolvedValue(pendingReport);
+    mockPrisma.report.update.mockResolvedValue({ ...pendingReport, status: 'REJECTED', rejectionReason: 'หลักฐานไม่เพียงพอ' });
+    mockPrisma.notification.create.mockResolvedValue({});
+
+    const res = await request(app)
+      .patch('/api/reports/report-001/reject')
+      .set('Authorization', VALID_TOKEN)
+      .send({ rejectionReason: 'หลักฐานไม่เพียงพอ' });
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.success).toBe(true);
+  });
+
+  it('400 — report ที่ RESOLVED แล้ว reject ไม่ได้', async () => {
+    mockCurrentUser = ADMIN_USER;
+    mockPrisma.report.findUnique.mockResolvedValue({ ...FAKE_REPORT, status: 'RESOLVED' });
+
+    const res = await request(app)
+      .patch('/api/reports/report-001/reject')
+      .set('Authorization', VALID_TOKEN);
+
+    expect(res.statusCode).toBe(400);
+  });
+
+  it('403 — non-admin ไม่สามารถ reject', async () => {
+    mockCurrentUser = PASSENGER_USER;
+
+    const res = await request(app)
+      .patch('/api/reports/report-001/reject')
+      .set('Authorization', VALID_TOKEN);
+
+    expect(res.statusCode).toBe(403);
+  });
+});
+
+// ══════════════════════════════════════════════════════
+//  7) GET /api/reports/admin  (Admin only)
+// ══════════════════════════════════════════════════════
+describe('GET /api/reports/admin', () => {
+  const FAKE_ADMIN_REPORT = {
+    ...FAKE_REPORT,
+    reporter: { id: 'passenger-user-id-001', username: 'passenger1', firstName: 'สมศรี', lastName: 'ใจดี', email: 'test@test.com', role: 'PASSENGER', profilePicture: null },
+    reportedUser: { id: 'driver-user-id-001', username: 'driver1', firstName: 'นาโมเน', lastName: 'อำรุง', email: 'driver@test.com', role: 'DRIVER', profilePicture: null },
+    booking: { id: 'booking-001', route: { id: 'route-001', startLocation: { name: 'มข.' }, endLocation: { name: 'บขส.' }, departureTime: new Date() } },
+  };
+
+  it('200 — Admin ดึง report ทั้งหมดสำเร็จ', async () => {
+    mockCurrentUser = ADMIN_USER;
+    mockPrisma.report.count.mockResolvedValue(1);
+    mockPrisma.report.findMany.mockResolvedValue([FAKE_ADMIN_REPORT]);
+
+    const res = await request(app)
+      .get('/api/reports/admin')
+      .set('Authorization', VALID_TOKEN);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(Array.isArray(res.body.data)).toBe(true);
+    expect(res.body.pagination).toBeDefined();
+    expect(res.body.pagination.total).toBe(1);
+  });
+
+  it('200 — ส่ง query filter status=PENDING ได้', async () => {
+    mockCurrentUser = ADMIN_USER;
+    mockPrisma.report.count.mockResolvedValue(1);
+    mockPrisma.report.findMany.mockResolvedValue([FAKE_ADMIN_REPORT]);
+
+    const res = await request(app)
+      .get('/api/reports/admin?status=PENDING')
+      .set('Authorization', VALID_TOKEN);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.success).toBe(true);
+  });
+
+  it('403 — non-admin ไม่สามารถเข้าถึง', async () => {
+    mockCurrentUser = PASSENGER_USER;
+
+    const res = await request(app)
+      .get('/api/reports/admin')
+      .set('Authorization', VALID_TOKEN);
+
+    expect(res.statusCode).toBe(403);
+  });
+});
+
+// ══════════════════════════════════════════════════════
+//  8) GET /api/reports/admin/:id  (Admin only)
+// ══════════════════════════════════════════════════════
+describe('GET /api/reports/admin/:id', () => {
+  const FAKE_DETAIL_REPORT = {
+    ...FAKE_REPORT,
+    reporter: { id: 'passenger-user-id-001', username: 'passenger1', firstName: 'สมศรี', lastName: 'ใจดี', email: 'test@test.com', role: 'PASSENGER', profilePicture: null },
+    reportedUser: { id: 'driver-user-id-001', username: 'driver1', firstName: 'นาโมเน', lastName: 'อำรุง', email: 'driver@test.com', role: 'DRIVER', profilePicture: null },
+    booking: {
+      id: 'booking-001',
+      route: {
+        id: 'route-001',
+        startLocation: { name: 'มข.' },
+        endLocation: { name: 'บขส.' },
+        departureTime: new Date(),
+        driver: { id: 'driver-user-id-001', username: 'driver1', firstName: 'นาโมเน', lastName: 'อำรุง' },
+        vehicle: { id: 'vehicle-001', vehicleModel: 'Toyota Yaris', vehicleType: 'Sedan', licensePlate: 'กข 1234' },
+      },
+    },
+  };
+
+  it('200 — Admin ดึง report detail สำเร็จ', async () => {
+    mockCurrentUser = ADMIN_USER;
+    mockPrisma.report.findUnique.mockResolvedValue(FAKE_DETAIL_REPORT);
+
+    const res = await request(app)
+      .get('/api/reports/admin/report-001')
+      .set('Authorization', VALID_TOKEN);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data).toBeDefined();
+    expect(res.body.data.reporter).toBeDefined();
+    expect(res.body.data.booking).toBeDefined();
+  });
+
+  it('404 — report ไม่พบ', async () => {
+    mockCurrentUser = ADMIN_USER;
+    mockPrisma.report.findUnique.mockResolvedValue(null);
+
+    const res = await request(app)
+      .get('/api/reports/admin/nonexistent-id')
+      .set('Authorization', VALID_TOKEN);
+
+    expect(res.statusCode).toBe(404);
+  });
+
+  it('403 — non-admin ไม่สามารถเข้าถึง', async () => {
+    mockCurrentUser = PASSENGER_USER;
+
+    const res = await request(app)
+      .get('/api/reports/admin/report-001')
+      .set('Authorization', VALID_TOKEN);
+
+    expect(res.statusCode).toBe(403);
   });
 });
