@@ -1,12 +1,15 @@
 /**
  * Report API — Automated Tests
  *
- * เทสทั้ง 5 endpoint:
+ * เทสทั้ง 8 endpoint:
  *   POST   /api/reports/driver       — คนขับรายงานเหตุการณ์
  *   POST   /api/reports/passenger    — ผู้โดยสารรายงานคนขับ
  *   GET    /api/reports/me           — ดึง report ของตัวเอง
  *   PUT    /api/reports/:id          — แก้ไข report (owner เท่านั้น, PENDING only)
  *   PATCH  /api/reports/:id/resolve  — Admin resolve report
+ *   PATCH  /api/reports/:id/reject   — Admin reject report
+ *   GET    /api/reports/admin        — Admin ดึง report ทั้งหมด
+ *   GET    /api/reports/admin/:id    — Admin ดึง report ตาม ID
  *
  * Strategy:
  *   - Mock JWT verifyToken → bypass auth ด้วย fake user
