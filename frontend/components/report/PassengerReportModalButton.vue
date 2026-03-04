@@ -21,6 +21,7 @@ const newFiles = ref([])
 const filePreviews = ref([])
 const keepMediaIds = ref([])
 const existingMedia = ref([])
+const fileErrorMessage = ref('')
 
 const reasonOptions = [
     { value: 'FAST_DRIVING', label: 'ขับรถเร็ว' },
@@ -32,8 +33,15 @@ const reasonOptions = [
 ]
 
 const isEditMode = computed(() => !!props.existingReport)
+const reportStatus = computed(() => props.existingReport?.status || null)
+const isReadOnly = computed(() => isEditMode.value && reportStatus.value !== 'PENDING')
 const showOtherText = computed(() => selectedReasons.value.includes('OTHER'))
-const canSubmit = computed(() => selectedReasons.value.length > 0 && !isSubmitting.value)
+const canSubmit = computed(() => {
+    if (isReadOnly.value) return false
+    if (selectedReasons.value.length === 0 || isSubmitting.value) return false
+    if (showOtherText.value && !otherReasonText.value.trim()) return false
+    return true
+})
 
 watch(() => props.modelValue, (val) => {
     if (val) {
@@ -66,7 +74,13 @@ function close() {
 
 function onFileChange(e) {
     const files = Array.from(e.target.files || [])
+    const allowedTypes = ['image/', 'video/']
     for (const f of files) {
+        const isAllowed = allowedTypes.some(type => f.type.startsWith(type))
+        if (!isAllowed) {
+            fileErrorMessage.value = `"${f.name}" ไม่ใช่ไฟล์รูปภาพหรือวิดีโอ กรุณาเลือกเฉพาะไฟล์รูปภาพหรือวิดีโอเท่านั้น`
+            continue
+        }
         newFiles.value.push(f)
         if (f.type.startsWith('image/')) {
             filePreviews.value.push({ url: URL.createObjectURL(f), type: 'IMAGE', name: f.name })
@@ -145,19 +159,45 @@ async function submit() {
                     <button class="report-close" @click="close">✕</button>
 
                     <h2 class="report-title">
-                        <span class="report-icon">🚩</span>
-                        {{ isEditMode ? 'แก้ไข Report คนขับ' : 'รายงานปัญหาคนขับ' }}
+                        <!-- ไม่มี report / PENDING = 🚩, CONFIRMED = 📋, REJECTED = ❌ -->
+                        <span v-if="!isEditMode || reportStatus === 'PENDING'" class="report-icon">🚩</span>
+                        <span v-else-if="reportStatus === 'REJECTED'" class="report-icon">❌</span>
+                        <span v-else class="report-icon">📋</span>
+
+                        <template v-if="!isEditMode">รายงานปัญหาคนขับ</template>
+                        <template v-else-if="reportStatus === 'PENDING'">แก้ไข Report คนขับ</template>
+                        <template v-else-if="reportStatus === 'REJECTED'">Report ถูกปฏิเสธ</template>
+                        <template v-else>รายละเอียด Report คนขับ</template>
                     </h2>
                     <p class="report-subtitle">
-                        {{ isEditMode ? 'แก้ไขข้อมูลการรายงานที่ส่งไปแล้ว' : 'เลือกรายการปัญหาที่พบ (เลือกได้หลายข้อ)' }}
+                        <template v-if="!isEditMode">เลือกรายการปัญหาที่พบ (เลือกได้หลายข้อ)</template>
+                        <template v-else-if="reportStatus === 'PENDING'">แก้ไขข้อมูลการรายงานที่ส่งไปแล้ว</template>
+                        <template v-else-if="reportStatus === 'REJECTED'">ผู้ดูแลไม่อนุมัติการรายงานนี้ — ดูรายละเอียดด้านล่าง</template>
+                        <template v-else>ข้อมูลการรายงานของคุณ — ดูได้อย่างเดียว</template>
                     </p>
+
+                    <!-- Status Badge -->
+                    <div v-if="isEditMode && reportStatus" class="report-status-badge-wrap">
+                        <div v-if="reportStatus === 'PENDING'" class="report-status-badge badge-pending">
+                            🟡 รอดำเนินการ — ผู้ดูแลกำลังตรวจสอบ คุณสามารถแก้ไข Report ได้
+                        </div>
+                        <div v-else-if="reportStatus === 'RESOLVED' || reportStatus === 'CONFIRMED'" class="report-status-badge badge-resolved">
+                            🟢 ดำเนินการเสร็จสิ้น — ผู้ดูแลตรวจสอบเรียบร้อยแล้ว
+                        </div>
+                        <div v-else-if="reportStatus === 'REJECTED'" class="report-status-badge badge-rejected">
+                            🔴 ปฏิเสธ — ผู้ดูแลปฏิเสธการรายงานนี้
+                            <div v-if="existingReport?.rejectionReason" class="badge-rejection-reason">
+                                เหตุผล: {{ existingReport.rejectionReason }}
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Checkboxes -->
                     <div class="report-reasons">
                         <label v-for="opt in reasonOptions" :key="opt.value" class="report-checkbox-label"
-                            :class="{ 'checked': selectedReasons.includes(opt.value) }">
+                            :class="{ 'checked': selectedReasons.includes(opt.value), 'label-disabled': isReadOnly }">
                             <input type="checkbox" :value="opt.value" v-model="selectedReasons"
-                                class="report-checkbox" />
+                                class="report-checkbox" :disabled="isReadOnly" />
                             <span class="checkmark"></span>
                             <span>{{ opt.label }}</span>
                         </label>
@@ -165,9 +205,10 @@ async function submit() {
 
                     <!-- Other reason text -->
                     <div v-if="showOtherText" class="report-other-text">
-                        <label class="report-label">ระบุรายละเอียดเพิ่มเติม</label>
+                        <label class="report-label">ระบุรายละเอียดเพิ่มเติม <span v-if="!isReadOnly" class="required-star">*</span></label>
                         <textarea v-model="otherReasonText" placeholder="กรุณาระบุปัญหาที่พบ..."
-                            class="report-textarea" rows="3"></textarea>
+                            class="report-textarea" :class="{ 'textarea-error': !isReadOnly && showOtherText && !otherReasonText.trim() }" rows="3" :required="!isReadOnly" :disabled="isReadOnly"></textarea>
+                        <span v-if="!isReadOnly && showOtherText && !otherReasonText.trim()" class="field-error-msg">กรุณาระบุรายละเอียดเพิ่มเติม</span>
                     </div>
 
                     <!-- Existing media (edit mode) -->
@@ -178,15 +219,15 @@ async function submit() {
                                 :class="{ 'media-removed': !keepMediaIds.includes(m.id) }">
                                 <img v-if="m.type === 'IMAGE'" :src="m.url" class="report-thumbnail" />
                                 <video v-else :src="m.url" class="report-thumbnail" controls></video>
-                                <button v-if="keepMediaIds.includes(m.id)" class="media-remove-btn"
+                                <button v-if="keepMediaIds.includes(m.id) && !isReadOnly" class="media-remove-btn"
                                     @click="removeExistingMedia(m.id)">✕</button>
-                                <span v-else class="media-removed-label">ลบแล้ว</span>
+                                <span v-else-if="!keepMediaIds.includes(m.id)" class="media-removed-label">ลบแล้ว</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- File upload -->
-                    <div class="report-media-section">
+                    <!-- File upload (hidden when readonly) -->
+                    <div v-if="!isReadOnly" class="report-media-section">
                         <label class="report-label">แนบหลักฐาน (รูปภาพ/วิดีโอ) — ไม่บังคับ</label>
                         <label class="report-upload-area">
                             <input type="file" multiple accept="image/*,video/*" @change="onFileChange"
@@ -207,10 +248,10 @@ async function submit() {
                         </div>
                     </div>
 
-                    <!-- Submit -->
+                    <!-- Submit / Close -->
                     <div class="report-actions">
-                        <button class="btn-cancel" @click="close">ยกเลิก</button>
-                        <button class="btn-submit" :disabled="!canSubmit" @click="submit">
+                        <button class="btn-cancel" @click="close">{{ isReadOnly ? 'ปิด' : 'ยกเลิก' }}</button>
+                        <button v-if="!isReadOnly" class="btn-submit" :disabled="!canSubmit" @click="submit">
                             {{ isSubmitting ? 'กำลังส่ง...' : (isEditMode ? 'บันทึกการแก้ไข' : 'ส่ง Report') }}
                         </button>
                     </div>
@@ -218,9 +259,60 @@ async function submit() {
             </div>
         </Transition>
     </Teleport>
+
+    <FileErrorDialog v-model="fileErrorMessage" />
 </template>
 
 <style scoped>
+
+.report-status-badge-wrap {
+    margin-bottom: 16px;
+}
+
+.report-status-badge {
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.badge-pending {
+    background-color: #fef9c3;
+    color: #854d0e;
+    border: 1px solid #fde047;
+}
+
+.badge-resolved {
+    background-color: #dcfce7;
+    color: #14532d;
+    border: 1px solid #86efac;
+}
+
+.badge-rejected {
+    background-color: #fee2e2;
+    color: #7f1d1d;
+    border: 1px solid #fca5a5;
+}
+
+.badge-rejection-reason {
+    margin-top: 6px;
+    font-weight: 400;
+    font-size: 0.8rem;
+    opacity: 0.85;
+}
+
+.label-disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.report-textarea:disabled {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+    color: #4b5563;
+}
+
 .report-overlay {
     position: fixed;
     inset: 0;
@@ -352,6 +444,27 @@ async function submit() {
     outline: none;
     border-color: #3b82f6;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.textarea-error {
+    border-color: #ef4444;
+}
+
+.textarea-error:focus {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.required-star {
+    color: #ef4444;
+    font-weight: 700;
+}
+
+.field-error-msg {
+    display: block;
+    color: #ef4444;
+    font-size: 0.75rem;
+    margin-top: 4px;
 }
 
 .report-media-section {

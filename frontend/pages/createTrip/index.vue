@@ -223,11 +223,11 @@
                                 </div>
                             </div>
                             <div class="flex gap-3 pt-2">
-                                <button @click="closePlacePicker"
+                                <button type="button" @click="closePlacePicker"
                                     class="flex-1 px-4 py-2 font-semibold text-gray-800 bg-gray-200 rounded-md hover:bg-gray-300">
                                     ยกเลิก
                                 </button>
-                                <button :disabled="!pickedPlace.name" @click="applyPickedPlace"
+                                <button type="button" :disabled="!pickedPlace.name" @click="applyPickedPlace"
                                     class="flex-1 px-4 py-2 font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed">
                                     ใช้ตำแหน่งนี้
                                 </button>
@@ -335,6 +335,16 @@ const handleSubmit = async () => {
     // Basic validation (ตามเดิม)
     if (!form.vehicleId || !form.date || !form.time || !form.availableSeats || !form.pricePerSeat) {
         toast.error('ข้อมูลไม่ครบถ้วน', 'กรุณากรอกข้อมูลที่มีเครื่องหมาย * ให้ครบถ้วน')
+        return
+    }
+
+    // ตรวจสอบว่าเลือกจุดเริ่มต้นและปลายทางจาก autocomplete หรือ map picker แล้ว
+    if (startMeta.value.lat == null || startMeta.value.lng == null) {
+        toast.error('จุดเริ่มต้นไม่ถูกต้อง', 'กรุณาเลือกจุดเริ่มต้นจากรายการแนะนำ หรือปักหมุดบนแผนที่')
+        return
+    }
+    if (endMeta.value.lat == null || endMeta.value.lng == null) {
+        toast.error('จุดปลายทางไม่ถูกต้อง', 'กรุณาเลือกจุดปลายทางจากรายการแนะนำ หรือปักหมุดบนแผนที่')
         return
     }
 
