@@ -141,7 +141,7 @@ export function useLocationSharing() {
 
     const startPeriodicSend = () => {
         if (sendInterval) clearInterval(sendInterval)
-        const intervalMs = (activeSession.value?.intervalMinutes || 10) * 60 * 1000
+        const intervalMs = (activeSession.value?.intervalMinutes || 1) * 60 * 1000
         sendInterval = setInterval(async () => {
             if (!activeSession.value || !isActive.value) return
             try {

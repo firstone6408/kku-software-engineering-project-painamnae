@@ -69,7 +69,7 @@
                         <!-- หมายเหตุ -->
                         <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
                             <p class="text-xs text-blue-700">
-                                📍 ระบบจะส่งตำแหน่งของคุณทาง LINE ทุก 10 นาที ให้ผู้ติดต่อที่เลือก
+                                📍 ระบบจะส่งตำแหน่งของคุณทาง LINE ทุก 1 นาที ให้ผู้ติดต่อที่เลือก
                                 เป็นระยะเวลาตามที่กำหนด
                             </p>
                         </div>
@@ -108,7 +108,7 @@
                     <div class="space-y-3">
                         <div class="flex items-center justify-between text-sm">
                             <span class="text-gray-500">ความถี่การส่ง</span>
-                            <span class="font-medium text-gray-900">ทุก {{ activeSession?.intervalMinutes || 10 }} นาที</span>
+                            <span class="font-medium text-gray-900">ทุก {{ activeSession?.intervalMinutes || 1 }} นาที</span>
                         </div>
                         <div class="flex items-center justify-between text-sm">
                             <span class="text-gray-500">เวลาที่เหลือ</span>
