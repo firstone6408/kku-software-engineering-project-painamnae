@@ -37,6 +37,20 @@ export const handleMessage = async (event: any) => {
 
   if (!replyToken || !lineUserId || !messageText) return;
 
+  // เช็คก่อนว่า user นี้เคย LINKED อยู่แล้วไหม
+  const existingContact = await prisma.emergencyContact.findFirst({
+    where: {
+      lineUserId,
+      lineLinkStatus: 'LINKED',
+    },
+    select: { id: true },
+  });
+
+  // เคยเชื่อมแล้ว → ไม่ต้องตอบอะไร
+  if (existingContact) {
+    return;
+  }
+
   // ค้นหา contact ที่มี lineLinkToken ตรงกัน
   const contact = await prisma.emergencyContact.findUnique({
     where: { lineLinkToken: messageText },
