@@ -8,6 +8,9 @@ import bookingRoutes from './booking.routes';
 import notificationRoutes from './notification.routes';
 import mapRoutes from './maps.routes';
 import reportRoutes from './report.routes';
+import emergencyContactRoutes from './emergencyContact.routes';
+import locationSharingRoutes from './locationSharing.routes';
+import lineWebhookRoutes from './lineWebhook.routes';
 
 const router = Router();
 
@@ -20,5 +23,8 @@ router.use('/bookings', bookingRoutes);
 router.use('/notifications', notificationRoutes);
 router.use('/api/maps', mapRoutes);
 router.use('/reports', reportRoutes);
+router.use('/emergency-contacts', emergencyContactRoutes);
+router.use('/location-sharing', locationSharingRoutes);
+router.use('/line-webhook', lineWebhookRoutes);
 
 export default router;
