@@ -94,6 +94,12 @@ enum MediaType {
   VIDEO
 }
 
+enum SharingStatus {
+  ACTIVE
+  EXPIRED
+  STOPPED
+}
+
 model User {
   id                      String              @id @default(cuid())
   username                String              @unique
@@ -123,8 +129,10 @@ model User {
   createdRoutes           Route[]             @relation("DriverRoutes")
   bookings                Booking[]           @relation("PassengerBookings")
 
-  reportedReports Report[] @relation("ReportReportedUser")
-  createdReports  Report[] @relation("ReportReporter")
+  reportedReports         Report[]                @relation("ReportReportedUser")
+  createdReports          Report[]                @relation("ReportReporter")
+  emergencyContacts       EmergencyContact[]
+  locationSharingSessions LocationSharingSession[]
 
   @@index([role])
   @@index([isActive])
@@ -309,4 +317,48 @@ model ReportMedia {
   createdAt DateTime @default(now())
 
   @@index([reportId])
+}
+
+model EmergencyContact {
+  id             String    @id @default(cuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name           String
+  relationship   String
+  lineUserId     String?
+  lineLinkToken  String    @unique
+  lineLinkStatus String    @default("PENDING") // PENDING | LINKED | UNLINKED
+  lineLinkedAt   DateTime?
+  phoneNumber    String
+  email          String
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  sessions LocationSharingSession[]
+
+  @@index([userId])
+  @@index([lineLinkToken])
+}
+
+model LocationSharingSession {
+  id              String          @id @default(cuid())
+  userId          String
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contacts        EmergencyContact[]
+  durationMinutes Int
+  intervalMinutes Int             @default(10)
+  status          SharingStatus   @default(ACTIVE)
+  lastLatitude    Float?
+  lastLongitude   Float?
+  lastAddress     String?
+  lastSentAt      DateTime?
+  nextSendAt      DateTime?
+  expiresAt       DateTime
+  stoppedAt       DateTime?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([nextSendAt])
 }
