@@ -44,6 +44,17 @@
                     </li>
                 </ul>
             </div>
+            <div>
+                <h3 class="text-sm font-semibold text-gray-900 mb-2 px-4">ความปลอดภัย</h3>
+                <ul class="space-y-1">
+                    <li>
+                        <NuxtLink to="/profile/emergency-contacts" class="block px-4 py-2 text-sm rounded-md"
+                            :class="isActive('/profile/emergency-contacts') ? 'font-semibold text-blue-600 bg-blue-100' : 'text-gray-700 hover:bg-gray-100'">
+                            ผู้ติดต่อฉุกเฉิน
+                        </NuxtLink>
+                    </li>
+                </ul>
+            </div>
         </nav>
     </aside>
 </template>
