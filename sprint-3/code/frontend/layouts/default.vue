@@ -72,6 +72,9 @@
                             </NuxtLink>
                         </div>
 
+                        <!-- Location Sharing Button -->
+                        <LocationSharingButton v-if="token" @open-modal="showLocationModal = true" />
+
                         <!-- Bell (ผู้ใช้ทั่วไป + แอดมินใช้ตัวนี้บนเว็บหลัก) -->
                         <div v-if="token" class="relative">
                             <button ref="bellBtn" class="relative text-gray-600 hover:text-blue-600"
@@ -391,6 +394,30 @@
         <main>
             <NuxtPage />
         </main>
+
+        <!-- Location Sharing Modal -->
+        <LocationSharingModal v-if="showLocationModal" @close="showLocationModal = false" />
+
+        <!-- Session Expired Modal -->
+        <div v-if="showSessionExpiredModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <div class="fixed inset-0 bg-black/50"></div>
+            <div class="relative bg-white rounded-xl shadow-2xl max-w-sm w-full p-6 z-10 text-center">
+                <div class="w-14 h-14 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-7 h-7 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">เซสชันหมดอายุ</h3>
+                <p class="text-sm text-gray-600 mb-6">
+                    เซสชันการใช้งานของคุณหมดอายุแล้ว กรุณาเข้าสู่ระบบอีกครั้งเพื่อความปลอดภัยของบัญชีของคุณ
+                </p>
+                <button @click="handleSessionExpired"
+                    class="w-full px-4 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                    เข้าสู่ระบบอีกครั้ง
+                </button>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -398,8 +425,45 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRuntimeConfig, useCookie } from '#app'
 import { useAuth } from '~/composables/useAuth'
+import { useLocationSharing } from '~/composables/useLocationSharing'
+import LocationSharingButton from '~/components/LocationSharingButton.vue'
+import LocationSharingModal from '~/components/LocationSharingModal.vue'
 
 const { token, user, logout } = useAuth()
+const { checkActiveSession } = useLocationSharing()
+
+const showLocationModal = ref(false)
+const showSessionExpiredModal = ref(false)
+let tokenCheckInterval = null
+
+/**
+ * ถอดรหัส JWT เพื่อดึง exp claim (ไม่ต้อง verify signature ฝั่ง client)
+ */
+const getTokenExpiry = (tokenStr) => {
+    try {
+        const parts = tokenStr.split('.')
+        if (parts.length !== 3) return null
+        const payload = JSON.parse(atob(parts[1]))
+        return payload.exp ? payload.exp * 1000 : null // แปลงเป็น ms
+    } catch {
+        return null
+    }
+}
+
+const checkTokenExpiry = () => {
+    if (!token.value) return
+    const expMs = getTokenExpiry(token.value)
+    if (!expMs) return
+    if (Date.now() >= expMs) {
+        clearInterval(tokenCheckInterval)
+        showSessionExpiredModal.value = true
+    }
+}
+
+const handleSessionExpired = () => {
+    showSessionExpiredModal.value = false
+    logout()
+}
 
 /* ====== เมนูบนสุดเดิม ====== */
 const isMobileMenuOpen = ref(false)
@@ -548,13 +612,19 @@ onMounted(() => {
     window.addEventListener('resize', handleResize)
     document.addEventListener('click', onClickOutside)
     document.addEventListener('keydown', onKey)
-    if (token.value) fetchUserNotifications()
+    if (token.value) {
+        fetchUserNotifications()
+        checkActiveSession()
+        checkTokenExpiry()
+        tokenCheckInterval = setInterval(checkTokenExpiry, 30000) // เช็คทุก 30 วินาที
+    }
 })
 
 onUnmounted(() => {
     window.removeEventListener('resize', handleResize)
     document.removeEventListener('click', onClickOutside)
     document.removeEventListener('keydown', onKey)
+    if (tokenCheckInterval) clearInterval(tokenCheckInterval)
 })
 
 /* ใส่ฟอนต์ Kanit แบบเดิม */
