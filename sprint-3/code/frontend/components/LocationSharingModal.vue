@@ -60,6 +60,8 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">ระยะเวลาการแจ้งตำแหน่ง</label>
                             <select v-model.number="durationMinutes"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white">
+                                <option :value="5">5 นาที</option>
+                                <option :value="10">10 นาที</option>
                                 <option :value="15">15 นาที</option>
                                 <option :value="30">30 นาที</option>
                                 <option :value="45">45 นาที</option>
