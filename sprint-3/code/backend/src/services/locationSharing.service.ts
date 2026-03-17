@@ -228,19 +228,14 @@ export const sendLocationUpdate = async (sessionId: string, userId: string) => {
   await Promise.allSettled(sendPromises);
 
   // อัปเดต lastSentAt และ nextSendAt
-  const updateData: Record<string, unknown> = {
-    lastSentAt: now,
-    nextSendAt: isLast ? null : nextSendTime,
-  };
-
-  // ถ้าเป็นครั้งสุดท้าย → expire session
-  if (isLast) {
-    updateData.status = 'EXPIRED';
-  }
-
+  // ถ้าเป็นครั้งสุดท้าย → set nextSendAt = null (ไม่ส่งอีก)
+  // แต่ไม่ mark EXPIRED ที่นี่ → ปล่อยให้ expireSession เป็นคนจัดการ + ส่ง LINE แจ้งหมดเวลา
   return prisma.locationSharingSession.update({
     where: { id: sessionId },
-    data: updateData,
+    data: {
+      lastSentAt: now,
+      nextSendAt: isLast ? null : nextSendTime,
+    },
     include: { contacts: true },
   });
 };

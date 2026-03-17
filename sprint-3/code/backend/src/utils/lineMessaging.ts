@@ -75,7 +75,7 @@ export const buildLocationMessage = (
 ): string => {
   const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
   const statusLine = isLast
-    ? '🛑 หยุดการแจ้งตำแหน่งแล้ว'
+    ? '📍 นี่คืออัปเดตตำแหน่งรอบสุดท้าย'
     : `🔄 จะแจ้งตำแหน่งทุกๆ ${intervalMinutes} นาที`;
 
   return [
