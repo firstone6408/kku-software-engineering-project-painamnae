@@ -57,7 +57,8 @@ const startCountdown = () => {
         const expires = new Date(activeSession.value.expiresAt).getTime()
         remainingMs.value = Math.max(0, expires - Date.now())
         if (remainingMs.value <= 0) {
-            stopSharing(true)
+            // หมดเวลา → เรียก API expire เพื่อส่ง LINE แจ้งหมดเวลา + reset UI
+            handleExpired()
         }
     }, 1000)
 }
@@ -74,6 +75,32 @@ const beforeUnloadHandler = (e) => {
         e.preventDefault()
         e.returnValue = 'คุณกำลังแจ้งตำแหน่งอยู่ ถ้าปิดหน้านี้ ระบบจะหยุดการแจ้งตำแหน่ง'
     }
+}
+
+/**
+ * จัดการเมื่อ session หมดเวลา → เรียก backend expire API + reset UI
+ */
+const handleExpired = async () => {
+    if (!activeSession.value) return
+    const sessionId = activeSession.value.id
+
+    // หยุด interval ทันที
+    stopAllIntervals()
+
+    try {
+        await $fetch(`/location-sharing/${sessionId}/expire`, {
+            baseURL: apiBase(),
+            method: 'PATCH',
+            headers: getHeaders()
+        })
+    } catch (e) {
+        console.error('[LocationSharing] Expire API failed (session may be already expired):', e)
+    }
+
+    // Reset UI
+    activeSession.value = null
+    remainingMs.value = 0
+    if (process.client) window.removeEventListener('beforeunload', beforeUnloadHandler)
 }
 
 export function useLocationSharing() {
@@ -163,31 +190,38 @@ export function useLocationSharing() {
                 })
 
                 activeSession.value = res.data
+
+                // ถ้า backend ส่งสถานะ EXPIRED กลับมา → reset UI
+                if (res.data?.status === 'EXPIRED') {
+                    stopAllIntervals()
+                    activeSession.value = null
+                    remainingMs.value = 0
+                    if (process.client) window.removeEventListener('beforeunload', beforeUnloadHandler)
+                }
             } catch (e) {
                 console.error('[LocationSharing] Send failed:', e)
                 // session อาจหมดอายุ
                 if (e?.data?.statusCode === 400) {
                     stopAllIntervals()
                     activeSession.value = null
+                    remainingMs.value = 0
                     if (process.client) window.removeEventListener('beforeunload', beforeUnloadHandler)
                 }
             }
         }, intervalMs)
     }
 
-    const stopSharing = async (autoExpired = false) => {
+    const stopSharing = async () => {
         if (!activeSession.value) return
 
-        if (!autoExpired) {
-            try {
-                await $fetch(`/location-sharing/${activeSession.value.id}/stop`, {
-                    baseURL: apiBase(),
-                    method: 'PATCH',
-                    headers: getHeaders()
-                })
-            } catch (e) {
-                console.error('[LocationSharing] Stop failed:', e)
-            }
+        try {
+            await $fetch(`/location-sharing/${activeSession.value.id}/stop`, {
+                baseURL: apiBase(),
+                method: 'PATCH',
+                headers: getHeaders()
+            })
+        } catch (e) {
+            console.error('[LocationSharing] Stop failed:', e)
         }
 
         stopAllIntervals()
