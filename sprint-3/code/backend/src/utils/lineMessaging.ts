@@ -79,7 +79,7 @@ export const buildLocationMessage = (
     : `🔄 จะแจ้งตำแหน่งทุกๆ ${intervalMinutes} นาที`;
 
   return [
-    `📍 อัปเดตตำแหน่ง - ไปนำแน่`,
+    `📍 อัปเดตตำแหน่ง - ไปนำแหน่`,
     ``,
     `${userName} กำลังเดินทาง`,
     `ปัจจุบันอยู่ที่: ${address}`,
@@ -95,7 +95,7 @@ export const buildLocationMessage = (
  */
 export const buildStoppedMessage = (userName: string): string => {
   return [
-    `📍 อัปเดตตำแหน่ง - ไปนำแน่`,
+    `📍 อัปเดตตำแหน่ง - ไปนำแหน่`,
     ``,
     `${userName} ได้หยุดการแจ้งตำแหน่งแล้ว`,
     ``,
@@ -108,7 +108,7 @@ export const buildStoppedMessage = (userName: string): string => {
  */
 export const buildExpiredMessage = (userName: string): string => {
   return [
-    `📍 อัปเดตตำแหน่ง - ไปนำแน่`,
+    `📍 อัปเดตตำแหน่ง - ไปนำแหน่`,
     ``,
     `การแจ้งตำแหน่งของ ${userName} จบลงแล้ว`,
     `เนื่องจากครบกำหนดเวลาที่ตั้งไว้`,
