@@ -19,6 +19,7 @@ jest.mock('../src/utils/lineMessaging', () => ({
   sendReplyMessage: jest.fn(() => Promise.resolve()),
   buildLocationMessage: jest.fn(() => 'mock location message'),
   buildStoppedMessage: jest.fn(() => 'mock stopped message'),
+  buildExpiredMessage: jest.fn(() => 'mock expired message'),
 }));
 
 jest.mock('../src/utils/googleMaps', () => ({
@@ -239,12 +240,19 @@ describe('POST /api/location-sharing/:sessionId/send', () => {
     expect(res.body.success).toBe(true);
   });
 
-  it('400 — session หมดอายุ', async () => {
+  it('400 — session หมดอายุ (ส่ง LINE แจ้งหมดเวลา)', async () => {
+    mockPrisma.user.findUnique.mockResolvedValue({
+      firstName: 'ปรียา', lastName: 'ใจดี', username: 'priya'
+    });
     mockPrisma.locationSharingSession.findFirst.mockResolvedValue({
       ...FAKE_SESSION,
       expiresAt: PAST_DATE,
+      contacts: [FAKE_CONTACT],
     });
-    mockPrisma.locationSharingSession.update.mockResolvedValue({});
+    mockPrisma.locationSharingSession.update.mockResolvedValue({
+      ...FAKE_SESSION,
+      status: 'EXPIRED',
+    });
 
     const res = await request(app)
       .post('/api/location-sharing/session-001/send')
@@ -380,5 +388,53 @@ describe('GET /api/location-sharing/history', () => {
 
     expect(res.statusCode).toBe(200);
     expect(res.body.data).toHaveLength(0);
+  });
+});
+
+// ══════════════════════════════════════════════════════
+//  9) PATCH /api/location-sharing/:sessionId/expire
+// ══════════════════════════════════════════════════════
+describe('PATCH /api/location-sharing/:sessionId/expire', () => {
+  it('200 — หมดเวลา session สำเร็จ (ส่ง LINE แจ้ง)', async () => {
+    mockPrisma.user.findUnique.mockResolvedValue({
+      firstName: 'ปรียา', lastName: 'ใจดี', username: 'priya'
+    });
+    mockPrisma.locationSharingSession.findFirst.mockResolvedValue(FAKE_SESSION);
+    mockPrisma.locationSharingSession.update.mockResolvedValue({
+      ...FAKE_SESSION,
+      status: 'EXPIRED',
+      nextSendAt: null,
+    });
+
+    const res = await request(app)
+      .patch('/api/location-sharing/session-001/expire')
+      .set('Authorization', VALID_TOKEN);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.success).toBe(true);
+  });
+
+  it('404 — session ไม่พบ', async () => {
+    mockPrisma.locationSharingSession.findFirst.mockResolvedValue(null);
+
+    const res = await request(app)
+      .patch('/api/location-sharing/nonexistent/expire')
+      .set('Authorization', VALID_TOKEN);
+
+    expect(res.statusCode).toBe(404);
+  });
+
+  it('200 — session ที่ EXPIRED แล้ว → return ปกติ (idempotent)', async () => {
+    mockPrisma.locationSharingSession.findFirst.mockResolvedValue({
+      ...FAKE_SESSION,
+      status: 'EXPIRED',
+    });
+
+    const res = await request(app)
+      .patch('/api/location-sharing/session-001/expire')
+      .set('Authorization', VALID_TOKEN);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.success).toBe(true);
   });
 });

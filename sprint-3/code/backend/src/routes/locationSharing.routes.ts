@@ -11,5 +11,6 @@ router.get('/:sessionId', protect, locationSharingController.getSessionById);
 router.patch('/:sessionId/location', protect, locationSharingController.updateLocation);
 router.post('/:sessionId/send', protect, locationSharingController.sendUpdate);
 router.patch('/:sessionId/stop', protect, locationSharingController.stopSharing);
+router.patch('/:sessionId/expire', protect, locationSharingController.expireSharing);
 
 export default router;

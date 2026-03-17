@@ -1,7 +1,7 @@
 import prisma from '../utils/prisma';
 import ApiError from '../utils/ApiError';
 import { StartSharingInput, UpdateLocationInput } from '../validations/locationSharing.validation';
-import { sendPushMessage, buildLocationMessage, buildStoppedMessage } from '../utils/lineMessaging';
+import { sendPushMessage, buildLocationMessage, buildStoppedMessage, buildExpiredMessage } from '../utils/lineMessaging';
 import { EmergencyContact } from '@prisma/client';
 import { reverseGeocode } from '../utils/googleMaps';
 
@@ -171,9 +171,25 @@ export const sendLocationUpdate = async (sessionId: string, userId: string) => {
 
   // ตรวจสอบว่า session หมดอายุหรือยัง
   if (now >= session.expiresAt) {
-    await prisma.locationSharingSession.update({
+    // ส่ง LINE แจ้งหมดเวลาให้ผู้ติดต่อ
+    const userName = await getUserDisplayName(userId);
+    const expiredMsg = buildExpiredMessage(userName);
+    const linkedContacts = session.contacts.filter((c: EmergencyContact) => c.lineLinkStatus === 'LINKED' && c.lineUserId);
+    await Promise.allSettled(
+      linkedContacts.map((contact: EmergencyContact) =>
+        sendPushMessage({
+          lineUserId: contact.lineUserId!,
+          messages: [{ type: 'text', text: expiredMsg }],
+        }).catch((err) => {
+          console.error(`[LINE] Failed to send expired message to ${contact.lineUserId}:`, err.message);
+        })
+      )
+    );
+
+    const updated = await prisma.locationSharingSession.update({
       where: { id: sessionId },
-      data: { status: 'EXPIRED' },
+      data: { status: 'EXPIRED', nextSendAt: null },
+      include: { contacts: true },
     });
     throw new ApiError(400, 'Session หมดอายุแล้ว');
   }
@@ -268,6 +284,50 @@ export const stopSession = async (sessionId: string, userId: string) => {
     data: {
       status: 'STOPPED',
       stoppedAt: new Date(),
+      nextSendAt: null,
+    },
+    include: { contacts: true },
+  });
+};
+
+/**
+ * หมดเวลา session อัตโนมัติ + ส่ง LINE แจ้ง
+ */
+export const expireSession = async (sessionId: string, userId: string) => {
+  const session = await prisma.locationSharingSession.findFirst({
+    where: { id: sessionId, userId },
+    include: { contacts: true },
+  });
+
+  if (!session) {
+    throw new ApiError(404, 'ไม่พบ session');
+  }
+
+  // ถ้า EXPIRED อยู่แล้วก็ return ปกติ
+  if (session.status === 'EXPIRED') {
+    return session;
+  }
+
+  // ส่ง LINE แจ้งหมดเวลา
+  const userName = await getUserDisplayName(userId);
+  const expiredMsg = buildExpiredMessage(userName);
+
+  const linkedContacts = session.contacts.filter((c: EmergencyContact) => c.lineLinkStatus === 'LINKED' && c.lineUserId);
+  await Promise.allSettled(
+    linkedContacts.map((contact: EmergencyContact) =>
+      sendPushMessage({
+        lineUserId: contact.lineUserId!,
+        messages: [{ type: 'text', text: expiredMsg }],
+      }).catch((err) => {
+        console.error(`[LINE] Failed to send expired message to ${contact.lineUserId}:`, err.message);
+      })
+    )
+  );
+
+  return prisma.locationSharingSession.update({
+    where: { id: sessionId },
+    data: {
+      status: 'EXPIRED',
       nextSendAt: null,
     },
     include: { contacts: true },

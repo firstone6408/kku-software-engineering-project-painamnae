@@ -52,3 +52,9 @@ export const getHistory = asyncHandler(async (req: Request, res: Response) => {
   const sessions = await locationSharingService.getSessionHistory(authReq.user!.sub);
   res.status(200).json({ success: true, data: sessions });
 });
+
+export const expireSharing = asyncHandler(async (req: Request, res: Response) => {
+  const authReq = req as AuthenticatedRequest;
+  const session = await locationSharingService.expireSession(req.params.sessionId, authReq.user!.sub);
+  res.status(200).json({ success: true, message: 'Session หมดเวลาแล้ว', data: session });
+});

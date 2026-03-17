@@ -102,3 +102,17 @@ export const buildStoppedMessage = (userName: string): string => {
     `🛑 หยุดการแจ้งตำแหน่งแล้ว`,
   ].join('\n');
 };
+
+/**
+ * สร้างข้อความหมดเวลา (เมื่อ session หมดอายุอัตโนมัติ)
+ */
+export const buildExpiredMessage = (userName: string): string => {
+  return [
+    `📍 อัปเดตตำแหน่ง - ไปนำแน่`,
+    ``,
+    `การแจ้งตำแหน่งของ ${userName} จบลงแล้ว`,
+    `เนื่องจากครบกำหนดเวลาที่ตั้งไว้`,
+    ``,
+    `⏰ สิ้นสุดการแจ้งตำแหน่งแล้ว`,
+  ].join('\n');
+};
