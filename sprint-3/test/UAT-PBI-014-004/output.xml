@@ -1,0 +1,1733 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.4.1 (Python 3.13.2 on win32)" generated="2026-03-18T18:07:04.161188" rpa="false" schemaversion="5">
+<suite id="s1" name="UAT-PBI-014-004" source="C:\kku-software-engineering-project-painamnae\sprint-3\test\UAT-PBI-014-004\UAT-PBI-014-004.robot">
+<kw name="Open Browser" owner="SeleniumLibrary" type="SETUP">
+<msg time="2026-03-18T18:07:05.353401" level="INFO">Opening browser 'chrome' to base url 'https://csse4269.cpkku.com/'.</msg>
+<arg>${BASE_URL}</arg>
+<arg>${BROWSER}</arg>
+<doc>Opens a new browser instance to the optional ``url``.</doc>
+<status status="PASS" start="2026-03-18T18:07:05.351678" elapsed="4.143790"/>
+</kw>
+<test id="s1-t1" name="TC-EMG-07 แก้ไขผู้ติดต่อโดยไม่กรอกชื่อ ควรแสดง Error" line="108">
+<kw name="Run Keywords" owner="BuiltIn" type="SETUP">
+<kw name="Go To" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:09.510032" level="INFO">Opening url 'https://csse4269.cpkku.com/'</msg>
+<arg>${BASE_URL}</arg>
+<doc>Navigates the current browser window to the provided ``url``.</doc>
+<status status="PASS" start="2026-03-18T18:07:09.509494" elapsed="0.051785"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-03-18T18:07:10.064467" level="INFO">Slept 500 milliseconds.</msg>
+<arg>0.5s</arg>
+<doc>Pauses the test executed for the given time.</doc>
+<status status="PASS" start="2026-03-18T18:07:09.561870" elapsed="0.503067"/>
+</kw>
+<arg>Go To</arg>
+<arg>${BASE_URL}</arg>
+<arg>AND</arg>
+<arg>Sleep</arg>
+<arg>0.5s</arg>
+<doc>Executes all the given keywords in a sequence.</doc>
+<status status="PASS" start="2026-03-18T18:07:09.507749" elapsed="0.557547"/>
+</kw>
+<kw name="Open Website And Verify">
+<kw name="Page Should Contain" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:10.121764" level="INFO">Current page contains text 'ไปนำแหน่'.</msg>
+<arg>ไปนำแหน่</arg>
+<doc>Verifies that current page contains ``text``.</doc>
+<status status="PASS" start="2026-03-18T18:07:10.067784" elapsed="0.054453"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:10.646059" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="01_open_website.png"&gt;&lt;img src="01_open_website.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>01_open_website.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:10.123006" elapsed="0.523438"/>
+</kw>
+<doc>Step 1: เปิดเว็บไซต์และตรวจสอบ</doc>
+<status status="PASS" start="2026-03-18T18:07:10.066646" elapsed="0.580243"/>
+</kw>
+<kw name="Login With Valid Credentials">
+<kw name="Go To" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:10.650214" level="INFO">Opening url 'https://csse4269.cpkku.com/login'</msg>
+<arg>${LOGIN_URL}</arg>
+<doc>Navigates the current browser window to the provided ``url``.</doc>
+<status status="PASS" start="2026-03-18T18:07:10.649508" elapsed="0.163805"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="SeleniumLibrary">
+<arg>xpath=//input[@placeholder='กรอกชื่อผู้ใช้หรืออีเมล']</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until the element ``locator`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:10.813931" elapsed="0.083015"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:11.085308" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="02_login_page.png"&gt;&lt;img src="02_login_page.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>02_login_page.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:10.897445" elapsed="0.188660"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:11.087434" level="INFO">Typing text 'phatcharida.f@kkumail.com' into text field 'xpath=//input[@placeholder='กรอกชื่อผู้ใช้หรืออีเมล']'.</msg>
+<arg>xpath=//input[@placeholder='กรอกชื่อผู้ใช้หรืออีเมล']</arg>
+<arg>${EMAIL}</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:11.086692" elapsed="0.387711"/>
+</kw>
+<kw name="Input Password" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:11.475485" level="INFO">Typing password into text field 'xpath=//input[@placeholder='กรอกรหัสผ่าน']'.</msg>
+<msg time="2026-03-18T18:07:11.553811" level="INFO">Temporally setting log level to: NONE</msg>
+<arg>xpath=//input[@placeholder='กรอกรหัสผ่าน']</arg>
+<arg>${PASSWORD}</arg>
+<doc>Types the given password into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:11.474779" elapsed="0.208289"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:11.847330" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="03_login_filled.png"&gt;&lt;img src="03_login_filled.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>03_login_filled.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:11.683575" elapsed="0.163959"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:11.848271" level="INFO">Clicking element 'xpath=//button[contains(text(),'เข้าสู่ระบบ')]'.</msg>
+<arg>xpath=//button[contains(text(),'เข้าสู่ระบบ')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:11.847847" elapsed="0.187791"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>เดินทางร่วมกัน</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:12.036063" elapsed="0.757475"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:13.129231" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="04_login_success.png"&gt;&lt;img src="04_login_success.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>04_login_success.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:12.794001" elapsed="0.335680"/>
+</kw>
+<doc>Step 2: เข้าสู่ระบบสำเร็จ</doc>
+<status status="PASS" start="2026-03-18T18:07:10.648361" elapsed="2.481786"/>
+</kw>
+<kw name="Navigate To Emergency Contact Page">
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:13.132031" level="INFO">Clicking element 'xpath=//*[contains(text(),'Phatcharida')]'.</msg>
+<arg>xpath=//*[contains(text(),'Phatcharida')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:13.131695" elapsed="0.162721"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>xpath=//*[contains(text(),'บัญชีของฉัน')]</arg>
+<arg>timeout=5s</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T18:07:13.295070" elapsed="0.075986"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:13.839229" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="05_profile_dropdown.png"&gt;&lt;img src="05_profile_dropdown.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>05_profile_dropdown.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:13.371784" elapsed="0.467701"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:13.841225" level="INFO">Clicking element 'xpath=//*[contains(text(),'บัญชีของฉัน')]'.</msg>
+<arg>xpath=//*[contains(text(),'บัญชีของฉัน')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:13.840463" elapsed="0.251430"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>โปรไฟล์ของฉัน</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:14.092390" elapsed="0.043699"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:14.414391" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="06_account_page.png"&gt;&lt;img src="06_account_page.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>06_account_page.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:14.136840" elapsed="0.277893"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:14.416029" level="INFO">Clicking element 'xpath=//*[contains(text(),'ผู้ติดต่อฉุกเฉิน')]'.</msg>
+<arg>xpath=//*[contains(text(),'ผู้ติดต่อฉุกเฉิน')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:14.415327" elapsed="0.181804"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>ผู้ติดต่อฉุกเฉิน</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:14.597573" elapsed="0.074970"/>
+</kw>
+<kw name="Wait Until Page Does Not Contain" owner="SeleniumLibrary">
+<arg>กำลังโหลด</arg>
+<arg>timeout=15s</arg>
+<doc>Waits until ``text`` disappears from the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:14.672988" elapsed="0.272833"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>${TARGET_CONTACT}</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:14.946335" elapsed="0.040095"/>
+</kw>
+<kw name="Page Should Contain Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:15.015939" level="INFO">Current page contains element 'xpath=//*[contains(text(),'เพิ่มผู้ติดต่อ')]'.</msg>
+<arg>xpath=//*[contains(text(),'เพิ่มผู้ติดต่อ')]</arg>
+<doc>Verifies that element ``locator`` is found on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:14.986945" elapsed="0.029223"/>
+</kw>
+<kw name="Page Should Contain Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:15.047850" level="INFO">Current page contains element 'xpath=//*[contains(text(),'ประวัติการแจ้ง')]'.</msg>
+<arg>xpath=//*[contains(text(),'ประวัติการแจ้ง')]</arg>
+<doc>Verifies that element ``locator`` is found on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:15.016569" elapsed="0.031681"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:15.334807" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="07_emergency_contact_page.png"&gt;&lt;img src="07_emergency_contact_page.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>07_emergency_contact_page.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:15.048985" elapsed="0.286078"/>
+</kw>
+<doc>Step 3: เข้าหน้าผู้ติดต่อฉุกเฉิน
+กดโปรไฟล์ → บัญชีของฉัน → ผู้ติดต่อฉุกเฉิน
+ตรวจสอบ: แสดงตาราง มีปุ่ม "+ เพิ่มผู้ติดต่อ" และ "ประวัติการแจ้ง"</doc>
+<status status="PASS" start="2026-03-18T18:07:13.131136" elapsed="2.204330"/>
+</kw>
+<kw name="Open Edit Modal For Contact">
+<kw name="Execute Javascript" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:15.339042" level="INFO">Executing JavaScript:
+var el = document.querySelector('div.overflow-x-auto');if (el) { el.scrollLeft = el.scrollWidth; }
+Without any arguments.</msg>
+<arg>var el = document.querySelector('div.overflow-x-auto');</arg>
+<arg>if (el) { el.scrollLeft = el.scrollWidth; }</arg>
+<doc>Executes the given JavaScript code with possible arguments.</doc>
+<status status="PASS" start="2026-03-18T18:07:15.337863" elapsed="0.015000"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-03-18T18:07:15.855301" level="INFO">Slept 500 milliseconds.</msg>
+<arg>0.5s</arg>
+<doc>Pauses the test executed for the given time.</doc>
+<status status="PASS" start="2026-03-18T18:07:15.353535" elapsed="0.502041"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:16.051666" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="08_table_scrolled_right.png"&gt;&lt;img src="08_table_scrolled_right.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>08_table_scrolled_right.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:15.856040" elapsed="0.195870"/>
+</kw>
+<kw name="Execute Javascript" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:16.055006" level="INFO">Executing JavaScript:
+var rows = document.querySelectorAll('tr');for (var i = 0; i &lt; rows.length; i++) {if (rows[i].innerText.includes('เกศรา กฤติขจร')) {var btn = rows[i].querySelector('button[title="แก้ไข"]');if (btn) { btn.click(); break; }}}
+Without any arguments.</msg>
+<arg>var rows = document.querySelectorAll('tr');</arg>
+<arg>for (var i = 0; i &lt; rows.length; i++) {</arg>
+<arg>if (rows[i].innerText.includes('${TARGET_CONTACT}')) {</arg>
+<arg>var btn = rows[i].querySelector('button[title="แก้ไข"]');</arg>
+<arg>if (btn) { btn.click(); break; }</arg>
+<arg>}</arg>
+<arg>}</arg>
+<doc>Executes the given JavaScript code with possible arguments.</doc>
+<status status="PASS" start="2026-03-18T18:07:16.052584" elapsed="0.039486"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>xpath=//*[contains(text(),'แก้ไขผู้ติดต่อฉุกเฉิน')]</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T18:07:16.094080" elapsed="0.076945"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:16.411104" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="09_edit_modal_open.png"&gt;&lt;img src="09_edit_modal_open.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>09_edit_modal_open.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:16.171753" elapsed="0.239632"/>
+</kw>
+<doc>Step 4 (เริ่มต้น): กดปุ่มแก้ไข (ไอคอนดินสอ) ที่แถวของ TARGET_CONTACT</doc>
+<status status="PASS" start="2026-03-18T18:07:15.336861" elapsed="1.074816"/>
+</kw>
+<kw name="Get Modal Input">
+<kw name="Get WebElement" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:16.444829" level="INFO">${field} = &lt;selenium.webdriver.remote.webelement.WebElement (session="770b5a6a698a3454ea9896d08675a790", element="f.A37DBF30060500B6370C6F4211268384.d.5E6BB46218776107210599F9E1F979EA.e.187")&gt;</msg>
+<var>${field}</var>
+<arg>xpath=(//div[contains(@class,'fixed') or contains(@class,'modal') or contains(@class,'dialog')]//input)[${index}]</arg>
+<doc>Returns the first WebElement matching the given ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:16.415139" elapsed="0.029903"/>
+</kw>
+<return>
+<value>${field}</value>
+<status status="PASS" start="2026-03-18T18:07:16.445859" elapsed="0.000318"/>
+</return>
+<msg time="2026-03-18T18:07:16.447116" level="INFO">${name_field} = &lt;selenium.webdriver.remote.webelement.WebElement (session="770b5a6a698a3454ea9896d08675a790", element="f.A37DBF30060500B6370C6F4211268384.d.5E6BB46218776107210599F9E1F979EA.e.187")&gt;</msg>
+<var>${name_field}</var>
+<arg>1</arg>
+<doc>ดึง input ลำดับที่ ${index} ใน modal (1=ชื่อ, 2=เบอร์, 3=อีเมล)</doc>
+<status status="PASS" start="2026-03-18T18:07:16.414342" elapsed="0.033025"/>
+</kw>
+<kw name="Clear Field With JS">
+<kw name="Execute Javascript" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:16.451813" level="INFO">Executing JavaScript:
+arguments[0].value = '';
+By using argument:
+'&lt;selenium.webdriver.remote.webelement.WebElement (session="770b5a6a698a3454ea9896d08675a790", element="f.A37DBF30060500B6370C6F4211268384.d.5E6BB46218776107210599F9E1F979EA.e.187")&gt;'</msg>
+<arg>arguments[0].value = '';</arg>
+<arg>ARGUMENTS</arg>
+<arg>${element}</arg>
+<doc>Executes the given JavaScript code with possible arguments.</doc>
+<status status="PASS" start="2026-03-18T18:07:16.450152" elapsed="0.023948"/>
+</kw>
+<kw name="Press Keys" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:16.476504" level="INFO">Sending key(s) ('SPACE+BACK_SPACE',) to &lt;selenium.webdriver.remote.webelement.WebElement (session="770b5a6a698a3454ea9896d08675a790", element="f.A37DBF30060500B6370C6F4211268384.d.5E6BB46218776107210599F9E1F979EA.e.187")&gt; element.</msg>
+<msg time="2026-03-18T18:07:16.810780" level="INFO">Pressing special key SPACE down.</msg>
+<msg time="2026-03-18T18:07:16.810966" level="INFO">Pressing special key BACK_SPACE down.</msg>
+<msg time="2026-03-18T18:07:16.811086" level="INFO">Releasing special key SPACE.</msg>
+<msg time="2026-03-18T18:07:16.811191" level="INFO">Releasing special key BACK_SPACE.</msg>
+<arg>${element}</arg>
+<arg>SPACE+BACK_SPACE</arg>
+<doc>Simulates the user pressing key(s) to an element or on the active browser.</doc>
+<status status="PASS" start="2026-03-18T18:07:16.474760" elapsed="0.385635"/>
+</kw>
+<arg>${name_field}</arg>
+<doc>ล้างค่า input field ด้วย JavaScript (เพื่อให้แน่ใจว่าข้อมูลถูกลบออกทั้งหมด)</doc>
+<status status="PASS" start="2026-03-18T18:07:16.448954" elapsed="0.411776"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:17.081599" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="TC07_01_name_cleared.png"&gt;&lt;img src="TC07_01_name_cleared.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>TC07_01_name_cleared.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:16.861620" elapsed="0.220357"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:17.084246" level="INFO">Clicking element 'xpath=//button[contains(text(),'บันทึก')]'.</msg>
+<arg>xpath=//button[contains(text(),'บันทึก')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:17.083196" elapsed="0.196611"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>กรุณากรอกข้อมูลที่จำเป็นให้ครบ</arg>
+<arg>timeout=5s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:17.280871" elapsed="0.052759"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:17.608015" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="TC07_02_error_message.png"&gt;&lt;img src="TC07_02_error_message.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>TC07_02_error_message.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:17.334363" elapsed="0.274042"/>
+</kw>
+<kw name="Close Modal If Open" type="TEARDOWN">
+<kw name="Run Keyword And Return Status" owner="BuiltIn">
+<kw name="Element Should Be Visible" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:17.689266" level="INFO">Element 'xpath=//*[contains(text(),'แก้ไขผู้ติดต่อฉุกเฉิน')]' is displayed.</msg>
+<arg>xpath=//*[contains(text(),'แก้ไขผู้ติดต่อฉุกเฉิน')]</arg>
+<doc>Verifies that the element identified by ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T18:07:17.612947" elapsed="0.076635"/>
+</kw>
+<msg time="2026-03-18T18:07:17.690013" level="INFO">${modal_open} = True</msg>
+<var>${modal_open}</var>
+<arg>Element Should Be Visible</arg>
+<arg>xpath=//*[contains(text(),'แก้ไขผู้ติดต่อฉุกเฉิน')]</arg>
+<doc>Runs the specified keyword and returns the status as a Boolean value.</doc>
+<status status="PASS" start="2026-03-18T18:07:17.611642" elapsed="0.078484"/>
+</kw>
+<kw name="Run Keyword If" owner="BuiltIn">
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:17.692747" level="INFO">Clicking element 'xpath=//button[contains(text(),'ยกเลิก')]'.</msg>
+<arg>xpath=//button[contains(text(),'ยกเลิก')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:17.692039" elapsed="0.193964"/>
+</kw>
+<arg>${modal_open}</arg>
+<arg>Click Element</arg>
+<arg>xpath=//button[contains(text(),'ยกเลิก')]</arg>
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<status status="PASS" start="2026-03-18T18:07:17.690702" elapsed="0.195567"/>
+</kw>
+<doc>ปิด modal ถ้ายังเปิดอยู่ (กด X หรือ ยกเลิก)</doc>
+<status status="PASS" start="2026-03-18T18:07:17.610201" elapsed="0.276309"/>
+</kw>
+<doc>UAT Step 4: กดแก้ไข → ลบชื่อผู้ติดต่อ → กดบันทึก
+Expected: ระบบแสดงข้อความ "กรุณากรอกข้อมูลที่จำเป็นให้ครบ"</doc>
+<tag>edit-contact</tag>
+<tag>negative</tag>
+<tag>TC-EMG-07</tag>
+<status status="PASS" start="2026-03-18T18:07:09.497546" elapsed="8.389556"/>
+</test>
+<test id="s1-t2" name="TC-EMG-08 แก้ไขผู้ติดต่อโดยไม่เลือกความสัมพันธ์ ควรแสดง Error" line="128">
+<kw name="Run Keywords" owner="BuiltIn" type="SETUP">
+<kw name="Go To" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:17.900123" level="INFO">Opening url 'https://csse4269.cpkku.com/'</msg>
+<arg>${BASE_URL}</arg>
+<doc>Navigates the current browser window to the provided ``url``.</doc>
+<status status="PASS" start="2026-03-18T18:07:17.899536" elapsed="0.197394"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-03-18T18:07:18.604366" level="INFO">Slept 500 milliseconds.</msg>
+<arg>0.5s</arg>
+<doc>Pauses the test executed for the given time.</doc>
+<status status="PASS" start="2026-03-18T18:07:18.097536" elapsed="0.507439"/>
+</kw>
+<arg>Go To</arg>
+<arg>${BASE_URL}</arg>
+<arg>AND</arg>
+<arg>Sleep</arg>
+<arg>0.5s</arg>
+<doc>Executes all the given keywords in a sequence.</doc>
+<status status="PASS" start="2026-03-18T18:07:17.897368" elapsed="0.707902"/>
+</kw>
+<kw name="Open Website And Verify">
+<kw name="Page Should Contain" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:18.656231" level="INFO">Current page contains text 'ไปนำแหน่'.</msg>
+<arg>ไปนำแหน่</arg>
+<doc>Verifies that current page contains ``text``.</doc>
+<status status="PASS" start="2026-03-18T18:07:18.607385" elapsed="0.049119"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:19.063746" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="01_open_website.png"&gt;&lt;img src="01_open_website.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>01_open_website.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:18.657265" elapsed="0.406772"/>
+</kw>
+<doc>Step 1: เปิดเว็บไซต์และตรวจสอบ</doc>
+<status status="PASS" start="2026-03-18T18:07:18.606582" elapsed="0.457816"/>
+</kw>
+<kw name="Login With Valid Credentials">
+<kw name="Go To" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:19.067936" level="INFO">Opening url 'https://csse4269.cpkku.com/login'</msg>
+<arg>${LOGIN_URL}</arg>
+<doc>Navigates the current browser window to the provided ``url``.</doc>
+<status status="PASS" start="2026-03-18T18:07:19.066647" elapsed="0.061598"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="SeleniumLibrary">
+<arg>xpath=//input[@placeholder='กรอกชื่อผู้ใช้หรืออีเมล']</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until the element ``locator`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:19.128990" elapsed="0.171270"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:19.532310" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="02_login_page.png"&gt;&lt;img src="02_login_page.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>02_login_page.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:19.300785" elapsed="0.231778"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:19.533443" level="INFO">Typing text 'phatcharida.f@kkumail.com' into text field 'xpath=//input[@placeholder='กรอกชื่อผู้ใช้หรืออีเมล']'.</msg>
+<arg>xpath=//input[@placeholder='กรอกชื่อผู้ใช้หรืออีเมล']</arg>
+<arg>${EMAIL}</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:19.532898" elapsed="0.433809"/>
+</kw>
+<kw name="Input Password" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:19.968914" level="INFO">Typing password into text field 'xpath=//input[@placeholder='กรอกรหัสผ่าน']'.</msg>
+<msg time="2026-03-18T18:07:20.197742" level="INFO">Temporally setting log level to: NONE</msg>
+<arg>xpath=//input[@placeholder='กรอกรหัสผ่าน']</arg>
+<arg>${PASSWORD}</arg>
+<doc>Types the given password into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:19.967409" elapsed="0.322335"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:20.567298" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="03_login_filled.png"&gt;&lt;img src="03_login_filled.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>03_login_filled.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:20.290216" elapsed="0.277262"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:20.568150" level="INFO">Clicking element 'xpath=//button[contains(text(),'เข้าสู่ระบบ')]'.</msg>
+<arg>xpath=//button[contains(text(),'เข้าสู่ระบบ')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:20.567753" elapsed="0.142938"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>เดินทางร่วมกัน</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:20.710989" elapsed="0.268564"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:21.457883" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="04_login_success.png"&gt;&lt;img src="04_login_success.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>04_login_success.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:20.979938" elapsed="0.478314"/>
+</kw>
+<doc>Step 2: เข้าสู่ระบบสำเร็จ</doc>
+<status status="PASS" start="2026-03-18T18:07:19.065644" elapsed="2.392975"/>
+</kw>
+<kw name="Navigate To Emergency Contact Page">
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:21.460959" level="INFO">Clicking element 'xpath=//*[contains(text(),'Phatcharida')]'.</msg>
+<arg>xpath=//*[contains(text(),'Phatcharida')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:21.460464" elapsed="0.118550"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>xpath=//*[contains(text(),'บัญชีของฉัน')]</arg>
+<arg>timeout=5s</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T18:07:21.579267" elapsed="0.050663"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:22.156945" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="05_profile_dropdown.png"&gt;&lt;img src="05_profile_dropdown.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>05_profile_dropdown.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:21.630157" elapsed="0.527705"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:22.159264" level="INFO">Clicking element 'xpath=//*[contains(text(),'บัญชีของฉัน')]'.</msg>
+<arg>xpath=//*[contains(text(),'บัญชีของฉัน')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:22.158470" elapsed="0.134407"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>โปรไฟล์ของฉัน</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:22.293348" elapsed="0.237589"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:22.846684" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="06_account_page.png"&gt;&lt;img src="06_account_page.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>06_account_page.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:22.531380" elapsed="0.315556"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:22.847859" level="INFO">Clicking element 'xpath=//*[contains(text(),'ผู้ติดต่อฉุกเฉิน')]'.</msg>
+<arg>xpath=//*[contains(text(),'ผู้ติดต่อฉุกเฉิน')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:22.847341" elapsed="0.185791"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>ผู้ติดต่อฉุกเฉิน</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:23.033524" elapsed="0.079139"/>
+</kw>
+<kw name="Wait Until Page Does Not Contain" owner="SeleniumLibrary">
+<arg>กำลังโหลด</arg>
+<arg>timeout=15s</arg>
+<doc>Waits until ``text`` disappears from the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:23.113174" elapsed="0.467757"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>${TARGET_CONTACT}</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:23.581688" elapsed="0.049660"/>
+</kw>
+<kw name="Page Should Contain Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:23.676374" level="INFO">Current page contains element 'xpath=//*[contains(text(),'เพิ่มผู้ติดต่อ')]'.</msg>
+<arg>xpath=//*[contains(text(),'เพิ่มผู้ติดต่อ')]</arg>
+<doc>Verifies that element ``locator`` is found on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:23.631813" elapsed="0.044791"/>
+</kw>
+<kw name="Page Should Contain Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:23.709816" level="INFO">Current page contains element 'xpath=//*[contains(text(),'ประวัติการแจ้ง')]'.</msg>
+<arg>xpath=//*[contains(text(),'ประวัติการแจ้ง')]</arg>
+<doc>Verifies that element ``locator`` is found on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:23.676940" elapsed="0.033195"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:23.897140" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="07_emergency_contact_page.png"&gt;&lt;img src="07_emergency_contact_page.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>07_emergency_contact_page.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:23.710634" elapsed="0.186777"/>
+</kw>
+<doc>Step 3: เข้าหน้าผู้ติดต่อฉุกเฉิน
+กดโปรไฟล์ → บัญชีของฉัน → ผู้ติดต่อฉุกเฉิน
+ตรวจสอบ: แสดงตาราง มีปุ่ม "+ เพิ่มผู้ติดต่อ" และ "ประวัติการแจ้ง"</doc>
+<status status="PASS" start="2026-03-18T18:07:21.459687" elapsed="2.438011"/>
+</kw>
+<kw name="Open Edit Modal For Contact">
+<kw name="Execute Javascript" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:23.900856" level="INFO">Executing JavaScript:
+var el = document.querySelector('div.overflow-x-auto');if (el) { el.scrollLeft = el.scrollWidth; }
+Without any arguments.</msg>
+<arg>var el = document.querySelector('div.overflow-x-auto');</arg>
+<arg>if (el) { el.scrollLeft = el.scrollWidth; }</arg>
+<doc>Executes the given JavaScript code with possible arguments.</doc>
+<status status="PASS" start="2026-03-18T18:07:23.899529" elapsed="0.014111"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-03-18T18:07:24.415152" level="INFO">Slept 500 milliseconds.</msg>
+<arg>0.5s</arg>
+<doc>Pauses the test executed for the given time.</doc>
+<status status="PASS" start="2026-03-18T18:07:23.913963" elapsed="0.501529"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:24.617482" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="08_table_scrolled_right.png"&gt;&lt;img src="08_table_scrolled_right.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>08_table_scrolled_right.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:24.416062" elapsed="0.201734"/>
+</kw>
+<kw name="Execute Javascript" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:24.619951" level="INFO">Executing JavaScript:
+var rows = document.querySelectorAll('tr');for (var i = 0; i &lt; rows.length; i++) {if (rows[i].innerText.includes('เกศรา กฤติขจร')) {var btn = rows[i].querySelector('button[title="แก้ไข"]');if (btn) { btn.click(); break; }}}
+Without any arguments.</msg>
+<arg>var rows = document.querySelectorAll('tr');</arg>
+<arg>for (var i = 0; i &lt; rows.length; i++) {</arg>
+<arg>if (rows[i].innerText.includes('${TARGET_CONTACT}')) {</arg>
+<arg>var btn = rows[i].querySelector('button[title="แก้ไข"]');</arg>
+<arg>if (btn) { btn.click(); break; }</arg>
+<arg>}</arg>
+<arg>}</arg>
+<doc>Executes the given JavaScript code with possible arguments.</doc>
+<status status="PASS" start="2026-03-18T18:07:24.618336" elapsed="0.026306"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>xpath=//*[contains(text(),'แก้ไขผู้ติดต่อฉุกเฉิน')]</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T18:07:24.645186" elapsed="0.036524"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:24.881342" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="09_edit_modal_open.png"&gt;&lt;img src="09_edit_modal_open.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>09_edit_modal_open.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:24.682100" elapsed="0.199538"/>
+</kw>
+<doc>Step 4 (เริ่มต้น): กดปุ่มแก้ไข (ไอคอนดินสอ) ที่แถวของ TARGET_CONTACT</doc>
+<status status="PASS" start="2026-03-18T18:07:23.898617" elapsed="0.983359"/>
+</kw>
+<kw name="Get Modal Select">
+<kw name="Get WebElement" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:24.910964" level="INFO">${sel} = &lt;selenium.webdriver.remote.webelement.WebElement (session="770b5a6a698a3454ea9896d08675a790", element="f.A37DBF30060500B6370C6F4211268384.d.11C8C5071B7ADCC8C17DA67532B025BF.e.351")&gt;</msg>
+<var>${sel}</var>
+<arg>xpath=(//div[contains(@class,'fixed') or contains(@class,'modal') or contains(@class,'dialog')]//select)[1]</arg>
+<doc>Returns the first WebElement matching the given ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:24.883660" elapsed="0.027446"/>
+</kw>
+<return>
+<value>${sel}</value>
+<status status="PASS" start="2026-03-18T18:07:24.911370" elapsed="0.000190"/>
+</return>
+<msg time="2026-03-18T18:07:24.912059" level="INFO">${select} = &lt;selenium.webdriver.remote.webelement.WebElement (session="770b5a6a698a3454ea9896d08675a790", element="f.A37DBF30060500B6370C6F4211268384.d.11C8C5071B7ADCC8C17DA67532B025BF.e.351")&gt;</msg>
+<var>${select}</var>
+<doc>ดึง select (ความสัมพันธ์) ใน modal</doc>
+<status status="PASS" start="2026-03-18T18:07:24.882937" elapsed="0.029217"/>
+</kw>
+<kw name="Select From List By Index" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:24.913550" level="INFO">Selecting options from selection list '&lt;selenium.webdriver.remote.webelement.WebElement (session="770b5a6a698a3454ea9896d08675a790", element="f.A37DBF30060500B6370C6F4211268384.d.11C8C5071B7ADCC8C17DA67532B025BF.e.351")&gt;' by index 0.</msg>
+<arg>${select}</arg>
+<arg>0</arg>
+<doc>Selects options from selection list ``locator`` by ``indexes``.</doc>
+<status status="PASS" start="2026-03-18T18:07:24.912807" elapsed="0.199739"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:25.374116" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="TC08_01_relationship_cleared.png"&gt;&lt;img src="TC08_01_relationship_cleared.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>TC08_01_relationship_cleared.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:25.114191" elapsed="0.260233"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:25.375884" level="INFO">Clicking element 'xpath=//button[contains(text(),'บันทึก')]'.</msg>
+<arg>xpath=//button[contains(text(),'บันทึก')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:25.375232" elapsed="0.223325"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>กรุณาใส่ความสัมพันธ์</arg>
+<arg>timeout=5s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:25.600804" elapsed="0.324806"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:26.102820" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="TC08_02_error_message.png"&gt;&lt;img src="TC08_02_error_message.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>TC08_02_error_message.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:25.926621" elapsed="0.176475"/>
+</kw>
+<kw name="Close Modal If Open" type="TEARDOWN">
+<kw name="Run Keyword And Return Status" owner="BuiltIn">
+<kw name="Element Should Be Visible" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:26.144843" level="INFO">Element 'xpath=//*[contains(text(),'แก้ไขผู้ติดต่อฉุกเฉิน')]' is displayed.</msg>
+<arg>xpath=//*[contains(text(),'แก้ไขผู้ติดต่อฉุกเฉิน')]</arg>
+<doc>Verifies that the element identified by ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T18:07:26.108116" elapsed="0.036930"/>
+</kw>
+<msg time="2026-03-18T18:07:26.145354" level="INFO">${modal_open} = True</msg>
+<var>${modal_open}</var>
+<arg>Element Should Be Visible</arg>
+<arg>xpath=//*[contains(text(),'แก้ไขผู้ติดต่อฉุกเฉิน')]</arg>
+<doc>Runs the specified keyword and returns the status as a Boolean value.</doc>
+<status status="PASS" start="2026-03-18T18:07:26.106999" elapsed="0.038426"/>
+</kw>
+<kw name="Run Keyword If" owner="BuiltIn">
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:26.147033" level="INFO">Clicking element 'xpath=//button[contains(text(),'ยกเลิก')]'.</msg>
+<arg>xpath=//button[contains(text(),'ยกเลิก')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:26.146659" elapsed="0.140258"/>
+</kw>
+<arg>${modal_open}</arg>
+<arg>Click Element</arg>
+<arg>xpath=//button[contains(text(),'ยกเลิก')]</arg>
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<status status="PASS" start="2026-03-18T18:07:26.145763" elapsed="0.141425"/>
+</kw>
+<doc>ปิด modal ถ้ายังเปิดอยู่ (กด X หรือ ยกเลิก)</doc>
+<status status="PASS" start="2026-03-18T18:07:26.105991" elapsed="0.181460"/>
+</kw>
+<doc>UAT Step 4: กดแก้ไข → เลือก "- เลือกความสัมพันธ์ -" → กดบันทึก
+Expected: ระบบแสดงข้อความ "กรุณาใส่ความสัมพันธ์"</doc>
+<tag>edit-contact</tag>
+<tag>negative</tag>
+<tag>TC-EMG-08</tag>
+<status status="PASS" start="2026-03-18T18:07:17.889028" elapsed="8.398896"/>
+</test>
+<test id="s1-t3" name="TC-EMG-09 แก้ไขผู้ติดต่อโดยไม่กรอกเบอร์โทรศัพท์ ควรแสดง Error" line="148">
+<kw name="Run Keywords" owner="BuiltIn" type="SETUP">
+<kw name="Go To" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:26.297932" level="INFO">Opening url 'https://csse4269.cpkku.com/'</msg>
+<arg>${BASE_URL}</arg>
+<doc>Navigates the current browser window to the provided ``url``.</doc>
+<status status="PASS" start="2026-03-18T18:07:26.297616" elapsed="0.161586"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-03-18T18:07:26.961251" level="INFO">Slept 500 milliseconds.</msg>
+<arg>0.5s</arg>
+<doc>Pauses the test executed for the given time.</doc>
+<status status="PASS" start="2026-03-18T18:07:26.459740" elapsed="0.501809"/>
+</kw>
+<arg>Go To</arg>
+<arg>${BASE_URL}</arg>
+<arg>AND</arg>
+<arg>Sleep</arg>
+<arg>0.5s</arg>
+<doc>Executes all the given keywords in a sequence.</doc>
+<status status="PASS" start="2026-03-18T18:07:26.296656" elapsed="0.665160"/>
+</kw>
+<kw name="Open Website And Verify">
+<kw name="Page Should Contain" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:27.018002" level="INFO">Current page contains text 'ไปนำแหน่'.</msg>
+<arg>ไปนำแหน่</arg>
+<doc>Verifies that current page contains ``text``.</doc>
+<status status="PASS" start="2026-03-18T18:07:26.963694" elapsed="0.054520"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:27.429158" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="01_open_website.png"&gt;&lt;img src="01_open_website.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>01_open_website.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:27.019061" elapsed="0.410398"/>
+</kw>
+<doc>Step 1: เปิดเว็บไซต์และตรวจสอบ</doc>
+<status status="PASS" start="2026-03-18T18:07:26.962817" elapsed="0.467024"/>
+</kw>
+<kw name="Login With Valid Credentials">
+<kw name="Go To" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:27.432475" level="INFO">Opening url 'https://csse4269.cpkku.com/login'</msg>
+<arg>${LOGIN_URL}</arg>
+<doc>Navigates the current browser window to the provided ``url``.</doc>
+<status status="PASS" start="2026-03-18T18:07:27.431837" elapsed="0.210811"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="SeleniumLibrary">
+<arg>xpath=//input[@placeholder='กรอกชื่อผู้ใช้หรืออีเมล']</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until the element ``locator`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:27.643118" elapsed="0.067978"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:27.870808" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="02_login_page.png"&gt;&lt;img src="02_login_page.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>02_login_page.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:27.711718" elapsed="0.159390"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:27.872371" level="INFO">Typing text 'phatcharida.f@kkumail.com' into text field 'xpath=//input[@placeholder='กรอกชื่อผู้ใช้หรืออีเมล']'.</msg>
+<arg>xpath=//input[@placeholder='กรอกชื่อผู้ใช้หรืออีเมล']</arg>
+<arg>${EMAIL}</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:27.871594" elapsed="0.455798"/>
+</kw>
+<kw name="Input Password" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:28.328847" level="INFO">Typing password into text field 'xpath=//input[@placeholder='กรอกรหัสผ่าน']'.</msg>
+<msg time="2026-03-18T18:07:28.429937" level="INFO">Temporally setting log level to: NONE</msg>
+<arg>xpath=//input[@placeholder='กรอกรหัสผ่าน']</arg>
+<arg>${PASSWORD}</arg>
+<doc>Types the given password into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:28.328113" elapsed="0.291261"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:28.781248" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="03_login_filled.png"&gt;&lt;img src="03_login_filled.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>03_login_filled.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:28.619832" elapsed="0.161881"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:28.782699" level="INFO">Clicking element 'xpath=//button[contains(text(),'เข้าสู่ระบบ')]'.</msg>
+<arg>xpath=//button[contains(text(),'เข้าสู่ระบบ')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:28.782138" elapsed="0.140059"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>เดินทางร่วมกัน</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:28.922767" elapsed="0.278092"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:29.520335" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="04_login_success.png"&gt;&lt;img src="04_login_success.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>04_login_success.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:29.201440" elapsed="0.319118"/>
+</kw>
+<doc>Step 2: เข้าสู่ระบบสำเร็จ</doc>
+<status status="PASS" start="2026-03-18T18:07:27.430847" elapsed="2.089923"/>
+</kw>
+<kw name="Navigate To Emergency Contact Page">
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:29.522410" level="INFO">Clicking element 'xpath=//*[contains(text(),'Phatcharida')]'.</msg>
+<arg>xpath=//*[contains(text(),'Phatcharida')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:29.522044" elapsed="0.138814"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>xpath=//*[contains(text(),'บัญชีของฉัน')]</arg>
+<arg>timeout=5s</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T18:07:29.661413" elapsed="0.037473"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:30.094734" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="05_profile_dropdown.png"&gt;&lt;img src="05_profile_dropdown.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>05_profile_dropdown.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:29.699616" elapsed="0.395549"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:30.096442" level="INFO">Clicking element 'xpath=//*[contains(text(),'บัญชีของฉัน')]'.</msg>
+<arg>xpath=//*[contains(text(),'บัญชีของฉัน')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:30.095783" elapsed="0.155381"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>โปรไฟล์ของฉัน</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:30.252050" elapsed="0.058782"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:30.540696" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="06_account_page.png"&gt;&lt;img src="06_account_page.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>06_account_page.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:30.311486" elapsed="0.229487"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:30.542247" level="INFO">Clicking element 'xpath=//*[contains(text(),'ผู้ติดต่อฉุกเฉิน')]'.</msg>
+<arg>xpath=//*[contains(text(),'ผู้ติดต่อฉุกเฉิน')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:30.541505" elapsed="0.157976"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>ผู้ติดต่อฉุกเฉิน</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:30.700124" elapsed="0.072343"/>
+</kw>
+<kw name="Wait Until Page Does Not Contain" owner="SeleniumLibrary">
+<arg>กำลังโหลด</arg>
+<arg>timeout=15s</arg>
+<doc>Waits until ``text`` disappears from the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:30.773507" elapsed="0.244181"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>${TARGET_CONTACT}</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:31.018466" elapsed="0.027790"/>
+</kw>
+<kw name="Page Should Contain Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:31.070586" level="INFO">Current page contains element 'xpath=//*[contains(text(),'เพิ่มผู้ติดต่อ')]'.</msg>
+<arg>xpath=//*[contains(text(),'เพิ่มผู้ติดต่อ')]</arg>
+<doc>Verifies that element ``locator`` is found on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:31.046826" elapsed="0.024205"/>
+</kw>
+<kw name="Page Should Contain Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:31.094947" level="INFO">Current page contains element 'xpath=//*[contains(text(),'ประวัติการแจ้ง')]'.</msg>
+<arg>xpath=//*[contains(text(),'ประวัติการแจ้ง')]</arg>
+<doc>Verifies that element ``locator`` is found on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:31.071586" elapsed="0.023688"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:31.297563" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="07_emergency_contact_page.png"&gt;&lt;img src="07_emergency_contact_page.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>07_emergency_contact_page.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:31.095901" elapsed="0.202024"/>
+</kw>
+<doc>Step 3: เข้าหน้าผู้ติดต่อฉุกเฉิน
+กดโปรไฟล์ → บัญชีของฉัน → ผู้ติดต่อฉุกเฉิน
+ตรวจสอบ: แสดงตาราง มีปุ่ม "+ เพิ่มผู้ติดต่อ" และ "ประวัติการแจ้ง"</doc>
+<status status="PASS" start="2026-03-18T18:07:29.521505" elapsed="1.776816"/>
+</kw>
+<kw name="Open Edit Modal For Contact">
+<kw name="Execute Javascript" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:31.300953" level="INFO">Executing JavaScript:
+var el = document.querySelector('div.overflow-x-auto');if (el) { el.scrollLeft = el.scrollWidth; }
+Without any arguments.</msg>
+<arg>var el = document.querySelector('div.overflow-x-auto');</arg>
+<arg>if (el) { el.scrollLeft = el.scrollWidth; }</arg>
+<doc>Executes the given JavaScript code with possible arguments.</doc>
+<status status="PASS" start="2026-03-18T18:07:31.299960" elapsed="0.016678"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-03-18T18:07:31.819559" level="INFO">Slept 500 milliseconds.</msg>
+<arg>0.5s</arg>
+<doc>Pauses the test executed for the given time.</doc>
+<status status="PASS" start="2026-03-18T18:07:31.317236" elapsed="0.502677"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:32.006906" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="08_table_scrolled_right.png"&gt;&lt;img src="08_table_scrolled_right.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>08_table_scrolled_right.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:31.820521" elapsed="0.186823"/>
+</kw>
+<kw name="Execute Javascript" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:32.008905" level="INFO">Executing JavaScript:
+var rows = document.querySelectorAll('tr');for (var i = 0; i &lt; rows.length; i++) {if (rows[i].innerText.includes('เกศรา กฤติขจร')) {var btn = rows[i].querySelector('button[title="แก้ไข"]');if (btn) { btn.click(); break; }}}
+Without any arguments.</msg>
+<arg>var rows = document.querySelectorAll('tr');</arg>
+<arg>for (var i = 0; i &lt; rows.length; i++) {</arg>
+<arg>if (rows[i].innerText.includes('${TARGET_CONTACT}')) {</arg>
+<arg>var btn = rows[i].querySelector('button[title="แก้ไข"]');</arg>
+<arg>if (btn) { btn.click(); break; }</arg>
+<arg>}</arg>
+<arg>}</arg>
+<doc>Executes the given JavaScript code with possible arguments.</doc>
+<status status="PASS" start="2026-03-18T18:07:32.007726" elapsed="0.026649"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>xpath=//*[contains(text(),'แก้ไขผู้ติดต่อฉุกเฉิน')]</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T18:07:32.035364" elapsed="0.052462"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:32.323417" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="09_edit_modal_open.png"&gt;&lt;img src="09_edit_modal_open.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>09_edit_modal_open.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:32.088447" elapsed="0.235324"/>
+</kw>
+<doc>Step 4 (เริ่มต้น): กดปุ่มแก้ไข (ไอคอนดินสอ) ที่แถวของ TARGET_CONTACT</doc>
+<status status="PASS" start="2026-03-18T18:07:31.299329" elapsed="1.024705"/>
+</kw>
+<kw name="Get Modal Input">
+<kw name="Get WebElement" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:32.356595" level="INFO">${field} = &lt;selenium.webdriver.remote.webelement.WebElement (session="770b5a6a698a3454ea9896d08675a790", element="f.A37DBF30060500B6370C6F4211268384.d.BB8CDEBD412ED8AC4429D8F102BA71F9.e.535")&gt;</msg>
+<var>${field}</var>
+<arg>xpath=(//div[contains(@class,'fixed') or contains(@class,'modal') or contains(@class,'dialog')]//input)[${index}]</arg>
+<doc>Returns the first WebElement matching the given ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:32.327150" elapsed="0.029633"/>
+</kw>
+<return>
+<value>${field}</value>
+<status status="PASS" start="2026-03-18T18:07:32.357012" elapsed="0.000126"/>
+</return>
+<msg time="2026-03-18T18:07:32.357639" level="INFO">${phone_field} = &lt;selenium.webdriver.remote.webelement.WebElement (session="770b5a6a698a3454ea9896d08675a790", element="f.A37DBF30060500B6370C6F4211268384.d.BB8CDEBD412ED8AC4429D8F102BA71F9.e.535")&gt;</msg>
+<var>${phone_field}</var>
+<arg>2</arg>
+<doc>ดึง input ลำดับที่ ${index} ใน modal (1=ชื่อ, 2=เบอร์, 3=อีเมล)</doc>
+<status status="PASS" start="2026-03-18T18:07:32.326388" elapsed="0.031359"/>
+</kw>
+<kw name="Clear Field With JS">
+<kw name="Execute Javascript" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:32.360803" level="INFO">Executing JavaScript:
+arguments[0].value = '';
+By using argument:
+'&lt;selenium.webdriver.remote.webelement.WebElement (session="770b5a6a698a3454ea9896d08675a790", element="f.A37DBF30060500B6370C6F4211268384.d.BB8CDEBD412ED8AC4429D8F102BA71F9.e.535")&gt;'</msg>
+<arg>arguments[0].value = '';</arg>
+<arg>ARGUMENTS</arg>
+<arg>${element}</arg>
+<doc>Executes the given JavaScript code with possible arguments.</doc>
+<status status="PASS" start="2026-03-18T18:07:32.359587" elapsed="0.033163"/>
+</kw>
+<kw name="Press Keys" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:32.395530" level="INFO">Sending key(s) ('SPACE+BACK_SPACE',) to &lt;selenium.webdriver.remote.webelement.WebElement (session="770b5a6a698a3454ea9896d08675a790", element="f.A37DBF30060500B6370C6F4211268384.d.BB8CDEBD412ED8AC4429D8F102BA71F9.e.535")&gt; element.</msg>
+<msg time="2026-03-18T18:07:32.712124" level="INFO">Pressing special key SPACE down.</msg>
+<msg time="2026-03-18T18:07:32.712363" level="INFO">Pressing special key BACK_SPACE down.</msg>
+<msg time="2026-03-18T18:07:32.712529" level="INFO">Releasing special key SPACE.</msg>
+<msg time="2026-03-18T18:07:32.712672" level="INFO">Releasing special key BACK_SPACE.</msg>
+<arg>${element}</arg>
+<arg>SPACE+BACK_SPACE</arg>
+<doc>Simulates the user pressing key(s) to an element or on the active browser.</doc>
+<status status="PASS" start="2026-03-18T18:07:32.393609" elapsed="0.372745"/>
+</kw>
+<arg>${phone_field}</arg>
+<doc>ล้างค่า input field ด้วย JavaScript (เพื่อให้แน่ใจว่าข้อมูลถูกลบออกทั้งหมด)</doc>
+<status status="PASS" start="2026-03-18T18:07:32.358654" elapsed="0.407968"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:32.987057" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="TC09_01_phone_cleared.png"&gt;&lt;img src="TC09_01_phone_cleared.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>TC09_01_phone_cleared.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:32.767505" elapsed="0.219808"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:32.988478" level="INFO">Clicking element 'xpath=//button[contains(text(),'บันทึก')]'.</msg>
+<arg>xpath=//button[contains(text(),'บันทึก')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:32.987978" elapsed="0.149091"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>กรุณากรอกข้อมูลที่จำเป็นให้ครบ</arg>
+<arg>timeout=5s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:33.138505" elapsed="0.028488"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:33.389971" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="TC09_02_error_message.png"&gt;&lt;img src="TC09_02_error_message.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>TC09_02_error_message.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:33.168288" elapsed="0.221979"/>
+</kw>
+<kw name="Close Modal If Open" type="TEARDOWN">
+<kw name="Run Keyword And Return Status" owner="BuiltIn">
+<kw name="Element Should Be Visible" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:33.435576" level="INFO">Element 'xpath=//*[contains(text(),'แก้ไขผู้ติดต่อฉุกเฉิน')]' is displayed.</msg>
+<arg>xpath=//*[contains(text(),'แก้ไขผู้ติดต่อฉุกเฉิน')]</arg>
+<doc>Verifies that the element identified by ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T18:07:33.393177" elapsed="0.042812"/>
+</kw>
+<msg time="2026-03-18T18:07:33.436678" level="INFO">${modal_open} = True</msg>
+<var>${modal_open}</var>
+<arg>Element Should Be Visible</arg>
+<arg>xpath=//*[contains(text(),'แก้ไขผู้ติดต่อฉุกเฉิน')]</arg>
+<doc>Runs the specified keyword and returns the status as a Boolean value.</doc>
+<status status="PASS" start="2026-03-18T18:07:33.392281" elapsed="0.044559"/>
+</kw>
+<kw name="Run Keyword If" owner="BuiltIn">
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:33.440138" level="INFO">Clicking element 'xpath=//button[contains(text(),'ยกเลิก')]'.</msg>
+<arg>xpath=//button[contains(text(),'ยกเลิก')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:33.439550" elapsed="0.138017"/>
+</kw>
+<arg>${modal_open}</arg>
+<arg>Click Element</arg>
+<arg>xpath=//button[contains(text(),'ยกเลิก')]</arg>
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<status status="PASS" start="2026-03-18T18:07:33.437570" elapsed="0.140316"/>
+</kw>
+<doc>ปิด modal ถ้ายังเปิดอยู่ (กด X หรือ ยกเลิก)</doc>
+<status status="PASS" start="2026-03-18T18:07:33.391474" elapsed="0.186707"/>
+</kw>
+<doc>UAT Step 4: กดแก้ไข → ลบเบอร์โทรศัพท์ → กดบันทึก
+Expected: ระบบแสดงข้อความ "กรุณากรอกข้อมูลที่จำเป็นให้ครบ"</doc>
+<tag>edit-contact</tag>
+<tag>negative</tag>
+<tag>TC-EMG-09</tag>
+<status status="PASS" start="2026-03-18T18:07:26.289688" elapsed="7.288955"/>
+</test>
+<test id="s1-t4" name="TC-EMG-10 แก้ไขผู้ติดต่อโดยไม่กรอกอีเมล ควรแสดง Error" line="168">
+<kw name="Run Keywords" owner="BuiltIn" type="SETUP">
+<kw name="Go To" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:33.592938" level="INFO">Opening url 'https://csse4269.cpkku.com/'</msg>
+<arg>${BASE_URL}</arg>
+<doc>Navigates the current browser window to the provided ``url``.</doc>
+<status status="PASS" start="2026-03-18T18:07:33.592350" elapsed="0.148417"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-03-18T18:07:34.243119" level="INFO">Slept 500 milliseconds.</msg>
+<arg>0.5s</arg>
+<doc>Pauses the test executed for the given time.</doc>
+<status status="PASS" start="2026-03-18T18:07:33.741423" elapsed="0.502022"/>
+</kw>
+<arg>Go To</arg>
+<arg>${BASE_URL}</arg>
+<arg>AND</arg>
+<arg>Sleep</arg>
+<arg>0.5s</arg>
+<doc>Executes all the given keywords in a sequence.</doc>
+<status status="PASS" start="2026-03-18T18:07:33.590918" elapsed="0.652854"/>
+</kw>
+<kw name="Open Website And Verify">
+<kw name="Page Should Contain" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:34.278397" level="INFO">Current page contains text 'ไปนำแหน่'.</msg>
+<arg>ไปนำแหน่</arg>
+<doc>Verifies that current page contains ``text``.</doc>
+<status status="PASS" start="2026-03-18T18:07:34.245983" elapsed="0.032705"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:34.674580" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="01_open_website.png"&gt;&lt;img src="01_open_website.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>01_open_website.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:34.279177" elapsed="0.395735"/>
+</kw>
+<doc>Step 1: เปิดเว็บไซต์และตรวจสอบ</doc>
+<status status="PASS" start="2026-03-18T18:07:34.244880" elapsed="0.430299"/>
+</kw>
+<kw name="Login With Valid Credentials">
+<kw name="Go To" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:34.677402" level="INFO">Opening url 'https://csse4269.cpkku.com/login'</msg>
+<arg>${LOGIN_URL}</arg>
+<doc>Navigates the current browser window to the provided ``url``.</doc>
+<status status="PASS" start="2026-03-18T18:07:34.677002" elapsed="0.144942"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="SeleniumLibrary">
+<arg>xpath=//input[@placeholder='กรอกชื่อผู้ใช้หรืออีเมล']</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until the element ``locator`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:34.822880" elapsed="0.036285"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:35.066267" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="02_login_page.png"&gt;&lt;img src="02_login_page.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>02_login_page.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:34.859547" elapsed="0.207071"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:35.068428" level="INFO">Typing text 'phatcharida.f@kkumail.com' into text field 'xpath=//input[@placeholder='กรอกชื่อผู้ใช้หรืออีเมล']'.</msg>
+<arg>xpath=//input[@placeholder='กรอกชื่อผู้ใช้หรืออีเมล']</arg>
+<arg>${EMAIL}</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:35.067161" elapsed="0.357160"/>
+</kw>
+<kw name="Input Password" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:35.426131" level="INFO">Typing password into text field 'xpath=//input[@placeholder='กรอกรหัสผ่าน']'.</msg>
+<msg time="2026-03-18T18:07:35.538898" level="INFO">Temporally setting log level to: NONE</msg>
+<arg>xpath=//input[@placeholder='กรอกรหัสผ่าน']</arg>
+<arg>${PASSWORD}</arg>
+<doc>Types the given password into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:35.425104" elapsed="0.261222"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:35.874411" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="03_login_filled.png"&gt;&lt;img src="03_login_filled.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>03_login_filled.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:35.686834" elapsed="0.187809"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:35.875505" level="INFO">Clicking element 'xpath=//button[contains(text(),'เข้าสู่ระบบ')]'.</msg>
+<arg>xpath=//button[contains(text(),'เข้าสู่ระบบ')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:35.874998" elapsed="0.151089"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>เดินทางร่วมกัน</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:36.026764" elapsed="0.249353"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:36.607363" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="04_login_success.png"&gt;&lt;img src="04_login_success.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>04_login_success.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:36.276577" elapsed="0.331100"/>
+</kw>
+<doc>Step 2: เข้าสู่ระบบสำเร็จ</doc>
+<status status="PASS" start="2026-03-18T18:07:34.676314" elapsed="1.931798"/>
+</kw>
+<kw name="Navigate To Emergency Contact Page">
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:36.611156" level="INFO">Clicking element 'xpath=//*[contains(text(),'Phatcharida')]'.</msg>
+<arg>xpath=//*[contains(text(),'Phatcharida')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:36.610418" elapsed="0.156672"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>xpath=//*[contains(text(),'บัญชีของฉัน')]</arg>
+<arg>timeout=5s</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T18:07:36.767552" elapsed="0.044557"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:37.156638" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="05_profile_dropdown.png"&gt;&lt;img src="05_profile_dropdown.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>05_profile_dropdown.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:36.813237" elapsed="0.343604"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:37.157447" level="INFO">Clicking element 'xpath=//*[contains(text(),'บัญชีของฉัน')]'.</msg>
+<arg>xpath=//*[contains(text(),'บัญชีของฉัน')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:37.157112" elapsed="0.140280"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>โปรไฟล์ของฉัน</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:37.298215" elapsed="0.067521"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:37.560778" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="06_account_page.png"&gt;&lt;img src="06_account_page.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>06_account_page.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:37.366231" elapsed="0.194781"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:37.561819" level="INFO">Clicking element 'xpath=//*[contains(text(),'ผู้ติดต่อฉุกเฉิน')]'.</msg>
+<arg>xpath=//*[contains(text(),'ผู้ติดต่อฉุกเฉิน')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:37.561352" elapsed="0.165790"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>ผู้ติดต่อฉุกเฉิน</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:37.727451" elapsed="0.042665"/>
+</kw>
+<kw name="Wait Until Page Does Not Contain" owner="SeleniumLibrary">
+<arg>กำลังโหลด</arg>
+<arg>timeout=15s</arg>
+<doc>Waits until ``text`` disappears from the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:37.770529" elapsed="0.246714"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>${TARGET_CONTACT}</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:38.018180" elapsed="0.031514"/>
+</kw>
+<kw name="Page Should Contain Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:38.076525" level="INFO">Current page contains element 'xpath=//*[contains(text(),'เพิ่มผู้ติดต่อ')]'.</msg>
+<arg>xpath=//*[contains(text(),'เพิ่มผู้ติดต่อ')]</arg>
+<doc>Verifies that element ``locator`` is found on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:38.050280" elapsed="0.026585"/>
+</kw>
+<kw name="Page Should Contain Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:38.104188" level="INFO">Current page contains element 'xpath=//*[contains(text(),'ประวัติการแจ้ง')]'.</msg>
+<arg>xpath=//*[contains(text(),'ประวัติการแจ้ง')]</arg>
+<doc>Verifies that element ``locator`` is found on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:38.077518" elapsed="0.026971"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:38.287117" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="07_emergency_contact_page.png"&gt;&lt;img src="07_emergency_contact_page.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>07_emergency_contact_page.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:38.105000" elapsed="0.182458"/>
+</kw>
+<doc>Step 3: เข้าหน้าผู้ติดต่อฉุกเฉิน
+กดโปรไฟล์ → บัญชีของฉัน → ผู้ติดต่อฉุกเฉิน
+ตรวจสอบ: แสดงตาราง มีปุ่ม "+ เพิ่มผู้ติดต่อ" และ "ประวัติการแจ้ง"</doc>
+<status status="PASS" start="2026-03-18T18:07:36.609296" elapsed="1.678444"/>
+</kw>
+<kw name="Open Edit Modal For Contact">
+<kw name="Execute Javascript" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:38.290693" level="INFO">Executing JavaScript:
+var el = document.querySelector('div.overflow-x-auto');if (el) { el.scrollLeft = el.scrollWidth; }
+Without any arguments.</msg>
+<arg>var el = document.querySelector('div.overflow-x-auto');</arg>
+<arg>if (el) { el.scrollLeft = el.scrollWidth; }</arg>
+<doc>Executes the given JavaScript code with possible arguments.</doc>
+<status status="PASS" start="2026-03-18T18:07:38.289574" elapsed="0.013102"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-03-18T18:07:38.804768" level="INFO">Slept 500 milliseconds.</msg>
+<arg>0.5s</arg>
+<doc>Pauses the test executed for the given time.</doc>
+<status status="PASS" start="2026-03-18T18:07:38.303125" elapsed="0.501921"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:38.968031" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="08_table_scrolled_right.png"&gt;&lt;img src="08_table_scrolled_right.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>08_table_scrolled_right.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:38.805458" elapsed="0.162936"/>
+</kw>
+<kw name="Execute Javascript" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:38.970333" level="INFO">Executing JavaScript:
+var rows = document.querySelectorAll('tr');for (var i = 0; i &lt; rows.length; i++) {if (rows[i].innerText.includes('เกศรา กฤติขจร')) {var btn = rows[i].querySelector('button[title="แก้ไข"]');if (btn) { btn.click(); break; }}}
+Without any arguments.</msg>
+<arg>var rows = document.querySelectorAll('tr');</arg>
+<arg>for (var i = 0; i &lt; rows.length; i++) {</arg>
+<arg>if (rows[i].innerText.includes('${TARGET_CONTACT}')) {</arg>
+<arg>var btn = rows[i].querySelector('button[title="แก้ไข"]');</arg>
+<arg>if (btn) { btn.click(); break; }</arg>
+<arg>}</arg>
+<arg>}</arg>
+<doc>Executes the given JavaScript code with possible arguments.</doc>
+<status status="PASS" start="2026-03-18T18:07:38.968888" elapsed="0.025418"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>xpath=//*[contains(text(),'แก้ไขผู้ติดต่อฉุกเฉิน')]</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T18:07:38.994858" elapsed="0.049737"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:39.239323" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="09_edit_modal_open.png"&gt;&lt;img src="09_edit_modal_open.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>09_edit_modal_open.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:39.045255" elapsed="0.194335"/>
+</kw>
+<doc>Step 4 (เริ่มต้น): กดปุ่มแก้ไข (ไอคอนดินสอ) ที่แถวของ TARGET_CONTACT</doc>
+<status status="PASS" start="2026-03-18T18:07:38.288810" elapsed="0.951186"/>
+</kw>
+<kw name="Get Modal Input">
+<kw name="Get WebElement" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:39.273132" level="INFO">${field} = &lt;selenium.webdriver.remote.webelement.WebElement (session="770b5a6a698a3454ea9896d08675a790", element="f.A37DBF30060500B6370C6F4211268384.d.75ACE021A76A875EF1BF9D9FACCF12B2.e.699")&gt;</msg>
+<var>${field}</var>
+<arg>xpath=(//div[contains(@class,'fixed') or contains(@class,'modal') or contains(@class,'dialog')]//input)[${index}]</arg>
+<doc>Returns the first WebElement matching the given ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:39.243838" elapsed="0.029527"/>
+</kw>
+<return>
+<value>${field}</value>
+<status status="PASS" start="2026-03-18T18:07:39.273829" elapsed="0.000234"/>
+</return>
+<msg time="2026-03-18T18:07:39.274826" level="INFO">${email_field} = &lt;selenium.webdriver.remote.webelement.WebElement (session="770b5a6a698a3454ea9896d08675a790", element="f.A37DBF30060500B6370C6F4211268384.d.75ACE021A76A875EF1BF9D9FACCF12B2.e.699")&gt;</msg>
+<var>${email_field}</var>
+<arg>3</arg>
+<doc>ดึง input ลำดับที่ ${index} ใน modal (1=ชื่อ, 2=เบอร์, 3=อีเมล)</doc>
+<status status="PASS" start="2026-03-18T18:07:39.243029" elapsed="0.031976"/>
+</kw>
+<kw name="Clear Field With JS">
+<kw name="Execute Javascript" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:39.280426" level="INFO">Executing JavaScript:
+arguments[0].value = '';
+By using argument:
+'&lt;selenium.webdriver.remote.webelement.WebElement (session="770b5a6a698a3454ea9896d08675a790", element="f.A37DBF30060500B6370C6F4211268384.d.75ACE021A76A875EF1BF9D9FACCF12B2.e.699")&gt;'</msg>
+<arg>arguments[0].value = '';</arg>
+<arg>ARGUMENTS</arg>
+<arg>${element}</arg>
+<doc>Executes the given JavaScript code with possible arguments.</doc>
+<status status="PASS" start="2026-03-18T18:07:39.278348" elapsed="0.021820"/>
+</kw>
+<kw name="Press Keys" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:39.303357" level="INFO">Sending key(s) ('SPACE+BACK_SPACE',) to &lt;selenium.webdriver.remote.webelement.WebElement (session="770b5a6a698a3454ea9896d08675a790", element="f.A37DBF30060500B6370C6F4211268384.d.75ACE021A76A875EF1BF9D9FACCF12B2.e.699")&gt; element.</msg>
+<msg time="2026-03-18T18:07:39.629468" level="INFO">Pressing special key SPACE down.</msg>
+<msg time="2026-03-18T18:07:39.629789" level="INFO">Pressing special key BACK_SPACE down.</msg>
+<msg time="2026-03-18T18:07:39.630031" level="INFO">Releasing special key SPACE.</msg>
+<msg time="2026-03-18T18:07:39.630189" level="INFO">Releasing special key BACK_SPACE.</msg>
+<arg>${element}</arg>
+<arg>SPACE+BACK_SPACE</arg>
+<doc>Simulates the user pressing key(s) to an element or on the active browser.</doc>
+<status status="PASS" start="2026-03-18T18:07:39.300749" elapsed="0.381556"/>
+</kw>
+<arg>${email_field}</arg>
+<doc>ล้างค่า input field ด้วย JavaScript (เพื่อให้แน่ใจว่าข้อมูลถูกลบออกทั้งหมด)</doc>
+<status status="PASS" start="2026-03-18T18:07:39.276737" elapsed="0.406026"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:39.927834" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="TC10_01_email_cleared.png"&gt;&lt;img src="TC10_01_email_cleared.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>TC10_01_email_cleared.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:39.683561" elapsed="0.244586"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:39.929510" level="INFO">Clicking element 'xpath=//button[contains(text(),'บันทึก')]'.</msg>
+<arg>xpath=//button[contains(text(),'บันทึก')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:39.928916" elapsed="0.162721"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>กรุณากรอกข้อมูลที่จำเป็นให้ครบ</arg>
+<arg>timeout=5s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:40.093525" elapsed="0.036464"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:40.423843" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="TC10_02_error_message.png"&gt;&lt;img src="TC10_02_error_message.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>TC10_02_error_message.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:40.131046" elapsed="0.293077"/>
+</kw>
+<kw name="Close Modal If Open" type="TEARDOWN">
+<kw name="Run Keyword And Return Status" owner="BuiltIn">
+<kw name="Element Should Be Visible" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:40.470177" level="INFO">Element 'xpath=//*[contains(text(),'แก้ไขผู้ติดต่อฉุกเฉิน')]' is displayed.</msg>
+<arg>xpath=//*[contains(text(),'แก้ไขผู้ติดต่อฉุกเฉิน')]</arg>
+<doc>Verifies that the element identified by ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T18:07:40.427061" elapsed="0.043385"/>
+</kw>
+<msg time="2026-03-18T18:07:40.470885" level="INFO">${modal_open} = True</msg>
+<var>${modal_open}</var>
+<arg>Element Should Be Visible</arg>
+<arg>xpath=//*[contains(text(),'แก้ไขผู้ติดต่อฉุกเฉิน')]</arg>
+<doc>Runs the specified keyword and returns the status as a Boolean value.</doc>
+<status status="PASS" start="2026-03-18T18:07:40.426143" elapsed="0.044851"/>
+</kw>
+<kw name="Run Keyword If" owner="BuiltIn">
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:40.473410" level="INFO">Clicking element 'xpath=//button[contains(text(),'ยกเลิก')]'.</msg>
+<arg>xpath=//button[contains(text(),'ยกเลิก')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:40.472797" elapsed="0.158985"/>
+</kw>
+<arg>${modal_open}</arg>
+<arg>Click Element</arg>
+<arg>xpath=//button[contains(text(),'ยกเลิก')]</arg>
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<status status="PASS" start="2026-03-18T18:07:40.471528" elapsed="0.160704"/>
+</kw>
+<doc>ปิด modal ถ้ายังเปิดอยู่ (กด X หรือ ยกเลิก)</doc>
+<status status="PASS" start="2026-03-18T18:07:40.425348" elapsed="0.207118"/>
+</kw>
+<doc>UAT Step 4: กดแก้ไข → ลบอีเมล → กดบันทึก
+Expected: ระบบแสดงข้อความ "กรุณากรอกข้อมูลที่จำเป็นให้ครบ"</doc>
+<tag>edit-contact</tag>
+<tag>negative</tag>
+<tag>TC-EMG-10</tag>
+<status status="PASS" start="2026-03-18T18:07:33.580350" elapsed="7.052671"/>
+</test>
+<test id="s1-t5" name="TC-EMG-11 แก้ไขผู้ติดต่อโดยกรอกอีเมลผิดรูปแบบ ควรแสดง Error" line="188">
+<kw name="Run Keywords" owner="BuiltIn" type="SETUP">
+<kw name="Go To" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:40.654612" level="INFO">Opening url 'https://csse4269.cpkku.com/'</msg>
+<arg>${BASE_URL}</arg>
+<doc>Navigates the current browser window to the provided ``url``.</doc>
+<status status="PASS" start="2026-03-18T18:07:40.653263" elapsed="0.144909"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-03-18T18:07:41.300024" level="INFO">Slept 500 milliseconds.</msg>
+<arg>0.5s</arg>
+<doc>Pauses the test executed for the given time.</doc>
+<status status="PASS" start="2026-03-18T18:07:40.798701" elapsed="0.501850"/>
+</kw>
+<arg>Go To</arg>
+<arg>${BASE_URL}</arg>
+<arg>AND</arg>
+<arg>Sleep</arg>
+<arg>0.5s</arg>
+<doc>Executes all the given keywords in a sequence.</doc>
+<status status="PASS" start="2026-03-18T18:07:40.649365" elapsed="0.651580"/>
+</kw>
+<kw name="Open Website And Verify">
+<kw name="Page Should Contain" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:41.333767" level="INFO">Current page contains text 'ไปนำแหน่'.</msg>
+<arg>ไปนำแหน่</arg>
+<doc>Verifies that current page contains ``text``.</doc>
+<status status="PASS" start="2026-03-18T18:07:41.303363" elapsed="0.030717"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:41.743748" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="01_open_website.png"&gt;&lt;img src="01_open_website.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>01_open_website.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:41.334931" elapsed="0.409132"/>
+</kw>
+<doc>Step 1: เปิดเว็บไซต์และตรวจสอบ</doc>
+<status status="PASS" start="2026-03-18T18:07:41.302304" elapsed="0.442084"/>
+</kw>
+<kw name="Login With Valid Credentials">
+<kw name="Go To" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:41.746741" level="INFO">Opening url 'https://csse4269.cpkku.com/login'</msg>
+<arg>${LOGIN_URL}</arg>
+<doc>Navigates the current browser window to the provided ``url``.</doc>
+<status status="PASS" start="2026-03-18T18:07:41.746172" elapsed="0.128126"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="SeleniumLibrary">
+<arg>xpath=//input[@placeholder='กรอกชื่อผู้ใช้หรืออีเมล']</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until the element ``locator`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:41.874892" elapsed="0.078069"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:42.138715" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="02_login_page.png"&gt;&lt;img src="02_login_page.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>02_login_page.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:41.953668" elapsed="0.185319"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:42.140068" level="INFO">Typing text 'phatcharida.f@kkumail.com' into text field 'xpath=//input[@placeholder='กรอกชื่อผู้ใช้หรืออีเมล']'.</msg>
+<arg>xpath=//input[@placeholder='กรอกชื่อผู้ใช้หรืออีเมล']</arg>
+<arg>${EMAIL}</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:42.139416" elapsed="0.388639"/>
+</kw>
+<kw name="Input Password" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:42.529214" level="INFO">Typing password into text field 'xpath=//input[@placeholder='กรอกรหัสผ่าน']'.</msg>
+<msg time="2026-03-18T18:07:42.675181" level="INFO">Temporally setting log level to: NONE</msg>
+<arg>xpath=//input[@placeholder='กรอกรหัสผ่าน']</arg>
+<arg>${PASSWORD}</arg>
+<doc>Types the given password into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:42.528532" elapsed="0.301326"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:42.992644" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="03_login_filled.png"&gt;&lt;img src="03_login_filled.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>03_login_filled.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:42.830347" elapsed="0.162599"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:42.993936" level="INFO">Clicking element 'xpath=//button[contains(text(),'เข้าสู่ระบบ')]'.</msg>
+<arg>xpath=//button[contains(text(),'เข้าสู่ระบบ')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:42.993400" elapsed="0.141943"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>เดินทางร่วมกัน</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:43.136007" elapsed="0.254931"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:43.748686" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="04_login_success.png"&gt;&lt;img src="04_login_success.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>04_login_success.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:43.391413" elapsed="0.357582"/>
+</kw>
+<doc>Step 2: เข้าสู่ระบบสำเร็จ</doc>
+<status status="PASS" start="2026-03-18T18:07:41.745376" elapsed="2.003968"/>
+</kw>
+<kw name="Navigate To Emergency Contact Page">
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:43.752174" level="INFO">Clicking element 'xpath=//*[contains(text(),'Phatcharida')]'.</msg>
+<arg>xpath=//*[contains(text(),'Phatcharida')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:43.751461" elapsed="0.151758"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>xpath=//*[contains(text(),'บัญชีของฉัน')]</arg>
+<arg>timeout=5s</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T18:07:43.903649" elapsed="0.040388"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:44.344176" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="05_profile_dropdown.png"&gt;&lt;img src="05_profile_dropdown.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>05_profile_dropdown.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:43.944440" elapsed="0.399969"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:44.345271" level="INFO">Clicking element 'xpath=//*[contains(text(),'บัญชีของฉัน')]'.</msg>
+<arg>xpath=//*[contains(text(),'บัญชีของฉัน')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:44.344799" elapsed="0.133650"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>โปรไฟล์ของฉัน</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:44.479071" elapsed="0.048005"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:44.715637" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="06_account_page.png"&gt;&lt;img src="06_account_page.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>06_account_page.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:44.527566" elapsed="0.188277"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:44.716582" level="INFO">Clicking element 'xpath=//*[contains(text(),'ผู้ติดต่อฉุกเฉิน')]'.</msg>
+<arg>xpath=//*[contains(text(),'ผู้ติดต่อฉุกเฉิน')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:44.716145" elapsed="0.112144"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>ผู้ติดต่อฉุกเฉิน</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:44.828672" elapsed="0.034992"/>
+</kw>
+<kw name="Wait Until Page Does Not Contain" owner="SeleniumLibrary">
+<arg>กำลังโหลด</arg>
+<arg>timeout=15s</arg>
+<doc>Waits until ``text`` disappears from the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:44.864121" elapsed="0.251139"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>${TARGET_CONTACT}</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:45.115775" elapsed="0.031595"/>
+</kw>
+<kw name="Page Should Contain Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:45.171295" level="INFO">Current page contains element 'xpath=//*[contains(text(),'เพิ่มผู้ติดต่อ')]'.</msg>
+<arg>xpath=//*[contains(text(),'เพิ่มผู้ติดต่อ')]</arg>
+<doc>Verifies that element ``locator`` is found on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:45.147854" elapsed="0.023738"/>
+</kw>
+<kw name="Page Should Contain Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:45.192311" level="INFO">Current page contains element 'xpath=//*[contains(text(),'ประวัติการแจ้ง')]'.</msg>
+<arg>xpath=//*[contains(text(),'ประวัติการแจ้ง')]</arg>
+<doc>Verifies that element ``locator`` is found on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:45.172127" elapsed="0.020549"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:45.390718" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="07_emergency_contact_page.png"&gt;&lt;img src="07_emergency_contact_page.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>07_emergency_contact_page.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:45.193344" elapsed="0.197596"/>
+</kw>
+<doc>Step 3: เข้าหน้าผู้ติดต่อฉุกเฉิน
+กดโปรไฟล์ → บัญชีของฉัน → ผู้ติดต่อฉุกเฉิน
+ตรวจสอบ: แสดงตาราง มีปุ่ม "+ เพิ่มผู้ติดต่อ" และ "ประวัติการแจ้ง"</doc>
+<status status="PASS" start="2026-03-18T18:07:43.750415" elapsed="1.640712"/>
+</kw>
+<kw name="Open Edit Modal For Contact">
+<kw name="Execute Javascript" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:45.394744" level="INFO">Executing JavaScript:
+var el = document.querySelector('div.overflow-x-auto');if (el) { el.scrollLeft = el.scrollWidth; }
+Without any arguments.</msg>
+<arg>var el = document.querySelector('div.overflow-x-auto');</arg>
+<arg>if (el) { el.scrollLeft = el.scrollWidth; }</arg>
+<doc>Executes the given JavaScript code with possible arguments.</doc>
+<status status="PASS" start="2026-03-18T18:07:45.393269" elapsed="0.017868"/>
+</kw>
+<kw name="Sleep" owner="BuiltIn">
+<msg time="2026-03-18T18:07:45.912675" level="INFO">Slept 500 milliseconds.</msg>
+<arg>0.5s</arg>
+<doc>Pauses the test executed for the given time.</doc>
+<status status="PASS" start="2026-03-18T18:07:45.411559" elapsed="0.501475"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:46.077506" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="08_table_scrolled_right.png"&gt;&lt;img src="08_table_scrolled_right.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>08_table_scrolled_right.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:45.913649" elapsed="0.164134"/>
+</kw>
+<kw name="Execute Javascript" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:46.079017" level="INFO">Executing JavaScript:
+var rows = document.querySelectorAll('tr');for (var i = 0; i &lt; rows.length; i++) {if (rows[i].innerText.includes('เกศรา กฤติขจร')) {var btn = rows[i].querySelector('button[title="แก้ไข"]');if (btn) { btn.click(); break; }}}
+Without any arguments.</msg>
+<arg>var rows = document.querySelectorAll('tr');</arg>
+<arg>for (var i = 0; i &lt; rows.length; i++) {</arg>
+<arg>if (rows[i].innerText.includes('${TARGET_CONTACT}')) {</arg>
+<arg>var btn = rows[i].querySelector('button[title="แก้ไข"]');</arg>
+<arg>if (btn) { btn.click(); break; }</arg>
+<arg>}</arg>
+<arg>}</arg>
+<doc>Executes the given JavaScript code with possible arguments.</doc>
+<status status="PASS" start="2026-03-18T18:07:46.078105" elapsed="0.024756"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>xpath=//*[contains(text(),'แก้ไขผู้ติดต่อฉุกเฉิน')]</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T18:07:46.103442" elapsed="0.047194"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:46.405327" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="09_edit_modal_open.png"&gt;&lt;img src="09_edit_modal_open.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>09_edit_modal_open.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:46.151913" elapsed="0.253719"/>
+</kw>
+<doc>Step 4 (เริ่มต้น): กดปุ่มแก้ไข (ไอคอนดินสอ) ที่แถวของ TARGET_CONTACT</doc>
+<status status="PASS" start="2026-03-18T18:07:45.392177" elapsed="1.013717"/>
+</kw>
+<kw name="Get Modal Input">
+<kw name="Get WebElement" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:46.430059" level="INFO">${field} = &lt;selenium.webdriver.remote.webelement.WebElement (session="770b5a6a698a3454ea9896d08675a790", element="f.A37DBF30060500B6370C6F4211268384.d.350E877CAEA9637A963117B83A6C5A73.e.861")&gt;</msg>
+<var>${field}</var>
+<arg>xpath=(//div[contains(@class,'fixed') or contains(@class,'modal') or contains(@class,'dialog')]//input)[${index}]</arg>
+<doc>Returns the first WebElement matching the given ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:46.409089" elapsed="0.021121"/>
+</kw>
+<return>
+<value>${field}</value>
+<status status="PASS" start="2026-03-18T18:07:46.430449" elapsed="0.000132"/>
+</return>
+<msg time="2026-03-18T18:07:46.431079" level="INFO">${email_field} = &lt;selenium.webdriver.remote.webelement.WebElement (session="770b5a6a698a3454ea9896d08675a790", element="f.A37DBF30060500B6370C6F4211268384.d.350E877CAEA9637A963117B83A6C5A73.e.861")&gt;</msg>
+<var>${email_field}</var>
+<arg>3</arg>
+<doc>ดึง input ลำดับที่ ${index} ใน modal (1=ชื่อ, 2=เบอร์, 3=อีเมล)</doc>
+<status status="PASS" start="2026-03-18T18:07:46.408330" elapsed="0.022842"/>
+</kw>
+<kw name="Clear Field With JS">
+<kw name="Execute Javascript" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:46.435490" level="INFO">Executing JavaScript:
+arguments[0].value = '';
+By using argument:
+'&lt;selenium.webdriver.remote.webelement.WebElement (session="770b5a6a698a3454ea9896d08675a790", element="f.A37DBF30060500B6370C6F4211268384.d.350E877CAEA9637A963117B83A6C5A73.e.861")&gt;'</msg>
+<arg>arguments[0].value = '';</arg>
+<arg>ARGUMENTS</arg>
+<arg>${element}</arg>
+<doc>Executes the given JavaScript code with possible arguments.</doc>
+<status status="PASS" start="2026-03-18T18:07:46.433375" elapsed="0.021092"/>
+</kw>
+<kw name="Press Keys" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:46.456995" level="INFO">Sending key(s) ('SPACE+BACK_SPACE',) to &lt;selenium.webdriver.remote.webelement.WebElement (session="770b5a6a698a3454ea9896d08675a790", element="f.A37DBF30060500B6370C6F4211268384.d.350E877CAEA9637A963117B83A6C5A73.e.861")&gt; element.</msg>
+<msg time="2026-03-18T18:07:46.774997" level="INFO">Pressing special key SPACE down.</msg>
+<msg time="2026-03-18T18:07:46.775259" level="INFO">Pressing special key BACK_SPACE down.</msg>
+<msg time="2026-03-18T18:07:46.775551" level="INFO">Releasing special key SPACE.</msg>
+<msg time="2026-03-18T18:07:46.775793" level="INFO">Releasing special key BACK_SPACE.</msg>
+<arg>${element}</arg>
+<arg>SPACE+BACK_SPACE</arg>
+<doc>Simulates the user pressing key(s) to an element or on the active browser.</doc>
+<status status="PASS" start="2026-03-18T18:07:46.455371" elapsed="0.370259"/>
+</kw>
+<arg>${email_field}</arg>
+<doc>ล้างค่า input field ด้วย JavaScript (เพื่อให้แน่ใจว่าข้อมูลถูกลบออกทั้งหมด)</doc>
+<status status="PASS" start="2026-03-18T18:07:46.432171" elapsed="0.394052"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:46.827808" level="INFO">Typing text 'pha.k' into text field '&lt;selenium.webdriver.remote.webelement.WebElement (session="770b5a6a698a3454ea9896d08675a790", element="f.A37DBF30060500B6370C6F4211268384.d.350E877CAEA9637A963117B83A6C5A73.e.861")&gt;'.</msg>
+<arg>${email_field}</arg>
+<arg>pha.k</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:46.827004" elapsed="0.223235"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:47.245744" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="TC11_01_invalid_email_filled.png"&gt;&lt;img src="TC11_01_invalid_email_filled.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>TC11_01_invalid_email_filled.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:47.051567" elapsed="0.194485"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:47.247724" level="INFO">Clicking element 'xpath=//button[contains(text(),'บันทึก')]'.</msg>
+<arg>xpath=//button[contains(text(),'บันทึก')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:47.247184" elapsed="0.169360"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>กรุณาใส่อีเมลที่ถูกต้อง</arg>
+<arg>timeout=5s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T18:07:47.418331" elapsed="0.263946"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:47.857620" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="TC11_02_error_message.png"&gt;&lt;img src="TC11_02_error_message.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>TC11_02_error_message.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T18:07:47.683165" elapsed="0.174741"/>
+</kw>
+<kw name="Close Modal If Open" type="TEARDOWN">
+<kw name="Run Keyword And Return Status" owner="BuiltIn">
+<kw name="Element Should Be Visible" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:47.903718" level="INFO">Element 'xpath=//*[contains(text(),'แก้ไขผู้ติดต่อฉุกเฉิน')]' is displayed.</msg>
+<arg>xpath=//*[contains(text(),'แก้ไขผู้ติดต่อฉุกเฉิน')]</arg>
+<doc>Verifies that the element identified by ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T18:07:47.861847" elapsed="0.042106"/>
+</kw>
+<msg time="2026-03-18T18:07:47.904326" level="INFO">${modal_open} = True</msg>
+<var>${modal_open}</var>
+<arg>Element Should Be Visible</arg>
+<arg>xpath=//*[contains(text(),'แก้ไขผู้ติดต่อฉุกเฉิน')]</arg>
+<doc>Runs the specified keyword and returns the status as a Boolean value.</doc>
+<status status="PASS" start="2026-03-18T18:07:47.860649" elapsed="0.043766"/>
+</kw>
+<kw name="Run Keyword If" owner="BuiltIn">
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T18:07:47.906448" level="INFO">Clicking element 'xpath=//button[contains(text(),'ยกเลิก')]'.</msg>
+<arg>xpath=//button[contains(text(),'ยกเลิก')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T18:07:47.905968" elapsed="0.158721"/>
+</kw>
+<arg>${modal_open}</arg>
+<arg>Click Element</arg>
+<arg>xpath=//button[contains(text(),'ยกเลิก')]</arg>
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<status status="PASS" start="2026-03-18T18:07:47.904861" elapsed="0.160055"/>
+</kw>
+<doc>ปิด modal ถ้ายังเปิดอยู่ (กด X หรือ ยกเลิก)</doc>
+<status status="PASS" start="2026-03-18T18:07:47.859313" elapsed="0.205818"/>
+</kw>
+<doc>UAT Step 4: กดแก้ไข → กรอกอีเมล = "pha.k" → กดบันทึก
+Expected: ระบบแสดงข้อความ "กรุณาใส่อีเมลที่ถูกต้อง"</doc>
+<tag>edit-contact</tag>
+<tag>email-validation</tag>
+<tag>negative</tag>
+<tag>TC-EMG-11</tag>
+<status status="PASS" start="2026-03-18T18:07:40.637460" elapsed="7.428176"/>
+</test>
+<kw name="Close Browser" owner="SeleniumLibrary" type="TEARDOWN">
+<doc>Closes the current browser.</doc>
+<status status="PASS" start="2026-03-18T18:07:48.068814" elapsed="2.567299"/>
+</kw>
+<doc>UAT-PBI-014-004 ทดสอบการแก้ไขผู้ติดต่อฉุกเฉินผู้ใช้ไม่สำเร็จ
+PBI 14 - As a passenger, I want people in my emergency contact
+to check on my location from time to time so that they know I am whereabout.
+Version: V.1 | Last update: 17/3/2026</doc>
+<status status="PASS" start="2026-03-18T18:07:04.168290" elapsed="46.468106"/>
+</suite>
+<statistics>
+<total>
+<stat pass="5" fail="0" skip="0">All Tests</stat>
+</total>
+<tag>
+<stat pass="5" fail="0" skip="0">edit-contact</stat>
+<stat pass="1" fail="0" skip="0">email-validation</stat>
+<stat pass="5" fail="0" skip="0">negative</stat>
+<stat pass="1" fail="0" skip="0">TC-EMG-07</stat>
+<stat pass="1" fail="0" skip="0">TC-EMG-08</stat>
+<stat pass="1" fail="0" skip="0">TC-EMG-09</stat>
+<stat pass="1" fail="0" skip="0">TC-EMG-10</stat>
+<stat pass="1" fail="0" skip="0">TC-EMG-11</stat>
+</tag>
+<suite>
+<stat name="UAT-PBI-014-004" id="s1" pass="5" fail="0" skip="0">UAT-PBI-014-004</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
