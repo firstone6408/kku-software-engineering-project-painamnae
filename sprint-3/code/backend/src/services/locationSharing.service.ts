@@ -5,7 +5,7 @@ import { sendPushMessage, buildLocationMessage, buildStoppedMessage, buildExpire
 import { EmergencyContact } from '@prisma/client';
 import { reverseGeocode } from '../utils/googleMaps';
 
-const INTERVAL_MINUTES = 1; // ความถี่ในการส่ง (fixed)
+const INTERVAL_MINUTES = 10; // ความถี่ในการส่ง (fixed)
 
 /**
  * แปลง lat,lng เป็นที่อยู่ภาษาไทย
