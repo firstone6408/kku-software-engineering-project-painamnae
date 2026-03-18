@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.4.1 (Python 3.14.2 on win32)" generated="2026-03-18T17:19:10.195932" rpa="false" schemaversion="5">
+<suite id="s1" name="TC-EMG-15" source="D:\663380608-3\3-2\SA\MyRobotest\UAT-PBI-014-007\TC-EMG-15\TC-EMG-15.robot">
+<kw name="Set Selenium Speed" owner="SeleniumLibrary" type="SETUP">
+<arg>0.5 seconds</arg>
+<doc>Sets the delay that is waited after each Selenium command.</doc>
+<status status="PASS" start="2026-03-18T17:19:10.379175" elapsed="0.000323"/>
+</kw>
+<test id="s1-t1" name="TC-EMG-15 Stop Notifying Location (1 Emergency Contact)" line="17">
+<kw name="Step 1: Open Website">
+<kw name="Open Browser" owner="SeleniumLibrary">
+<msg time="2026-03-18T17:19:10.382113" level="INFO">Opening browser 'chrome' to base url 'https://csse4269.cpkku.com/'.</msg>
+<arg>${URL}</arg>
+<arg>${BROWSER}</arg>
+<doc>Opens a new browser instance to the optional ``url``.</doc>
+<status status="PASS" start="2026-03-18T17:19:10.381787" elapsed="4.777505"/>
+</kw>
+<kw name="Maximize Browser Window" owner="SeleniumLibrary">
+<doc>Maximizes current browser window.</doc>
+<status status="PASS" start="2026-03-18T17:19:15.160202" elapsed="0.537792"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>ไปนำแหน่</arg>
+<arg>timeout=15s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T17:19:15.698303" elapsed="0.533449"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T17:19:16.958196" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="TC-EMG-15%20Stop%20Notifying%20Location%20%281%20Emergency%20Contact%29_01_homepage.png"&gt;&lt;img src="TC-EMG-15%20Stop%20Notifying%20Location%20%281%20Emergency%20Contact%29_01_homepage.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>${TEST NAME}_01_homepage.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T17:19:16.232070" elapsed="0.726418"/>
+</kw>
+<status status="PASS" start="2026-03-18T17:19:10.381237" elapsed="6.577545"/>
+</kw>
+<kw name="Step 2: Login to System">
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T17:19:16.961455" level="INFO">Clicking element 'xpath=//a[contains(text(), 'เข้าสู่ระบบ')]'.</msg>
+<arg>xpath=//a[contains(text(), 'เข้าสู่ระบบ')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T17:19:16.960403" elapsed="1.144746"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>id=identifier</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T17:19:18.105549" elapsed="1.037562"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2026-03-18T17:19:19.144183" level="INFO">Typing text 'phatcharida.f@kkumail.com' into text field 'id=identifier'.</msg>
+<arg>id=identifier</arg>
+<arg>${USERNAME}</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T17:19:19.143552" elapsed="1.665668"/>
+</kw>
+<kw name="Input Password" owner="SeleniumLibrary">
+<msg time="2026-03-18T17:19:20.810589" level="INFO">Typing password into text field 'id=password'.</msg>
+<msg time="2026-03-18T17:19:21.871070" level="INFO">Temporally setting log level to: NONE</msg>
+<arg>id=password</arg>
+<arg>${PASSWORD}</arg>
+<doc>Types the given password into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T17:19:20.809815" elapsed="1.624884"/>
+</kw>
+<kw name="Click Button" owner="SeleniumLibrary">
+<msg time="2026-03-18T17:19:22.435594" level="INFO">Clicking button 'xpath=//button[@type='submit' and contains(text(), 'เข้าสู่ระบบ')]'.</msg>
+<arg>xpath=//button[@type='submit' and contains(text(), 'เข้าสู่ระบบ')]</arg>
+<doc>Clicks the button identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T17:19:22.435133" elapsed="2.655122"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>เดินทางร่วมกัน อย่างมั่นใจ</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T17:19:25.090759" elapsed="0.513082"/>
+</kw>
+<status status="PASS" start="2026-03-18T17:19:16.959692" elapsed="8.644347"/>
+</kw>
+<kw name="Step 3.1: Setup Pre-requisite - Start Notifying 1 Contact">
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>xpath=//span[text()='แจ้งตำแหน่ง']/..</arg>
+<arg>timeout=15s</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T17:19:25.604980" elapsed="1.036588"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T17:19:26.642092" level="INFO">Clicking element 'xpath=//span[text()='แจ้งตำแหน่ง']/..'.</msg>
+<arg>xpath=//span[text()='แจ้งตำแหน่ง']/..</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T17:19:26.641830" elapsed="1.082978"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>เลือกผู้ติดต่อ</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T17:19:27.725077" elapsed="0.512083"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2026-03-18T17:19:28.238227" level="INFO">${locator} = xpath=//p[text()='พัชริดา เฟื่องอารมย์']/ancestor::label</msg>
+<var>${locator}</var>
+<arg>xpath=//p[text()='${CONTACT_1}']/ancestor::label</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2026-03-18T17:19:28.237471" elapsed="0.000820"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>${locator}</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T17:19:28.238474" elapsed="1.042601"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T17:19:29.281739" level="INFO">Clicking element 'xpath=//p[text()='พัชริดา เฟื่องอารมย์']/ancestor::label'.</msg>
+<arg>${locator}</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T17:19:29.281356" elapsed="1.070722"/>
+</kw>
+<kw name="Select From List By Label" owner="SeleniumLibrary">
+<msg time="2026-03-18T17:19:30.352971" level="INFO">Selecting options from selection list 'xpath=//label[text()='ระยะเวลาการแจ้งตำแหน่ง']/following-sibling::select' by label 15 นาที.</msg>
+<arg>xpath=//label[text()='ระยะเวลาการแจ้งตำแหน่ง']/following-sibling::select</arg>
+<arg>${DURATION}</arg>
+<doc>Selects options from selection list ``locator`` by ``labels``.</doc>
+<status status="PASS" start="2026-03-18T17:19:30.352590" elapsed="5.650502"/>
+</kw>
+<kw name="Click Button" owner="SeleniumLibrary">
+<msg time="2026-03-18T17:19:36.003761" level="INFO">Clicking button 'xpath=//button[text()='ส่งและเริ่มแจ้งตำแหน่ง']'.</msg>
+<arg>xpath=//button[text()='ส่งและเริ่มแจ้งตำแหน่ง']</arg>
+<doc>Clicks the button identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T17:19:36.003435" elapsed="2.589149"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>xpath=//span[text()='กำลังแจ้งตำแหน่ง']</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T17:19:38.592983" elapsed="5.330785"/>
+</kw>
+<doc>ขั้นตอนนี้จำลองจาก UAT-PBI-014-006</doc>
+<status status="PASS" start="2026-03-18T17:19:25.604581" elapsed="18.319716"/>
+</kw>
+<kw name="Step 4: Stop Notification And Verify Result">
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2026-03-18T17:19:43.927681" level="INFO">${sharing_btn} = xpath=//span[text()='กำลังแจ้งตำแหน่ง']/ancestor::button</msg>
+<var>${sharing_btn}</var>
+<arg>xpath=//span[text()='กำลังแจ้งตำแหน่ง']/ancestor::button</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2026-03-18T17:19:43.926377" elapsed="0.001413"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>${sharing_btn}</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T17:19:43.928104" elapsed="1.031025"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T17:19:44.960829" level="INFO">Clicking element 'xpath=//span[text()='กำลังแจ้งตำแหน่ง']/ancestor::button'.</msg>
+<arg>${sharing_btn}</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T17:19:44.959819" elapsed="1.070460"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2026-03-18T17:19:46.031471" level="INFO">${stop_btn} = xpath=//button[contains(@class, 'bg-red-600') and text()='หยุดการแจ้งตำแหน่ง']</msg>
+<var>${stop_btn}</var>
+<arg>xpath=//button[contains(@class, 'bg-red-600') and text()='หยุดการแจ้งตำแหน่ง']</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2026-03-18T17:19:46.030709" elapsed="0.000862"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>${stop_btn}</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T17:19:46.032090" elapsed="1.033076"/>
+</kw>
+<kw name="Click Button" owner="SeleniumLibrary">
+<msg time="2026-03-18T17:19:47.066112" level="INFO">Clicking button 'xpath=//button[contains(@class, 'bg-red-600') and text()='หยุดการแจ้งตำแหน่ง']'.</msg>
+<arg>${stop_btn}</arg>
+<doc>Clicks the button identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T17:19:47.065579" elapsed="2.616915"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>แจ้งตำแหน่ง</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T17:19:49.682973" elapsed="0.520941"/>
+</kw>
+<kw name="Set Variable" owner="BuiltIn">
+<msg time="2026-03-18T17:19:50.205073" level="INFO">${normal_btn} = xpath=//span[text()='แจ้งตำแหน่ง']/ancestor::button</msg>
+<var>${normal_btn}</var>
+<arg>xpath=//span[text()='แจ้งตำแหน่ง']/ancestor::button</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" start="2026-03-18T17:19:50.204304" elapsed="0.000854"/>
+</kw>
+<kw name="Get Element Attribute" owner="SeleniumLibrary">
+<msg time="2026-03-18T17:19:51.244556" level="INFO">${classes} = relative flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200 text-gray-600 hover:text-blue-600 hover:bg-blue-50</msg>
+<var>${classes}</var>
+<arg>${normal_btn}</arg>
+<arg>class</arg>
+<doc>Returns the value of ``attribute`` from the element ``locator``.</doc>
+<status status="PASS" start="2026-03-18T17:19:50.205413" elapsed="1.039267"/>
+</kw>
+<kw name="Should Not Contain" owner="BuiltIn">
+<arg>${classes}</arg>
+<arg>text-red-600</arg>
+<doc>Fails if ``container`` contains ``item`` one or more times.</doc>
+<status status="PASS" start="2026-03-18T17:19:51.245062" elapsed="0.001242"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T17:19:51.967012" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="TC-EMG-15%20Stop%20Notifying%20Location%20%281%20Emergency%20Contact%29_final_result.png"&gt;&lt;img src="TC-EMG-15%20Stop%20Notifying%20Location%20%281%20Emergency%20Contact%29_final_result.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>${TEST NAME}_final_result.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T17:19:51.246610" elapsed="0.720628"/>
+</kw>
+<status status="PASS" start="2026-03-18T17:19:43.925509" elapsed="8.041893"/>
+</kw>
+<kw name="Close Browser" owner="SeleniumLibrary" type="TEARDOWN">
+<doc>Closes the current browser.</doc>
+<status status="PASS" start="2026-03-18T17:19:51.968375" elapsed="2.712404"/>
+</kw>
+<doc>Test Scenario: UAT-PBI-014-007 - ผู้โดยสารหยุดแจ้งตำแหน่ง กรณีเลือกผู้ติดต่อ 1 คน</doc>
+<status status="PASS" start="2026-03-18T17:19:10.379726" elapsed="44.301713"/>
+</test>
+<status status="PASS" start="2026-03-18T17:19:10.197413" elapsed="44.486603"/>
+</suite>
+<statistics>
+<total>
+<stat pass="1" fail="0" skip="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat name="TC-EMG-15" id="s1" pass="1" fail="0" skip="0">TC-EMG-15</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

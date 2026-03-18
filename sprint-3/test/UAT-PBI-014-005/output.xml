@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.4.1 (Python 3.14.2 on win32)" generated="2026-03-18T16:02:57.569165" rpa="false" schemaversion="5">
+<suite id="s1" name="UAT PBI 014 005 delete contact" source="D:\663380608-3\3-2\SA\MyRobotest\TC-EMG-12\UAT_PBI_014_005_delete_contact.robot">
+<kw name="Set Selenium Speed" owner="SeleniumLibrary" type="SETUP">
+<arg>0.5 seconds</arg>
+<doc>Sets the delay that is waited after each Selenium command.</doc>
+<status status="PASS" start="2026-03-18T16:02:57.757629" elapsed="0.000517"/>
+</kw>
+<test id="s1-t1" name="TC-EMG-12 Delete Emergency Contact Successfully" line="14">
+<kw name="Step 1: Open Website">
+<kw name="Open Browser" owner="SeleniumLibrary">
+<msg time="2026-03-18T16:02:57.759941" level="INFO">Opening browser 'chrome' to base url 'https://csse4269.cpkku.com/'.</msg>
+<arg>${URL}</arg>
+<arg>${BROWSER}</arg>
+<doc>Opens a new browser instance to the optional ``url``.</doc>
+<status status="PASS" start="2026-03-18T16:02:57.759719" elapsed="3.292549"/>
+</kw>
+<kw name="Maximize Browser Window" owner="SeleniumLibrary">
+<doc>Maximizes current browser window.</doc>
+<status status="PASS" start="2026-03-18T16:03:01.053201" elapsed="0.554582"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>ไปนำแหน่</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T16:03:01.608063" elapsed="0.514634"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T16:03:02.896441" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="01_homepage.png"&gt;&lt;img src="01_homepage.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>01_homepage.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T16:03:02.123329" elapsed="0.773570"/>
+</kw>
+<status status="PASS" start="2026-03-18T16:02:57.759448" elapsed="5.137857"/>
+</kw>
+<kw name="Step 2: Login to System">
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T16:03:02.900929" level="INFO">Clicking element 'xpath=//a[contains(text(), 'เข้าสู่ระบบ')]'.</msg>
+<arg>xpath=//a[contains(text(), 'เข้าสู่ระบบ')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T16:03:02.899788" elapsed="1.122177"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>id=identifier</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T16:03:04.022671" elapsed="1.031458"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2026-03-18T16:03:05.055162" level="INFO">Typing text 'phatcharida.f@kkumail.com' into text field 'id=identifier'.</msg>
+<arg>id=identifier</arg>
+<arg>${USERNAME}</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T16:03:05.054561" elapsed="1.641457"/>
+</kw>
+<kw name="Input Password" owner="SeleniumLibrary">
+<msg time="2026-03-18T16:03:06.697618" level="INFO">Typing password into text field 'id=password'.</msg>
+<msg time="2026-03-18T16:03:07.736137" level="INFO">Temporally setting log level to: NONE</msg>
+<arg>id=password</arg>
+<arg>${PASSWORD}</arg>
+<doc>Types the given password into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T16:03:06.696745" elapsed="1.589632"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T16:03:08.893845" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="02_before_login.png"&gt;&lt;img src="02_before_login.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>02_before_login.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T16:03:08.286796" elapsed="0.607276"/>
+</kw>
+<kw name="Click Button" owner="SeleniumLibrary">
+<msg time="2026-03-18T16:03:08.894878" level="INFO">Clicking button 'xpath=//button[@type='submit' and contains(text(), 'เข้าสู่ระบบ')]'.</msg>
+<arg>xpath=//button[@type='submit' and contains(text(), 'เข้าสู่ระบบ')]</arg>
+<doc>Clicks the button identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T16:03:08.894420" elapsed="2.612896"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>เดินทางร่วมกัน อย่างมั่นใจ ด้วยความปลอดภัยเป็นอันดับหนึ่ง</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T16:03:11.507707" elapsed="0.522639"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T16:03:12.729044" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="03_after_login_success.png"&gt;&lt;img src="03_after_login_success.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>03_after_login_success.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T16:03:12.030577" elapsed="0.698751"/>
+</kw>
+<status status="PASS" start="2026-03-18T16:03:02.898731" elapsed="9.830786"/>
+</kw>
+<kw name="Step 3: Navigate to Emergency Contact Page">
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>xpath=//span[contains(text(), 'Phatcharida')]</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T16:03:12.733075" elapsed="1.028045"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T16:03:13.761699" level="INFO">Clicking element 'xpath=//span[contains(text(), 'Phatcharida')]'.</msg>
+<arg>xpath=//span[contains(text(), 'Phatcharida')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T16:03:13.761447" elapsed="1.061816"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>xpath=//a[contains(text(), 'บัญชีของฉัน')]</arg>
+<arg>timeout=5s</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T16:03:14.823656" elapsed="1.022822"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T16:03:15.847071" level="INFO">Clicking element 'xpath=//a[contains(text(), 'บัญชีของฉัน')]'.</msg>
+<arg>xpath=//a[contains(text(), 'บัญชีของฉัน')]</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T16:03:15.846764" elapsed="1.111127"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>xpath=//a[@href='/profile/emergency-contacts']</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T16:03:16.958247" elapsed="1.023679"/>
+</kw>
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T16:03:17.982388" level="INFO">Clicking element 'xpath=//a[@href='/profile/emergency-contacts']'.</msg>
+<arg>xpath=//a[@href='/profile/emergency-contacts']</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T16:03:17.982108" elapsed="1.059724"/>
+</kw>
+<kw name="Set Test Variable" owner="BuiltIn">
+<msg time="2026-03-18T16:03:19.045351" level="INFO">${target_row} = xpath=//tr[contains(., 'สิริน ธรรมโชต')]</msg>
+<arg>${target_row}</arg>
+<arg>xpath=//tr[contains(., '${TARGET_CONTACT}')]</arg>
+<doc>Makes a variable available everywhere within the scope of the current test.</doc>
+<status status="PASS" start="2026-03-18T16:03:19.042285" elapsed="0.003248"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>${target_row}</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T16:03:19.045890" elapsed="1.022484"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T16:03:20.683590" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="04_emergency_contact_page.png"&gt;&lt;img src="04_emergency_contact_page.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>04_emergency_contact_page.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T16:03:20.068819" elapsed="0.614888"/>
+</kw>
+<status status="PASS" start="2026-03-18T16:03:12.732483" elapsed="7.951338"/>
+</kw>
+<kw name="Step 4: Delete Emergency Contact">
+<kw name="Click Element" owner="SeleniumLibrary">
+<msg time="2026-03-18T16:03:20.684820" level="INFO">Clicking element 'xpath=//tr[contains(., 'สิริน ธรรมโชต')]//button[@title='ลบ']'.</msg>
+<arg>${target_row}//button[@title='ลบ']</arg>
+<doc>Click the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T16:03:20.684523" elapsed="1.092775"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>xpath=//button[contains(text(), 'ลบ')]</arg>
+<arg>timeout=5s</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-03-18T16:03:21.777488" elapsed="1.020836"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T16:03:23.440654" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="05_delete_confirmation_modal.png"&gt;&lt;img src="05_delete_confirmation_modal.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>05_delete_confirmation_modal.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T16:03:22.798765" elapsed="0.642049"/>
+</kw>
+<kw name="Click Button" owner="SeleniumLibrary">
+<msg time="2026-03-18T16:03:23.441591" level="INFO">Clicking button 'xpath=//button[contains(text(), 'ลบ')]'.</msg>
+<arg>xpath=//button[contains(text(), 'ลบ')]</arg>
+<doc>Clicks the button identified by ``locator``.</doc>
+<status status="PASS" start="2026-03-18T16:03:23.441091" elapsed="2.583009"/>
+</kw>
+<kw name="Wait Until Page Contains" owner="SeleniumLibrary">
+<arg>ลบผู้ติดต่อสำเร็จ</arg>
+<arg>timeout=10s</arg>
+<doc>Waits until ``text`` appears on the current page.</doc>
+<status status="PASS" start="2026-03-18T16:03:26.024698" elapsed="1.233650"/>
+</kw>
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-03-18T16:03:27.891040" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="06_after_delete_success.png"&gt;&lt;img src="06_after_delete_success.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>06_after_delete_success.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-03-18T16:03:27.258553" elapsed="0.632910"/>
+</kw>
+<status status="PASS" start="2026-03-18T16:03:20.684153" elapsed="7.207741"/>
+</kw>
+<doc>Test Scenario: UAT-PBI-014-005 - ทดสอบการลบผู้ติดต่อฉุกเฉินสำเร็จ</doc>
+<status status="PASS" start="2026-03-18T16:02:57.758314" elapsed="30.134540"/>
+</test>
+<kw name="Close Browser" owner="SeleniumLibrary" type="TEARDOWN">
+<doc>Closes the current browser.</doc>
+<status status="PASS" start="2026-03-18T16:03:27.895081" elapsed="2.700379"/>
+</kw>
+<status status="PASS" start="2026-03-18T16:02:57.581586" elapsed="33.014075"/>
+</suite>
+<statistics>
+<total>
+<stat pass="1" fail="0" skip="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat name="UAT PBI 014 005 delete contact" id="s1" pass="1" fail="0" skip="0">UAT PBI 014 005 delete contact</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
